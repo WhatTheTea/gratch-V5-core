@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gratch-core", "gratch-core.csproj", "{648A930E-A88F-4AE8-9379-128134F501D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{648A930E-A88F-4AE8-9379-128134F501D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648A930E-A88F-4AE8-9379-128134F501D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648A930E-A88F-4AE8-9379-128134F501D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648A930E-A88F-4AE8-9379-128134F501D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8281D2E3-1F45-4405-A0EA-81D7A2BF4FA5}
+	EndGlobalSection
+EndGlobal
