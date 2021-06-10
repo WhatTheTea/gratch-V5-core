@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace gratch_core
 {
-    public class graph
+    public class Graph
     {
-
+        public Graph()
+        {
+            
+        }
     }
 }
