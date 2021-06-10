@@ -9,7 +9,7 @@ namespace gratch_core
     {
         public Graph()
         {
-            
+
         }
     }
 }
