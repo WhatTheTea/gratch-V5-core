@@ -66,6 +66,7 @@ namespace gratch_core
         /// <c>true</c> если <paramref name="day"/> выходной, иначе - <c>false</c>
         /// </returns>
         public bool IsHoliday(DayOfWeek day) => week[day];
+        public bool IsHoliday(DateTime date) => week[date.DayOfWeek];
         public string DayToString(DayOfWeek day) => local.GetString(day.ToString());
         public void AddHoliday(DayOfWeek day)
         {

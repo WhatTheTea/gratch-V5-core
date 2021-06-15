@@ -12,7 +12,7 @@ namespace gratch_core
     {
         //Fields
         private string name;
-        //private List<DayOfWeek> weekend;
+        private Workweek workweek;
         private List<Unit> units;
         //Properties
         public string Name
@@ -23,7 +23,7 @@ namespace gratch_core
                 if (value != null && value.Length > 2) name = value;
             }
         }
-        //public List<DayOfWeek> Weekend { get => weekend; set => weekend = value; }
+        public Workweek Workweek { get => workweek; set => workweek = value; }
         public List<Unit> Units { get => units; set => units = value; }
         //Constructors
         public Group() { }

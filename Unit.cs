@@ -8,6 +8,8 @@ namespace gratch_core
     /// </summary>
     internal class Unit
     {
+        //Constants
+        private readonly Group group;
         //Fields
         private string name;
         private List<DateTime> dutyDates;
@@ -30,7 +32,8 @@ namespace gratch_core
         }
 
         //Constructors
-        public Unit() { }
+        public Unit() {
+        }
         /// <param name="Name">Имя елемента</param>
         public Unit(string Name)
         {
@@ -38,13 +41,29 @@ namespace gratch_core
             else throw new ArgumentException("Value can not be less than 2 symbols or null", nameof(Name));
         }
         //Methods
+        /// <summary>
+        /// Добавляет дату дежурства в список в границах этого месяца.
+        /// </summary>
+        /// <param name="date">Дата дежурства, которую надо добавить в список дат дежурства человека</param>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        /// <exception cref="ArgumentException"/>
         public void AddDutyDate(DateTime date)
         {
             if (date.Month == now.Month)
             {
-                dutyDates.Add(date);
+                if (!group.Workweek.IsHoliday(date))
+                {
+                    dutyDates.Add(date);
+                }
+                else throw new ArgumentException(nameof(date), "DutyDate cant be assigned to holiday");
             }
+            else throw new ArgumentOutOfRangeException(nameof(date), "DutyDate cant be assigned out of bounds of this month");
         }
+        /// <summary>
+        /// Убирает дату дежурства из списка дат.
+        /// </summary>
+        /// <param name="date">Дата дежурства</param>
+        /// <exception cref="ArgumentException"/>
         public void RemoveDutyDate(DateTime date)
         {
             if (dutyDates.Contains(date))
@@ -53,17 +72,24 @@ namespace gratch_core
             }
             else throw new ArgumentException("Cannot remove non-existing item", nameof(date));
         }
+        /// <summary>
+        /// Чистит список полностью
+        /// </summary>
+        public void RemoveAllDutyDates()
+        {
+            dutyDates.Clear();
+        }
+        /// <summary>
+        /// Выдача штрафа человеку в днях.
+        /// </summary>
+        /// <param name="days">Количество штрафных дней</param>
         public void Penalty(int days)
         {
             dutyDates.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             for(int i = 0; i < days; i++)
             {
                 var nextdate = dutyDates[dutyDates.Count].AddDays(1);
-                if (nextdate.Month == now.Month)
-                {
-                    AddDutyDate(nextdate);
-                }
-                else throw new ArgumentOutOfRangeException(nameof(nextdate), "DutyDate cant be assigned out of bounds of this month");
+                AddDutyDate(nextdate);
             }
         }
         public void SwapDutyDates(Unit SwapWith)
