@@ -99,6 +99,10 @@ namespace gratch_core
                 }
             }
         }
+        /// <summary>
+        /// Взаимозаменяет даты дежурств данного <see cref="Unit"/> и <paramref name="SwapWith"/>.
+        /// </summary>
+        /// <param name="SwapWith">Определяет с каким <see cref="Unit"/> обменятся датами дежурств</param>
         public void SwapDutyDates(Unit SwapWith)
         {
             List<DateTime> buffer = SwapWith.DutyDates;
