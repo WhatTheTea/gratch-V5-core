@@ -51,7 +51,7 @@ namespace gratch_core
         public Workweek(params DayOfWeek[] weekend)
         {
             //Ошибка когда вся неделя выходная
-            if (weekend.Length > 6) throw new ArgumentOutOfRangeException(nameof(weekend), "Слишком много выходных");
+            if (weekend.Length > 6) throw new ArgumentOutOfRangeException(nameof(weekend), "Too many holidays");
             //Инициализация словаря День - Логика
             foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek))) week.Add(day, false);
             //Заполнение данными словаря
@@ -70,7 +70,7 @@ namespace gratch_core
         public void AddHoliday(DayOfWeek day)
         {
             //Ошибка когда вся неделя выходная
-            if (CountHolidays >= 6) throw new ArgumentOutOfRangeException(nameof(day), "Слишком много выходных");
+            if (CountHolidays >= 6) throw new ArgumentOutOfRangeException(nameof(day), "Too many holidays");
             if (!IsHoliday(day)) week[day] = true;
         }
         public void AddWorkday(DayOfWeek day)
