@@ -1,15 +1,13 @@
 ﻿using System;
-using System.IO;
-using System.Xml;
-using System.Linq;
 
 namespace gratch_core
 {
     public class Graph
     {
+        private DateTime lastUpdate;
         public Graph()
         {
-            
+
         }
     }
 }
