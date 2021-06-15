@@ -38,5 +38,6 @@ namespace gratch_core
         }
         //Methods
         public bool IsWeekend(DayOfWeek day) => week[day];
+        public string DayToString(DayOfWeek day) => local.GetString(day.ToString());
     }
 }
