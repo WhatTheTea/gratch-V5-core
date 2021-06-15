@@ -89,7 +89,14 @@ namespace gratch_core
             for(int i = 0; i < days; i++)
             {
                 var nextdate = dutyDates[dutyDates.Count].AddDays(1);
-                AddDutyDate(nextdate);
+                try
+                {
+                    AddDutyDate(nextdate);
+                }
+                catch (ArgumentException)
+                {
+                    AddDutyDate(nextdate.AddDays(1));
+                }
             }
         }
         public void SwapDutyDates(Unit SwapWith)
