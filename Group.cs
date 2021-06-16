@@ -43,7 +43,7 @@ namespace gratch_core
         //Methods
         void AddUnit(Unit unit)
         {
-
+            unit.Group = this;
         }
     }
 }

@@ -6,12 +6,13 @@ namespace gratch_core
     /// <summary>
     /// Класс, что представляет собой одного человека в графике
     /// </summary>
-    internal class Unit
+    public class Unit
     {
         //Constants
-        private readonly Group group;
+
         //Fields
         private string name;
+        private Group group;
         private List<DateTime> dutyDates;
         //Properties
         private DateTime now = DateTime.Now;
@@ -22,7 +23,7 @@ namespace gratch_core
             set
             {
                 if (value != null && value.Length > 2) name = value;
-                else throw new ArgumentException("Value can not be less than 2 symbols or null", nameof(Name));
+                else throw new ArgumentException("Value can not be less than 2 symbols or null", nameof(value));
             }
         }
         public List<DateTime> DutyDates
@@ -30,15 +31,16 @@ namespace gratch_core
             get => dutyDates;
             internal set => dutyDates = value;
         }
+        internal Group Group { get => group; set => group = value; }
 
         //Constructors
-        public Unit() {
-        }
-        /// <param name="Name">Имя елемента</param>
-        public Unit(string Name)
+        public Unit()
         {
-            if (Name != null && Name.Length > 2) name = Name;
-            else throw new ArgumentException("Value can not be less than 2 symbols or null", nameof(Name));
+        }
+        /// <param name="name">Имя елемента</param>
+        public Unit(string name)
+        {
+            Name = name;
         }
         //Methods
         /// <summary>
@@ -47,7 +49,7 @@ namespace gratch_core
         /// <param name="date">Дата дежурства, которую надо добавить в список дат дежурства человека</param>
         /// <exception cref="ArgumentOutOfRangeException"/>
         /// <exception cref="ArgumentException"/>
-        public void AddDutyDate(DateTime date)
+        internal void AddDutyDate(DateTime date)
         {
             if (date.Month == now.Month)
             {
@@ -64,7 +66,7 @@ namespace gratch_core
         /// </summary>
         /// <param name="date">Дата дежурства</param>
         /// <exception cref="ArgumentException"/>
-        public void RemoveDutyDate(DateTime date)
+        internal void RemoveDutyDate(DateTime date)
         {
             if (dutyDates.Contains(date))
             {
@@ -75,7 +77,7 @@ namespace gratch_core
         /// <summary>
         /// Чистит список полностью
         /// </summary>
-        public void RemoveAllDutyDates()
+        internal void RemoveAllDutyDates()
         {
             dutyDates.Clear();
         }
@@ -83,10 +85,10 @@ namespace gratch_core
         /// Выдача штрафа человеку в днях.
         /// </summary>
         /// <param name="days">Количество штрафных дней</param>
-        public void Penalty(int days)
+        internal void Penalty(int days)
         {
             dutyDates.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-            for(int i = 0; i < days; i++)
+            for (int i = 0; i < days; i++)
             {
                 var nextdate = dutyDates[dutyDates.Count].AddDays(1);
                 try
@@ -103,7 +105,7 @@ namespace gratch_core
         /// Взаимозаменяет даты дежурств данного <see cref="Unit"/> и <paramref name="SwapWith"/>.
         /// </summary>
         /// <param name="SwapWith">Определяет с каким <see cref="Unit"/> обменятся датами дежурств</param>
-        public void SwapDutyDates(Unit SwapWith)
+        internal void SwapDutyDates(Unit SwapWith)
         {
             List<DateTime> buffer = SwapWith.DutyDates;
             SwapWith.DutyDates = dutyDates;
