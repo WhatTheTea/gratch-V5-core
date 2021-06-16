@@ -23,8 +23,8 @@ namespace gratch_core
                 if (value != null && value.Length > 2) name = value;
             }
         }
-        public Workweek Workweek { get => workweek; set => workweek = value; }
-        public List<Unit> Units { get => units; set => units = value; }
+        public Workweek Workweek { get => workweek; internal set => workweek = value; }
+        public List<Unit> Units { get => units; internal set => units = value; }
         //Constructors      
         public Group(string groupName) : this(groupName,new Workweek())
         {
@@ -41,6 +41,9 @@ namespace gratch_core
             this.units = units;
         }
         //Methods
+        void AddUnit(Unit unit)
+        {
 
+        }
     }
 }

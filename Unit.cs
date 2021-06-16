@@ -13,7 +13,6 @@ namespace gratch_core
         //Fields
         private string name;
         private List<DateTime> dutyDates;
-        private int id;
         //Properties
         private DateTime now = DateTime.Now;
         private bool IsEnabled => dutyDates != null;
@@ -31,7 +30,6 @@ namespace gratch_core
             get => dutyDates;
             internal set => dutyDates = value;
         }
-        public int Id { get => id; internal set => id = value; }
 
         //Constructors
         public Unit() {
