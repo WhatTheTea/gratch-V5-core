@@ -13,6 +13,7 @@ namespace gratch_core
         //Fields
         private string name;
         private List<DateTime> dutyDates;
+        private int id;
         //Properties
         private DateTime now = DateTime.Now;
         private bool IsEnabled => dutyDates != null;
@@ -30,6 +31,7 @@ namespace gratch_core
             get => dutyDates;
             internal set => dutyDates = value;
         }
+        public int Id { get => id; internal set => id = value; }
 
         //Constructors
         public Unit() {
@@ -55,7 +57,7 @@ namespace gratch_core
                 {
                     dutyDates.Add(date);
                 }
-                else throw new ArgumentException(nameof(date), "DutyDate cant be assigned to holiday");
+                else throw new ArgumentException("DutyDate cant be assigned to holiday", nameof(date));
             }
             else throw new ArgumentOutOfRangeException(nameof(date), "DutyDate cant be assigned out of bounds of this month");
         }
