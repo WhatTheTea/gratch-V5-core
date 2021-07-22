@@ -8,12 +8,12 @@ namespace gratch_core
     /// <summary>
     /// Класс для работы с группами юнитов.
     /// </summary>
-    internal class Group
+    public class Group
     {
         //Fields
         private string name;
         private Workweek workweek;
-        private List<Unit> units;
+        private List<FixedUnit> units;
         //Properties
         public string Name
         {
@@ -24,24 +24,24 @@ namespace gratch_core
             }
         }
         public Workweek Workweek { get => workweek; internal set => workweek = value; }
-        public List<Unit> Units { get => units; internal set => units = value; }
+        public List<FixedUnit> Units { get => units; internal set => units = value; }
         //Constructors      
         public Group(string groupName) : this(groupName,new Workweek())
         {
-            
+
         }
         public Group(string groupName, Workweek workweek) : this(groupName,workweek,null)
         {
         
         }
-        public Group(string groupName, Workweek workweek, List<Unit> units)
+        public Group(string groupName, Workweek workweek, List<FixedUnit> units)
         {
             if (groupName != null && groupName.Length > 2) name = groupName;
             this.workweek = workweek;
             this.units = units;
         }
         //Methods
-        void AddUnit(Unit unit)
+        void AddUnit(FixedUnit unit)
         {
             unit.Group = this;
         }

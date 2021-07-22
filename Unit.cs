@@ -3,10 +3,30 @@ using System.Collections.Generic;
 
 namespace gratch_core
 {
+    interface ISingleDutyDate
+    {
+
+    }
+    abstract class Unit
+    {
+        public abstract string Name { get; set; }
+        public abstract Group Group { get; set; }
+        public Unit()
+        {
+
+        }
+        public Unit(string name)
+        {
+            Name = name;
+        }
+
+    }
+
+
     /// <summary>
     /// Класс, что представляет собой одного человека в графике
     /// </summary>
-    public class Unit
+    internal class FixedUnit : Unit, ISingleDutyDate
     {
         //Constants
 
@@ -15,9 +35,9 @@ namespace gratch_core
         private Group group;
         private List<DateTime> dutyDates;
         //Properties
-        private DateTime now = DateTime.Now;
+        private DateTime now => DateTime.Now;
         private bool IsEnabled => dutyDates != null;
-        public string Name
+        public override string Name
         {
             get => name;
             set
@@ -31,14 +51,11 @@ namespace gratch_core
             get => dutyDates;
             internal set => dutyDates = value;
         }
-        internal Group Group { get => group; set => group = value; }
+        public override Group Group { get => group; set => group = value; }
 
         //Constructors
-        public Unit()
-        {
-        }
         /// <param name="name">Имя елемента</param>
-        public Unit(string name)
+        internal FixedUnit(string name)
         {
             Name = name;
         }
@@ -102,10 +119,10 @@ namespace gratch_core
             }
         }
         /// <summary>
-        /// Взаимозаменяет даты дежурств данного <see cref="Unit"/> и <paramref name="SwapWith"/>.
+        /// Взаимозаменяет даты дежурств данного <see cref="FixedUnit"/> и <paramref name="SwapWith"/>.
         /// </summary>
-        /// <param name="SwapWith">Определяет с каким <see cref="Unit"/> обменятся датами дежурств</param>
-        internal void SwapDutyDates(Unit SwapWith)
+        /// <param name="SwapWith">Определяет с каким <see cref="FixedUnit"/> обменятся датами дежурств</param>
+        internal void SwapDutyDates(FixedUnit SwapWith)
         {
             List<DateTime> buffer = SwapWith.DutyDates;
             SwapWith.DutyDates = dutyDates;

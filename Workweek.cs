@@ -11,7 +11,7 @@ namespace gratch_core
     /// Класс для работы с рабочей неделей.
     /// Выходных должно быть не больше 6.
     /// </summary>
-    internal class Workweek
+    class Workweek
     {
         //Constants
         private const int daysInWeek = 7;
