@@ -11,9 +11,14 @@ namespace gratch_core
         public string Name { get; set; }
         public DateTime DutyDate { get; set; }
 
-        public bool IsOnWeekend(ref Group group)
+        public Person(string name)
         {
-            return group.weekend.Contains(DutyDate.DayOfWeek);
+            Name = name;
+        }
+
+        public bool IsOnWeekend(ref Group context)
+        {
+            return context.Weekend.Contains(DutyDate.DayOfWeek);
         }
     }
 }
