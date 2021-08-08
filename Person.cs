@@ -8,17 +8,12 @@ namespace gratch_core
 {
     public class Person
     {
-        public string Name { get; set; }
-        public DateTime DutyDate { get; set; }
+        public string Name { get; internal set; }
+        public List<DateTime> DutyDates { get; internal set; } // TODO: make it internal
 
         public Person(string name)
         {
             Name = name;
-        }
-
-        public bool IsOnWeekend(ref Group context)
-        {
-            return context.Weekend.Contains(DutyDate.DayOfWeek);
         }
     }
 }
