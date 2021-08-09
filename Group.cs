@@ -10,6 +10,7 @@ namespace gratch_core
 {
     public class Group
     {
+
         public List<Person> People { get; set; } = new List<Person>();
         public List<DayOfWeek> Weekend { get; set; } = new List<DayOfWeek>();
 
@@ -35,12 +36,39 @@ namespace gratch_core
 
         public Group()
         {
+            Person.PersonImported += Person_PersonImported;
         }
-        public Group(IEnumerable<string> names)
+
+        public Group(IEnumerable<string> names) : this()
         {
             foreach (var name in names)
             {
                 People.Add(new Person(name));
+            }
+        }
+        private void Person_PersonImported(Person person)
+        {
+            ValidateDutyDate(person);
+        }
+        private void ValidateDutyDate(Person person)
+        {
+            if (People.Contains(person))
+            {
+
+                if (People.Count > 1)
+                {
+                    var pIndex = People.IndexOf(person);
+                    var isValid = person.DutyDates.First() > People[pIndex - 1].DutyDates.First();
+                    if (!isValid)
+                    {
+                        throw new FormatException("DutyDate is not valid");
+                    }
+                } else if(People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
+                    && !IsHoliday(DateTime.Now.FirstDayOfMonth())
+                    )
+                {
+                    throw new FormatException("First person is not on first day");
+                }
             }
         }
         public void DutyDatesByDefault()
@@ -55,6 +83,7 @@ namespace gratch_core
                 for (int pIndex = 0, day = 1; day <= DateTime.Now.DaysInMonth(); day++)
                 {
                     if (IsHoliday(day)) continue;// if day is holiday - skip;
+                    pIndex++;
                     if (pIndex >= People.Count) pIndex = 0;
                     if (People[pIndex].DutyDates == null)
                     {
