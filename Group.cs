@@ -33,9 +33,9 @@ namespace gratch_core
                 return value;
             }
         }
-        public IEnumerable<Person> AssignedPeople => from p in People
+        public List<Person> AssignedPeople => (from p in People
                                                      where p.DutyDates != null
-                                                     select p;
+                                                     select p).ToList();
 
         public Group()
         {
