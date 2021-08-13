@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Person_tests\**" />
+    <EmbeddedResource Remove="Person_tests\**" />
+    <None Remove="Person_tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
@@ -15,10 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\gratch-core\gratch-core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Person_tests\" />
   </ItemGroup>
 
 </Project>
