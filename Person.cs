@@ -12,7 +12,7 @@ namespace gratch_core
         public static event PersonHandler PersonImported;
 
         public string Name { get; internal set; }
-        public List<DateTime> DutyDates { get; internal set; } // TODO: make it internal
+        public List<DateTime> DutyDates { get; internal set; }
 
         public Person(string name)
         {
@@ -20,7 +20,7 @@ namespace gratch_core
         }
         public Person(string name, params string[] datetimes_str)
         {
-            foreach(var str in datetimes_str)
+            foreach (var str in datetimes_str)
             {
                 DutyDates.Add(DateTime.Parse(str));
             }

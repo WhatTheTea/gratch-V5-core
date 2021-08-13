@@ -34,8 +34,8 @@ namespace gratch_core
             }
         }
         public IEnumerable<Person> AssignedPeople => from p in People
-                             where p.DutyDates != null
-                             select p;
+                                                     where p.DutyDates != null
+                                                     select p;
 
         public Group()
         {
@@ -43,7 +43,7 @@ namespace gratch_core
             Weekend.CollectionChanged += Weekend_CollectionChanged;
         }
 
-        private void Weekend_CollectionChanged(object sender, 
+        private void Weekend_CollectionChanged(object sender,
             System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             AssignDutyDates();
@@ -73,9 +73,10 @@ namespace gratch_core
                     {
                         throw new FormatException("DutyDate is not valid");
                     }
-                } else if(People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
-                    && !IsHoliday(DateTime.Now.FirstDayOfMonth()) // if first dutydate is not first day of month
-                    )                                                  // and first day of month is not holiday
+                }
+                else if (People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
+                  && !IsHoliday(DateTime.Now.FirstDayOfMonth()) // if first dutydate is not first day of month
+                  )                                                  // and first day of month is not holiday
                 {
                     throw new FormatException("First person is not on first day");
                 }
@@ -122,14 +123,14 @@ namespace gratch_core
 
         public void UpdateDutyDates()
         {
-            Person lastPerson = (from p in AssignedPeople 
-                                 where p.DutyDates.Last() == Workdates.Last() 
+            Person lastPerson = (from p in AssignedPeople
+                                 where p.DutyDates.Last() == Workdates.Last()
                                  select p).Single();
             int lastIndex = People.IndexOf(lastPerson);
 
             ClearDutyDates();
 
-            AssignDutyDates(lastIndex+1);
+            AssignDutyDates(lastIndex + 1);
         }
 
         public bool IsDutyDateAssigned(DateTime date)
