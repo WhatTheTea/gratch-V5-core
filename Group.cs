@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace gratch_core
     public class Group
     {
         public List<Person> People { get; set; } = new List<Person>();
-        public List<DayOfWeek> Weekend { get; set; } = new List<DayOfWeek>();
+        public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
 
         public List<DateTime> Workdates
         {
@@ -32,10 +33,20 @@ namespace gratch_core
                 return value;
             }
         }
+        public IEnumerable<Person> AssignedPeople => from p in People
+                             where p.DutyDates != null
+                             select p;
 
         public Group()
         {
             Person.PersonImported += Person_PersonImported;
+            Weekend.CollectionChanged += Weekend_CollectionChanged;
+        }
+
+        private void Weekend_CollectionChanged(object sender, 
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AssignDutyDates();
         }
 
         public Group(IEnumerable<string> names) : this()
@@ -70,19 +81,22 @@ namespace gratch_core
                 }
             }
         }
-        public void DutyDatesByDefault()
+        public void ClearDutyDates()
         {
             foreach (var person in People) person.DutyDates = null;
-            AssignDutyDates();
         }
         public void AssignDutyDates(int startIndex = 0) //Главная механика
         {
+            ClearDutyDates();
             if (People.Count != 0)
             {
-                for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++)
+                for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++, pIndex++)
                 {
-                    if (IsHoliday(day)) continue;// if day is holiday - skip;
-                    pIndex++;
+                    if (IsHoliday(day)) // if day is holiday - skip;
+                    {
+                        pIndex--;
+                        continue;
+                    }
                     if (pIndex >= People.Count) pIndex = 0;
                     if (People[pIndex].DutyDates == null)
                     {
@@ -108,12 +122,14 @@ namespace gratch_core
 
         public void UpdateDutyDates()
         {
-            Person lastPerson = (from p in People 
+            Person lastPerson = (from p in AssignedPeople 
                                  where p.DutyDates.Last() == Workdates.Last() 
                                  select p).Single();
             int lastIndex = People.IndexOf(lastPerson);
 
-            AssignDutyDates(lastIndex);
+            ClearDutyDates();
+
+            AssignDutyDates(lastIndex+1);
         }
 
         public bool IsDutyDateAssigned(DateTime date)
@@ -126,6 +142,17 @@ namespace gratch_core
                 }
             }
             return false;
+        }
+        public Person FindPersonByDutyDate(DateTime dutydate)
+        {
+            foreach (var person in AssignedPeople)
+            {
+                foreach (var date in person.DutyDates)
+                {
+                    if (dutydate == date) return person;
+                }
+            }
+            return null;
         }
     }
 }

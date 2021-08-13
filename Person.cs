@@ -10,6 +10,7 @@ namespace gratch_core
     {
         public delegate void PersonHandler(Person person);
         public static event PersonHandler PersonImported;
+
         public string Name { get; internal set; }
         public List<DateTime> DutyDates { get; internal set; } // TODO: make it internal
 
