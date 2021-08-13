@@ -23,12 +23,12 @@ namespace gratch_core
             {
                 DutyDates.Add(DateTime.Parse(str));
             }
-            PersonImported.Invoke(this);
+            PersonImported?.Invoke(this);
         }
         public Person(string name, params DateTime[] datetimes)
         {
             DutyDates = datetimes.ToList();
-            PersonImported.Invoke(this);
+            PersonImported?.Invoke(this);
         }
 
     }

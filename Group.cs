@@ -10,7 +10,6 @@ namespace gratch_core
 {
     public class Group
     {
-
         public List<Person> People { get; set; } = new List<Person>();
         public List<DayOfWeek> Weekend { get; set; } = new List<DayOfWeek>();
 
@@ -64,8 +63,8 @@ namespace gratch_core
                         throw new FormatException("DutyDate is not valid");
                     }
                 } else if(People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
-                    && !IsHoliday(DateTime.Now.FirstDayOfMonth())
-                    )
+                    && !IsHoliday(DateTime.Now.FirstDayOfMonth()) // if first dutydate is not first day of month
+                    )                                                  // and first day of month is not holiday
                 {
                     throw new FormatException("First person is not on first day");
                 }
@@ -76,11 +75,11 @@ namespace gratch_core
             foreach (var person in People) person.DutyDates = null;
             AssignDutyDates();
         }
-        public void AssignDutyDates() //Главная механика
+        public void AssignDutyDates(int startIndex = 0) //Главная механика
         {
             if (People.Count != 0)
             {
-                for (int pIndex = 0, day = 1; day <= DateTime.Now.DaysInMonth(); day++)
+                for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++)
                 {
                     if (IsHoliday(day)) continue;// if day is holiday - skip;
                     pIndex++;
@@ -107,9 +106,14 @@ namespace gratch_core
                     DateTime.Now.Month, day).DayOfWeek);
         }
 
-        private void UpdateDutyDates()
+        public void UpdateDutyDates()
         {
-            //TODO
+            Person lastPerson = (from p in People 
+                                 where p.DutyDates.Last() == Workdates.Last() 
+                                 select p).Single();
+            int lastIndex = People.IndexOf(lastPerson);
+
+            AssignDutyDates(lastIndex);
         }
 
         public bool IsDutyDateAssigned(DateTime date)
@@ -122,10 +126,6 @@ namespace gratch_core
                 }
             }
             return false;
-        }
-        public static bool IsPersonAssigned(Person person)
-        {
-            return person.DutyDates != null;
         }
     }
 }
