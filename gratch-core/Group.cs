@@ -136,9 +136,12 @@ namespace gratch_core
         {
             foreach (var person in People)
             {
-                foreach (var dutydate in person.DutyDates)
+                if (person.DutyDates != null)
                 {
-                    if (dutydate == date) return true;
+                    foreach (var dutydate in person.DutyDates)
+                    {
+                        if (dutydate == date) return true;
+                    }
                 }
             }
             return false;
