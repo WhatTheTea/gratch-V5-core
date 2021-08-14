@@ -22,7 +22,7 @@ namespace gratch_core_tests.Group_tests
             bool isEveryoneAssigned = false;
             bool isEveryoneSingle = false;
             //Act
-            foreach(var person in group.People)
+            foreach (var person in group.People)
             {
                 if (person.DutyDates == null)
                 {
@@ -53,6 +53,23 @@ namespace gratch_core_tests.Group_tests
             testgroup.Weekend.Add(dutydate.DayOfWeek);
             //Assert
             Assert.IsFalse(testgroup.IsDutyDateAssigned(dutydate));
+        }
+        [TestMethod]
+        public void OneWorkday()
+        {
+            //Arrange
+            var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
+            //Act
+            for (int i = 1; i <= 6; i++)
+            {
+                group.Weekend.Add((DayOfWeek)i);
+            }
+            //Assert
+            foreach (var person in group.AssignedPeople)
+            {
+                Assert.AreEqual(DayOfWeek.Sunday, person.DutyDates.First().DayOfWeek);
+                Assert.IsTrue(person.DutyDates.Count == 1);
+            }
         }
     }
 }
