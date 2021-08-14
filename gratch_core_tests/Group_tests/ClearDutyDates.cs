@@ -13,5 +13,17 @@ namespace gratch_core_tests.Group_tests
     [TestClass]
     public class ClearDutyDates
     {
+        [TestMethod]
+        public void Default()
+        {
+            var group = DataFiller.GetGroup(20);
+
+            group.ClearDutyDates();
+
+            foreach(var person in group.People)
+            {
+                Assert.IsTrue(person.DutyDates == null);
+            }
+        }
     }
 }
