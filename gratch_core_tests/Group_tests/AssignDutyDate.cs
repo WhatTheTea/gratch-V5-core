@@ -14,6 +14,35 @@ namespace gratch_core_tests.Group_tests
     public class AssignDutyDate
     {
         [TestMethod]
+        public void Default()
+        {
+            //Arrange
+            var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
+            //AssignDutyDates() in GetGroup();
+            bool isEveryoneAssigned = false;
+            bool isEveryoneSingle = false;
+            //Act
+            foreach(var person in group.People)
+            {
+                if (person.DutyDates == null)
+                {
+                    isEveryoneAssigned = false;
+                    break;
+                }
+                else isEveryoneAssigned = true;
+
+                if (person.DutyDates.Count != 1)
+                {
+                    isEveryoneSingle = false;
+                    break;
+                }
+                else isEveryoneSingle = true;
+            }
+            //Assert
+            Assert.IsTrue(isEveryoneAssigned);
+            Assert.IsTrue(isEveryoneSingle);
+        }
+        [TestMethod]
         public void FirstDayIsHoliday()
         {
             //Arrange

@@ -13,6 +13,11 @@ namespace gratch_core
     {
         public List<Person> People { get; set; } = new List<Person>();
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
+        private void Weekend_CollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AssignDutyDates();
+        }
 
         public List<DateTime> Workdates
         {
@@ -33,20 +38,14 @@ namespace gratch_core
                 return value;
             }
         }
-        public IEnumerable<Person> AssignedPeople => from p in People
+        public List<Person> AssignedPeople => (from p in People
                                                      where p.DutyDates != null
-                                                     select p;
+                                                     select p).ToList();
 
         public Group()
         {
             Person.PersonImported += Person_PersonImported;
             Weekend.CollectionChanged += Weekend_CollectionChanged;
-        }
-
-        private void Weekend_CollectionChanged(object sender,
-            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            AssignDutyDates();
         }
 
         public Group(IEnumerable<string> names) : this()
