@@ -71,5 +71,23 @@ namespace gratch_core_tests.Group_tests
                 Assert.IsTrue(person.DutyDates.Count == 1);
             }
         }
+        [TestMethod]
+        public void AllHolidays()
+        {
+            //Arrange
+            var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
+            //Act
+            for (int i = 1; i <= 7; i++)
+            {
+                if (i == 7)
+                {
+                    group.Weekend.Add(DayOfWeek.Sunday);
+                    break;
+                }
+                group.Weekend.Add((DayOfWeek)i);
+            }
+            //Assert
+            Assert.IsTrue(group.AssignedPeople.Count == 0);
+        }
     }
 }
