@@ -14,7 +14,7 @@ namespace gratch_core_tests.Group_tests
     public class AssignDutyDate
     {
         [TestMethod]
-        public void Default()
+        public void FirstDayIsHoliday()
         {
             //Arrange
             Group testgroup = DataFiller.GetGroup(20);
