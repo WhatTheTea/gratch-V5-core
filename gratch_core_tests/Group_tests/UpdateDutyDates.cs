@@ -25,10 +25,10 @@ namespace gratch_core_tests.Group_tests
 
             Person actualPerson;
             //Act
-            group.AssignDutyDates();
-            group.UpdateDutyDates();
+            group.AssignEveryone();
+            group.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindPersonByDutyDate(group.Workdates.First());
+            actualPerson = group.FindPerson(group.Workdates.First());
         }
         [TestMethod]
         public void MoreThanDaysInMoth()
@@ -40,10 +40,10 @@ namespace gratch_core_tests.Group_tests
             var expectedPerson = group.People[DateTime.Now.DaysInMonth()];
             Person actualPerson;
             //Act
-            group.AssignDutyDates();
-            group.UpdateDutyDates();
+            group.AssignEveryone();
+            group.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindPersonByDutyDate(group.Workdates.First());
+            actualPerson = group.FindPerson(group.Workdates.First());
             Assert.AreEqual(expectedPerson, actualPerson);
         }
     }

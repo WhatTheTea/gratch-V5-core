@@ -18,16 +18,16 @@ namespace gratch_core_tests.Group_tests
         {
             var group = DataFiller.GetGroup(20);
 
-            Assert.IsTrue(group.IsDutyDateAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsTrue(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
         [TestMethod]
         public void NotAssigned_Cleared()
         {
             var group = DataFiller.GetGroup(20);
 
-            group.ClearDutyDates();
+            group.ClearAllAssignments();
 
-            Assert.IsFalse(group.IsDutyDateAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsFalse(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
         [TestMethod]
         public void NotAssigned_Holiday()
@@ -36,7 +36,7 @@ namespace gratch_core_tests.Group_tests
 
             group.Weekend.Add(DateTime.Now.FirstDayOfMonth().DayOfWeek);
 
-            Assert.IsFalse(group.IsDutyDateAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsFalse(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
     }
 }

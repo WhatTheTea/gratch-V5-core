@@ -21,12 +21,12 @@ namespace gratch_core_tests
         internal static Group GetGroup(int peoplecount)
         {
             var group = new Group();
-            group.People = new List<Person>();
-            for (int i = 0; i < peoplecount; i++) group.People.Add(GetPerson());
-            group.AssignDutyDates();
+
+            for (int i = 0; i < peoplecount; i++) group.Add(GetPerson());
+            group.AssignEveryone();
 
             gIterator++;
-
+            
             return group;
         }
     }

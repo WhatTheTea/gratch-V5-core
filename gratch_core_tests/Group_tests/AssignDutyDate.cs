@@ -52,7 +52,7 @@ namespace gratch_core_tests.Group_tests
             //Act
             testgroup.Weekend.Add(dutydate.DayOfWeek);
             //Assert
-            Assert.IsFalse(testgroup.IsDutyDateAssigned(dutydate));
+            Assert.IsFalse(testgroup.IsAssigned(dutydate));
         }
         [TestMethod]
         public void OneWorkday()

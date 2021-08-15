@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,14 +12,9 @@ namespace gratch_core
 {
     public class Group
     {
-        public List<Person> People { get; set; } = new List<Person>();
+        private List<Person> people { get; set; } = new List<Person>();
+        public IList<Person> People { get => people.AsReadOnly(); }
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
-        private void Weekend_CollectionChanged(object sender,
-            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            AssignDutyDates();
-        }
-
         public List<DateTime> Workdates
         {
             get
@@ -41,13 +34,16 @@ namespace gratch_core
                 return value;
             }
         }
-        public List<Person> AssignedPeople => (from p in People
+        public IList<Person> AssignedPeople => (from p in People
                                                      where p.DutyDates != null
-                                                     select p).ToList();
-
+                                                     select p).ToList().AsReadOnly();
+        private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AssignEveryone();
+        }
         public Group()
         {
-            Person.PersonImported += Person_PersonImported;
+            //Person.PersonImported += Person_PersonImported;
             Weekend.CollectionChanged += Weekend_CollectionChanged;
         }
 
@@ -55,63 +51,110 @@ namespace gratch_core
         {
             foreach (var name in names)
             {
-                People.Add(new Person(name));
+                people.Add(new Person(name));
             }
         }
-        private void Person_PersonImported(Person person)
+        #region DataManupaltions
+        public void AssignEveryone(int startIndex = 0) //Главная механика
         {
-            ValidateDutyDate(person);
-        }
-        private void ValidateDutyDate(Person person)
-        {
-            if (People.Contains(person))
-            {
+            ClearAllAssignments();
 
-                if (People.Count > 1)
-                {
-                    var pIndex = People.IndexOf(person);
-                    var isValid = person.DutyDates.First() > People[pIndex - 1].DutyDates.First();
-                    if (!isValid)
-                    {
-                        throw new FormatException("DutyDate is not valid");
-                    }
-                }
-                else if (People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
-                  && !IsHoliday(DateTime.Now.FirstDayOfMonth()) // if first dutydate is not first day of month
-                  )                                                  // and first day of month is not holiday
-                {
-                    throw new FormatException("First person is not on first day");
-                }
-            }
-        }
-        public void ClearDutyDates()
-        {
-            foreach (var person in People) person.DutyDates = null;
-        }
-        public void AssignDutyDates(int startIndex = 0) //Главная механика
-        {
-            ClearDutyDates();
-            if (People.Count != 0)
+            if (people.Count != 0)
             {
                 for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++, pIndex++)
                 {
                     if (IsHoliday(day)) // if day is holiday - skip;
                     {
-                        pIndex--;
+                        pIndex--; //but not skip person
                         continue;
                     }
-                    if (pIndex >= People.Count) pIndex = 0;
-                    if (People[pIndex].DutyDates == null)
+                    if (pIndex >= people.Count) pIndex = 0; 
+                    if (people[pIndex].DutyDates == null)
                     {
-                        People[pIndex].DutyDates = new();
+                        people[pIndex].DutyDates = new();
                     }
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
-                    People[pIndex].DutyDates.Add(dutyDate);
+                    people[pIndex].DutyDates.Add(dutyDate);
                 }
             }
         }
+        public void MonthlyUpdate()
+        {
+            Person lastPerson = (from p in AssignedPeople
+                                 where p.DutyDates.Last() == Workdates.Last()
+                                 select p).Single();
+            int lastIndex = people.IndexOf(lastPerson);
 
+            ClearAllAssignments();
+
+            AssignEveryone(lastIndex + 1);
+        }
+        public void ClearAllAssignments()
+        {
+            foreach (var person in people) person.DutyDates = null;
+        }
+
+        internal void Assign(int index)
+        {
+            foreach(var dutydate in people[index - 1].DutyDates)
+            {
+                people[index].DutyDates.Add(dutydate.AddDays(1));
+            }
+        }
+        internal void ClearAssignment(int index)
+        {
+            people[index].DutyDates.Clear();
+        }
+        public void Replace(int itIndex, int withIndex)
+        {
+            string buffer = people[withIndex].Name;
+            people[withIndex].Name = people[itIndex].Name;
+            people[itIndex].Name = buffer;
+        }
+        public void Add(string name)
+        {
+            var samepeople = from p in People where p.Name == name select p.Name;
+            if (!samepeople.Any()) people.Add(new Person(name));
+            else throw new ArgumentException("Person already exists");
+        }
+        public void Add(Person person)
+        {
+            var freeDutyDate = AssignedPeople.Count == 0
+                ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+                : AssignedPeople[^1].DutyDates[^1].AddDays(1);
+            var samepeople = from p in People where p.Name == person.Name select p.Name;
+            if (!samepeople.Any())
+            {
+                if (freeDutyDate.Month == DateTime.Now.Month)
+                {
+                    person.DutyDates.Add(freeDutyDate);
+                    people.Add(person);
+                }
+                else
+                {
+                    people.Add(person);
+                }
+            } else throw new ArgumentException("Person already exists");
+        }
+        public void Remove(int index)
+        {
+            
+        }
+
+
+        #endregion
+        public Person FindPerson(DateTime dutydate)
+        {
+            foreach (var person in AssignedPeople)
+            {
+                foreach (var date in person.DutyDates)
+                {
+                    if (dutydate == date) return person;
+                }
+            }
+            return null;
+        }
         public bool IsHoliday(DateTime date)
         {
             return Weekend.Contains(date.DayOfWeek);
@@ -122,22 +165,9 @@ namespace gratch_core
             return Weekend.Contains(new DateTime(DateTime.Now.Year,
                     DateTime.Now.Month, day).DayOfWeek);
         }
-
-        public void UpdateDutyDates()
+        public bool IsAssigned(DateTime date)
         {
-            Person lastPerson = (from p in AssignedPeople
-                                 where p.DutyDates.Last() == Workdates.Last()
-                                 select p).Single();
-            int lastIndex = People.IndexOf(lastPerson);
-
-            ClearDutyDates();
-
-            AssignDutyDates(lastIndex + 1);
-        }
-
-        public bool IsDutyDateAssigned(DateTime date)
-        {
-            foreach (var person in People)
+            foreach (var person in people)
             {
                 if (person.DutyDates != null)
                 {
@@ -148,17 +178,6 @@ namespace gratch_core
                 }
             }
             return false;
-        }
-        public Person FindPersonByDutyDate(DateTime dutydate)
-        {
-            foreach (var person in AssignedPeople)
-            {
-                foreach (var date in person.DutyDates)
-                {
-                    if (dutydate == date) return person;
-                }
-            }
-            return null;
         }
     }
 }
