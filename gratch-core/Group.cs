@@ -54,7 +54,6 @@ namespace gratch_core
                 people.Add(new Person(name));
             }
         }
-        #region DataManupaltions
         public void AssignEveryone(int startIndex = 0) //Главная механика
         {
             ClearAllAssignments();
@@ -128,6 +127,7 @@ namespace gratch_core
             {
                 if (freeDutyDate.Month == DateTime.Now.Month)
                 {
+                    person.DutyDates = new();
                     person.DutyDates.Add(freeDutyDate);
                     people.Add(person);
                 }
@@ -139,11 +139,8 @@ namespace gratch_core
         }
         public void Remove(int index)
         {
-            
+
         }
-
-
-        #endregion
         public Person FindPerson(DateTime dutydate)
         {
             foreach (var person in AssignedPeople)
