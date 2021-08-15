@@ -18,7 +18,7 @@ namespace gratch_core_tests.Group_tests
         {
             var group = DataFiller.GetGroup(20);
 
-            group.ClearAllAssignments();
+            group.Graph.ClearAllAssignments();
 
             foreach(var person in group.People)
             {

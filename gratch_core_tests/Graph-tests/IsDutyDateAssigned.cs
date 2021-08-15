@@ -18,25 +18,25 @@ namespace gratch_core_tests.Group_tests
         {
             var group = DataFiller.GetGroup(20);
 
-            Assert.IsTrue(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsTrue(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
         [TestMethod]
         public void NotAssigned_Cleared()
         {
             var group = DataFiller.GetGroup(20);
 
-            group.ClearAllAssignments();
+            group.Graph.ClearAllAssignments();
 
-            Assert.IsFalse(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsFalse(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
         [TestMethod]
         public void NotAssigned_Holiday()
         {
             var group = DataFiller.GetGroup(20);
 
-            group.Weekend.Add(DateTime.Now.FirstDayOfMonth().DayOfWeek);
+            group.Graph.Weekend.Add(DateTime.Now.FirstDayOfMonth().DayOfWeek);
 
-            Assert.IsFalse(group.IsAssigned(DateTime.Now.FirstDayOfMonth()));
+            Assert.IsFalse(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
     }
 }

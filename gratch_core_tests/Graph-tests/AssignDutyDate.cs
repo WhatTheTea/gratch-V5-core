@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using gratch_core;
 
-namespace gratch_core_tests.Group_tests
+namespace gratch_core_tests.Graph_tests
 {
     [TestClass]
     public class AssignDutyDate
@@ -50,9 +50,9 @@ namespace gratch_core_tests.Group_tests
 
             var dutydate = DateTime.Now.FirstDayOfMonth();
             //Act
-            testgroup.Weekend.Add(dutydate.DayOfWeek);
+            testgroup.Graph.Weekend.Add(dutydate.DayOfWeek);
             //Assert
-            Assert.IsFalse(testgroup.IsAssigned(dutydate));
+            Assert.IsFalse(testgroup.Graph.IsAssigned(dutydate));
         }
         [TestMethod]
         public void OneWorkday()
@@ -62,10 +62,10 @@ namespace gratch_core_tests.Group_tests
             //Act
             for (int i = 1; i <= 6; i++)
             {
-                group.Weekend.Add((DayOfWeek)i);
+                group.Graph.Weekend.Add((DayOfWeek)i);
             }
             //Assert
-            foreach (var person in group.AssignedPeople)
+            foreach (var person in group.Graph.AssignedPeople)
             {
                 Assert.AreEqual(DayOfWeek.Sunday, person.DutyDates.First().DayOfWeek);
                 Assert.IsTrue(person.DutyDates.Count == 1);
@@ -81,13 +81,13 @@ namespace gratch_core_tests.Group_tests
             {
                 if (i == 7)
                 {
-                    group.Weekend.Add(DayOfWeek.Sunday);
+                    group.Graph.Weekend.Add(DayOfWeek.Sunday);
                     break;
                 }
-                group.Weekend.Add((DayOfWeek)i);
+                group.Graph.Weekend.Add((DayOfWeek)i);
             }
             //Assert
-            Assert.IsTrue(group.AssignedPeople.Count == 0);
+            Assert.IsTrue(group.Graph.AssignedPeople.Count == 0);
         }
     }
 }

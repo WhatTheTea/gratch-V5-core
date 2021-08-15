@@ -24,7 +24,7 @@ namespace gratch_core_tests.Group_tests
 
             Person actualPerson;
 
-            actualPerson = group.FindPerson(date);
+            actualPerson = group.FindByDutyDate(date);
 
             Assert.AreEqual(expectedPerson, actualPerson);
 

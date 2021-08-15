@@ -11,27 +11,23 @@ using gratch_core;
 namespace gratch_core_tests.Group_tests
 {
     [TestClass]
-    public class AssignedPeople
+    public class Workdates
     {
         [TestMethod]
         public void Default()
         {
             //Arrange
-            var group = DataFiller.GetGroup(20);
-            var assigned = group.AssignedPeople;
-
-            bool result = true;
+            var grp = DataFiller.GetGroup(20);
+            bool isFirstDay = false;
+            bool isLastDay = false;
+            bool result;
             //Act
-            for(int i = 0; i < assigned.Count(); i++)
-            {
-                if(group.People[i] != assigned[i])
-                {
-                    result = false;
-                    break;
-                }
-            }
+            isFirstDay = grp.Graph.Workdates[0].Day == 1;
+            isLastDay = grp.Graph.Workdates[^1].Day == DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
             //Assert
+            result = isFirstDay & isLastDay;
             Assert.IsTrue(result);
         }
+        
     }
 }
