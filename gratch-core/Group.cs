@@ -1,158 +1,93 @@
-﻿using Microsoft.VisualBasic;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
+[assembly: InternalsVisibleTo("gratch_core_tests")]
 
 namespace gratch_core
 {
     public class Group
     {
-        public List<Person> People { get; set; } = new List<Person>();
-        public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
-        private void Weekend_CollectionChanged(object sender,
-            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            AssignDutyDates();
-        }
-
-        public List<DateTime> Workdates
-        {
-            get
-            {
-                var value = new List<DateTime>();
-
-                for (DateTime dt = DateTime.Now.FirstDayOfMonth();
-                    dt <= DateTime.Now.LastDayOfMonth();
-                    dt = dt.AddDays(1)) //Перебор всех дней в месяце
-                {
-                    if (!Weekend.Contains(dt.DayOfWeek)) // day is not weekend
-                    {
-                        value.Add(dt);
-                    }
-                }
-
-                return value;
-            }
-        }
-        public List<Person> AssignedPeople => (from p in People
-                                                     where p.DutyDates != null
-                                                     select p).ToList();
-
+        internal List<Person> people = new List<Person>();
+        public IList<Person> People { get => people.AsReadOnly(); }
+        private Graph graph;
+        public Graph Graph { get => graph; }
         public Group()
         {
-            Person.PersonImported += Person_PersonImported;
-            Weekend.CollectionChanged += Weekend_CollectionChanged;
+            //Person.PersonImported += Person_PersonImported;
+            graph = new Graph(ref people);
         }
 
         public Group(IEnumerable<string> names) : this()
         {
             foreach (var name in names)
             {
-                People.Add(new Person(name));
+                people.Add(new Person(name));
             }
         }
-        private void Person_PersonImported(Person person)
+        public void Replace(int itIndex, int withIndex)
         {
-            ValidateDutyDate(person);
+            string buffer = people[withIndex].Name;
+            people[withIndex].Name = people[itIndex].Name;
+            people[itIndex].Name = buffer;
         }
-        private void ValidateDutyDate(Person person)
+        public void Add(string name)
         {
-            if (People.Contains(person))
+            var samepeople = from p in People where p.Name == name select p.Name;
+            if (!samepeople.Any())
             {
-
-                if (People.Count > 1)
-                {
-                    var pIndex = People.IndexOf(person);
-                    var isValid = person.DutyDates.First() > People[pIndex - 1].DutyDates.First();
-                    if (!isValid)
-                    {
-                        throw new FormatException("DutyDate is not valid");
-                    }
-                }
-                else if (People.First().DutyDates.First() != DateTime.Now.FirstDayOfMonth()
-                  && !IsHoliday(DateTime.Now.FirstDayOfMonth()) // if first dutydate is not first day of month
-                  )                                                  // and first day of month is not holiday
-                {
-                    throw new FormatException("First person is not on first day");
-                }
+                people.Add(new Person(name));
             }
-        }
-        public void ClearDutyDates()
-        {
-            foreach (var person in People) person.DutyDates = null;
-        }
-        public void AssignDutyDates(int startIndex = 0) //Главная механика
-        {
-            ClearDutyDates();
-            if (People.Count != 0)
+            else
             {
-                for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++, pIndex++)
-                {
-                    if (IsHoliday(day)) // if day is holiday - skip;
-                    {
-                        pIndex--;
-                        continue;
-                    }
-                    if (pIndex >= People.Count) pIndex = 0;
-                    if (People[pIndex].DutyDates == null)
-                    {
-                        People[pIndex].DutyDates = new();
-                    }
-
-                    var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
-                    People[pIndex].DutyDates.Add(dutyDate);
-                }
+                throw new ArgumentException("Person already exists");
             }
         }
-
-        public bool IsHoliday(DateTime date)
+        public void Add(Person person)
         {
-            return Weekend.Contains(date.DayOfWeek);
-        }
-
-        public bool IsHoliday(int day)
-        {
-            return Weekend.Contains(new DateTime(DateTime.Now.Year,
-                    DateTime.Now.Month, day).DayOfWeek);
-        }
-
-        public void UpdateDutyDates()
-        {
-            Person lastPerson = (from p in AssignedPeople
-                                 where p.DutyDates.Last() == Workdates.Last()
-                                 select p).Single();
-            int lastIndex = People.IndexOf(lastPerson);
-
-            ClearDutyDates();
-
-            AssignDutyDates(lastIndex + 1);
-        }
-
-        public bool IsDutyDateAssigned(DateTime date)
-        {
-            foreach (var person in People)
+            var freeDutyDate = graph.AssignedPeople.Count == 0
+                ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+                : graph.AssignedPeople[^1].DutyDates[^1].AddDays(1);
+            var samepeople = from p in People where p.Name == person.Name select p.Name;
+            if (!samepeople.Any())
             {
-                foreach (var dutydate in person.DutyDates)
+                if (freeDutyDate.Month == DateTime.Now.Month)
                 {
-                    if (dutydate == date) return true;
+                    person.DutyDates = new();
+                    person.DutyDates.Add(freeDutyDate);
+                    people.Add(person);
                 }
+                else
+                {
+                    people.Add(person);
+                }
+            } else
+            {
+                throw new ArgumentException("Person already exists");
             }
-            return false;
         }
-        public Person FindPersonByDutyDate(DateTime dutydate)
+        public void Remove(int index)
         {
-            foreach (var person in AssignedPeople)
+
+        }
+        public Person FindByDutyDate(DateTime dutydate)
+        {
+            foreach (var person in graph.AssignedPeople)
             {
                 foreach (var date in person.DutyDates)
                 {
-                    if (dutydate == date) return person;
+                    if (dutydate == date)
+                    {
+                        return person;
+                    }
                 }
             }
             return null;
         }
+        
     }
 }

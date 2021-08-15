@@ -11,28 +11,27 @@ using gratch_core;
 namespace gratch_core_tests.Group_tests
 {
     [TestClass]
-    public class Weekend
+    public class AssignedPeople
     {
         [TestMethod]
         public void Default()
         {
             //Arrange
-            var grp = DataFiller.GetGroup(20);
-            DayOfWeek holiday = DayOfWeek.Sunday;
-            bool isHolidayFound = false;
-            //Act
-            grp.Weekend.Add(holiday);
+            var group = DataFiller.GetGroup(20);
+            var assigned = group.Graph.AssignedPeople;
 
-            foreach (var date in grp.Workdates)
+            bool result = true;
+            //Act
+            for(int i = 0; i < assigned.Count(); i++)
             {
-                if (date.DayOfWeek == holiday)
+                if(group.People[i] != assigned[i])
                 {
-                    isHolidayFound = true;
+                    result = false;
                     break;
                 }
             }
             //Assert
-            Assert.IsFalse(isHolidayFound);
+            Assert.IsTrue(result);
         }
     }
 }

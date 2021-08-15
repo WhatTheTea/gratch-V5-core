@@ -11,23 +11,19 @@ using gratch_core;
 namespace gratch_core_tests.Group_tests
 {
     [TestClass]
-    public class FindPersonByDutyDate
+    public class ClearDutyDates
     {
         [TestMethod]
         public void Default()
         {
             var group = DataFiller.GetGroup(20);
-            var expectedPerson = group.People[9];
-            var now = DateTime.Now;
 
-            var date = new DateTime(now.Year, now.Month, 10);
+            group.Graph.ClearAllAssignments();
 
-            Person actualPerson;
-
-            actualPerson = group.FindByDutyDate(date);
-
-            Assert.AreEqual(expectedPerson, actualPerson);
-
+            foreach(var person in group.People)
+            {
+                Assert.IsTrue(person.DutyDates == null);
+            }
         }
     }
 }

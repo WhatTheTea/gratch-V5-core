@@ -12,7 +12,7 @@ namespace gratch_core_tests
 {
     [TestClass]
     public class Import_test
-    {
+    {/*
         [TestMethod]
         public void ValidationTest_DateTimes()
         {
@@ -25,5 +25,6 @@ namespace gratch_core_tests
 
             Assert.IsTrue(true); //later
         }
+        */
     }
 }
