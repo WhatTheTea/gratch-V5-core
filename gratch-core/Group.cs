@@ -12,13 +12,18 @@ namespace gratch_core
 {
     public class Group
     {
-        internal List<Person> people = new List<Person>();
+        private static readonly List<Group> groups = new List<Group>();
+        internal static IList<Group> Groups { get => groups.AsReadOnly(); }
+
+        private readonly List<Person> people = new List<Person>();
         public IList<Person> People { get => people.AsReadOnly(); }
+
         private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
             //Person.PersonImported += Person_PersonImported;
+            groups.Add(this);
             graph = new Graph(ref people);
         }
 
@@ -70,11 +75,12 @@ namespace gratch_core
                 throw new ArgumentException("Person already exists");
             }
         }
-        public void Remove(int index)
+        public void Remove(int index) // если плохо с производительностью - сюды.
         {
-
+            people.RemoveAt(index);
+            graph.AssignEveryone();
         }
-        public Person FindByDutyDate(DateTime dutydate)
+        public Person GetPerson(DateTime dutydate)
         {
             foreach (var person in graph.AssignedPeople)
             {
