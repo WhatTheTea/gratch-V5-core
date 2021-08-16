@@ -22,7 +22,6 @@ namespace gratch_core
         public Graph Graph { get => graph; }
         public Group()
         {
-            //Person.PersonImported += Person_PersonImported;
             groups.Add(this);
             graph = new Graph(ref people);
         }
