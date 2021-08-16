@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using gratch_core;
 
-namespace gratch_core_tests.Group_tests
+namespace gratch_core_tests.Graph_tests
 {
     [TestClass]
     public class IsDutyDateAssigned
