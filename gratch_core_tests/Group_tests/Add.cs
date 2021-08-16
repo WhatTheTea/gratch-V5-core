@@ -19,9 +19,27 @@ namespace gratch_core_tests.Group_tests
             var group = DataFiller.GetGroup(4);
             var name = "test";
 
+            Person person;
+
             group.Add(name);
 
             Assert.IsTrue(group.People.Where(person => person.Name == name).Any());
+            person = group.People.Where(person => person.Name == name).Single();
+            Assert.IsFalse(person.DutyDates is null);
+        }
+        [TestMethod]
+        public void ByNameDaysInMonth()
+        {
+            var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
+            var name = "test";
+
+            Person person;
+
+            group.Add(name);
+
+            Assert.IsTrue(group.People.Where(person => person.Name == name).Any());
+            person = group.People.Where(person => person.Name == name).Single();
+            Assert.IsTrue(person.DutyDates is null);
         }
         [TestMethod]
         public void ByNameUnsuccesful()
