@@ -13,6 +13,7 @@ namespace gratch_core_tests.Group_tests
     [TestClass]
     public class Weekend
     {
+        private readonly int DaysInMonth = DateTime.Now.DaysInMonth();
         [TestMethod]
         public void Default()
         {
@@ -33,6 +34,18 @@ namespace gratch_core_tests.Group_tests
             }
             //Assert
             Assert.IsFalse(isHolidayFound);
+        }
+        [TestMethod]
+        public void EverydayIsHoliday()
+        {
+            var group = DataFiller.GetGroup(DaysInMonth);
+
+            for(int i = 0; i < 7; i++)
+            {
+                group.Graph.Weekend.Add((DayOfWeek)i);
+            }
+
+            Assert.IsFalse(group.Graph.Workdates.Any());
         }
     }
 }
