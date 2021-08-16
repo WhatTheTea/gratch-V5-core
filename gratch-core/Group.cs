@@ -67,6 +67,7 @@ namespace gratch_core
                 }
                 else
                 {
+                    person.DutyDates = null;
                     people.Add(person);
                 }
             } else
