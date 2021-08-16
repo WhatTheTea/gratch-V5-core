@@ -44,7 +44,7 @@ namespace gratch_core
             var samepeople = from p in People where p.Name == name select p.Name;
             if (!samepeople.Any())
             {
-                people.Add(new Person(name));
+                Add(new Person(name));
             }
             else
             {
