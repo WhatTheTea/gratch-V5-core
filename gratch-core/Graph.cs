@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("gratch_core_tests")]
 
@@ -79,13 +77,13 @@ namespace gratch_core
         {
             people[index].DutyDates.Clear();
         }
-        internal void Assign(int index)
+        /*internal void Assign(int index)
         {
             foreach (var dutydate in people[index - 1].DutyDates)
             {
                 people[index].DutyDates.Add(dutydate.AddDays(1));
             }
-        }
+        }*/
         
         public void MonthlyUpdate()
         {

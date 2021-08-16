@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("gratch_core_tests")]
 
@@ -30,7 +27,7 @@ namespace gratch_core
         {
             foreach (var name in names)
             {
-                people.Add(new Person(name));
+                Add(name);
             }
         }
         public void Replace(int itIndex, int withIndex)
@@ -53,24 +50,14 @@ namespace gratch_core
         }
         public void Add(Person person)
         {
-            var freeDutyDate = graph.AssignedPeople.Count == 0
-                ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
-                : graph.AssignedPeople[^1].DutyDates[^1].AddDays(1);
             var samepeople = from p in People where p.Name == person.Name select p.Name;
             if (!samepeople.Any())
             {
-                if (freeDutyDate.Month == DateTime.Now.Month)
-                {
-                    person.DutyDates = new();
-                    person.DutyDates.Add(freeDutyDate);
-                    people.Add(person);
-                }
-                else
-                {
-                    person.DutyDates = null;
-                    people.Add(person);
-                }
-            } else
+                person.DutyDates = null;
+                people.Add(person);
+                Graph.AssignEveryone();
+            }
+            else
             {
                 throw new ArgumentException("Person already exists");
             }
@@ -80,20 +67,10 @@ namespace gratch_core
             people.RemoveAt(index);
             graph.AssignEveryone();
         }
-        public Person GetPerson(DateTime dutydate)
-        {
-            foreach (var person in graph.AssignedPeople)
-            {
-                foreach (var date in person.DutyDates)
-                {
-                    if (dutydate == date)
-                    {
-                        return person;
-                    }
-                }
-            }
-            return null;
-        }
-        
+        public Person GetPerson(DateTime dutydate) =>
+            People?.SingleOrDefault(person => 
+            person?.DutyDates?.Where(date => 
+            date == dutydate).Any() == true);
+
     }
 }
