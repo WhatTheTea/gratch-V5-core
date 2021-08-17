@@ -132,7 +132,12 @@ namespace gratch_core
         }
         public Dictionary<DateTime,Person> ToDictionary()
         {
-
+            var result = new Dictionary<DateTime, Person>();
+            for(int i = 0; i < DutyDates.Count; i++)
+            {
+                result.Add(DutyDates[i], AssignedPeople[i]);
+            }
+            return result;
         }
     }
 }
