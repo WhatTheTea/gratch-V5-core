@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace gratch_core_tests.Group_tests
 {
     [TestClass]
-    public class Remove
+    public class RemoveAt
     {
         [TestMethod]
         public void Default()
@@ -12,11 +12,11 @@ namespace gratch_core_tests.Group_tests
             const int index = 9;
 
             var group = DataFiller.GetGroup(20);
-            var deletedPerson = group.People[index];
+            var deletedPerson = group[index];
 
-            group.Remove(index);
+            group.RemoveAt(index);
 
-            Assert.IsFalse(group.People.Contains(deletedPerson));
+            Assert.IsFalse(group.Contains(deletedPerson));
         }
     }
 }

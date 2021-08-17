@@ -12,7 +12,7 @@ namespace gratch_core_tests.Graph_tests
 
             group.Graph.ClearAllAssignments();
 
-            foreach(var person in group.People)
+            foreach(var person in group)
             {
                 Assert.IsTrue(person.DutyDates == null);
             }

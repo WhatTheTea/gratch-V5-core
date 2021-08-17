@@ -10,11 +10,11 @@ namespace gratch_core_tests.Person_tests
         public void Conflict()
         {
             var group = DataFiller.GetGroup(20);
-            var name = group.People[0].Name;
+            var name = group[0].Name;
 
-            group.People[4].Rename(name);
+            group[4].Rename(name);
 
-            Assert.AreNotEqual(name, group.People[4]);
+            Assert.AreNotEqual(name, group[4]);
         }
         [TestMethod]
         public void Succesful()
@@ -22,9 +22,9 @@ namespace gratch_core_tests.Person_tests
             var group = DataFiller.GetGroup(20);
             var name = "Gosha";
 
-            group.People[0].Rename(name);
+            group[0].Rename(name);
 
-            Assert.AreEqual(name, group.People[0].Name);
+            Assert.AreEqual(name, group[0].Name);
         }
     }
 }

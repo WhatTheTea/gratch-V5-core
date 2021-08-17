@@ -17,7 +17,7 @@ namespace gratch_core_tests.Graph_tests
             //Arrange
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             //Act
-            foreach (var person in group.People)
+            foreach (var person in group)
             {
                 Assert.IsFalse(person.DutyDates == null);
                 Assert.IsTrue(person.DutyDates.Count == 1);
