@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -7,20 +9,36 @@ using System.Runtime.CompilerServices;
 
 namespace gratch_core
 {
-    public class Group
+    public class Group : IList<Person>
     {
         private static readonly List<Group> groups = new List<Group>();
         internal static IList<Group> Groups { get => groups.AsReadOnly(); }
 
-        private readonly List<Person> people = new List<Person>();
-        public IList<Person> People { get => people.AsReadOnly(); }
+        private readonly List<Person> _people = new();
+        public int Count => _people.Count;
+        public bool IsReadOnly => false;
+        public Person this[int index]
+        {
+            get
+            {
+                return _people[index];
+            }
+            set
+            {
+                Add(value);
+            }
+        }
+
+
+
+        //public IList<Person> People { get => people.AsReadOnly(); }
 
         private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
             groups.Add(this);
-            graph = new Graph(ref people);
+            graph = new Graph(ref _people);
         }
 
         public Group(IEnumerable<string> names) : this()
@@ -32,13 +50,13 @@ namespace gratch_core
         }
         public void Replace(int itIndex, int withIndex)
         {
-            string buffer = people[withIndex].Name;
-            people[withIndex].Name = people[itIndex].Name;
-            people[itIndex].Name = buffer;
+            string buffer = _people[withIndex].Name;
+            _people[withIndex].Name = _people[itIndex].Name;
+            _people[itIndex].Name = buffer;
         }
         public void Add(string name)
         {
-            var samepeople = from p in People where p.Name == name select p.Name;
+            var samepeople = from p in _people where p.Name == name select p.Name;
             if (!samepeople.Any())
             {
                 Add(new Person(name));
@@ -50,11 +68,11 @@ namespace gratch_core
         }
         public void Add(Person person)
         {
-            var samepeople = from p in People where p.Name == person.Name select p.Name;
+            var samepeople = from p in _people where p.Name == person.Name select p.Name;
             if (!samepeople.Any())
             {
                 person.DutyDates = null;
-                people.Add(person);
+                _people.Add(person);
                 Graph.AssignEveryone();
             }
             else
@@ -62,15 +80,37 @@ namespace gratch_core
                 throw new ArgumentException("Person already exists");
             }
         }
-        public void Remove(int index) // если плохо с производительностью - сюды.
+        public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
-            people.RemoveAt(index);
-            graph.AssignEveryone();
+            _people.RemoveAt(index);
+            Graph.AssignEveryone();
         }
+        public bool Remove(Person person)
+        {
+            var _ = _people.Remove(person);
+            Graph.AssignEveryone();
+            return _;
+        }
+        public void Insert(int index, Person person)
+        {
+            _people.Insert(index, person);
+            Graph.AssignEveryone();
+        }
+        public int IndexOf(Person person) => _people.IndexOf(person);
+        public void Clear()
+        {
+            _people.Clear();
+            groups.Remove(this);
+        }
+        public bool Contains(Person person) => _people.Contains(person);
         public Person GetPerson(DateTime dutydate) =>
-            People?.SingleOrDefault(person => 
-            person?.DutyDates?.Where(date => 
+            _people?.SingleOrDefault(person =>
+            person?.DutyDates?.Where(date =>
             date == dutydate).Any() == true);
+        public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
+        public IEnumerator<Person> GetEnumerator() => _people.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _people.GetEnumerator();
 
     }
+
 }

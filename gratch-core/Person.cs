@@ -20,8 +20,8 @@ namespace gratch_core
         {
             foreach(var group in Group.Groups)
             {
-                bool personExists = group.People.Where(person => person.Name == Name).Any();// Select group, where this person is
-                bool renameExists = group.People.Where(reperson => reperson.Name == name).Any();
+                bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
+                bool renameExists = group.Where(reperson => reperson.Name == name).Any();
                 if (personExists && !renameExists) 
                 {
                     Name = name;
