@@ -15,8 +15,6 @@ namespace gratch_core
         internal static IList<Group> Groups { get => groups.AsReadOnly(); }
 
         private readonly List<Person> _people = new();
-        public int Count => _people.Count;
-        public bool IsReadOnly => false;
         public Person this[int index]
         {
             get
@@ -28,11 +26,6 @@ namespace gratch_core
                 Add(value);
             }
         }
-
-
-
-        //public IList<Person> People { get => people.AsReadOnly(); }
-
         private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
@@ -66,6 +59,28 @@ namespace gratch_core
                 throw new ArgumentException("Person already exists");
             }
         }
+        public Person FindByDutyDate(DateTime dutydate) =>
+            _people?.SingleOrDefault(person =>
+            person?.DutyDates?.Where(date =>
+            date == dutydate).Any() == true);
+        #region IList
+        public int IndexOf(Person person) => _people.IndexOf(person);
+        public void Insert(int index, Person person)
+        {
+            _people.Insert(index, person);
+            Graph.AssignEveryone();
+        }
+        public void RemoveAt(int index) // если плохо с производительностью - сюды.
+        {
+            _people.RemoveAt(index);
+            Graph.AssignEveryone();
+        }
+        #endregion
+        #region ICollection
+        public int Count => _people.Count;
+        public bool IsReadOnly => false;
+        public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
+        public bool Contains(Person person) => _people.Contains(person);
         public void Add(Person person)
         {
             var samepeople = from p in _people where p.Name == person.Name select p.Name;
@@ -80,10 +95,10 @@ namespace gratch_core
                 throw new ArgumentException("Person already exists");
             }
         }
-        public void RemoveAt(int index) // если плохо с производительностью - сюды.
+        public void Clear()
         {
-            _people.RemoveAt(index);
-            Graph.AssignEveryone();
+            _people.Clear();
+            //groups.Remove(this);
         }
         public bool Remove(Person person)
         {
@@ -91,26 +106,12 @@ namespace gratch_core
             Graph.AssignEveryone();
             return _;
         }
-        public void Insert(int index, Person person)
-        {
-            _people.Insert(index, person);
-            Graph.AssignEveryone();
-        }
-        public int IndexOf(Person person) => _people.IndexOf(person);
-        public void Clear()
-        {
-            _people.Clear();
-            groups.Remove(this);
-        }
-        public bool Contains(Person person) => _people.Contains(person);
-        public Person GetPerson(DateTime dutydate) =>
-            _people?.SingleOrDefault(person =>
-            person?.DutyDates?.Where(date =>
-            date == dutydate).Any() == true);
-        public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
+        #endregion
+        #region IEnumerator
+        //IEnumerator
         public IEnumerator<Person> GetEnumerator() => _people.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _people.GetEnumerator();
-
+        #endregion
     }
 
 }
