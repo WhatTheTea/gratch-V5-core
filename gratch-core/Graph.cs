@@ -13,6 +13,23 @@ namespace gratch_core
         public IList<Person> AssignedPeople => (from p in people
                                                 where p.DutyDates != null
                                                 select p).ToList().AsReadOnly();
+        public IList<DateTime> DutyDates
+        {
+            get
+            {
+                List<DateTime> dateTimes = new();
+                var NotNull = from p in people 
+                              where p.DutyDates != null 
+                              select p.DutyDates;
+                foreach(var dutyDates in NotNull)
+                {
+                    dateTimes.AddRange(dutyDates);
+                }
+                return (from dt in dateTimes
+                        orderby dt ascending
+                        select dt).ToList().AsReadOnly();
+            }
+        }
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
         public List<DateTime> Workdates
         {
@@ -77,13 +94,6 @@ namespace gratch_core
         {
             people[index].DutyDates.Clear();
         }
-        /*internal void Assign(int index)
-        {
-            foreach (var dutydate in people[index - 1].DutyDates)
-            {
-                people[index].DutyDates.Add(dutydate.AddDays(1));
-            }
-        }*/
         
         public void MonthlyUpdate()
         {
@@ -119,6 +129,15 @@ namespace gratch_core
                 }
             }
             return false;
+        }
+        public Dictionary<DateTime,Person> ToDictionary()
+        {
+            var result = new Dictionary<DateTime, Person>();
+            for(int i = 0; i < DutyDates.Count; i++)
+            {
+                result.Add(DutyDates[i], AssignedPeople[i]);
+            }
+            return result;
         }
     }
 }
