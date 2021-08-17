@@ -18,7 +18,7 @@ namespace gratch_core
 
         public void Rename(string name)
         {
-            foreach(var group in Group.Groups)
+            foreach(var group in Group.AllInstances)
             {
                 bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
                 bool renameExists = group.Where(reperson => reperson.Name == name).Any();

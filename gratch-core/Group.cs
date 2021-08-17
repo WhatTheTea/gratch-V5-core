@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -11,8 +10,21 @@ namespace gratch_core
 {
     public class Group : IList<Person>
     {
-        private static readonly List<Group> groups = new List<Group>();
-        internal static IList<Group> Groups { get => groups.AsReadOnly(); }
+        #region Instances
+        private static readonly List<Group> instances = new List<Group>();
+        internal static IList<Group> AllInstances { 
+            get 
+            {
+                var realInstances = instances.Where(instance => instance != null);
+                if (instances.Count != realInstances.Count())
+                {
+                    instances.Clear();
+                    instances.AddRange(realInstances);
+                }
+                return instances.AsReadOnly(); 
+            } 
+        }
+        #endregion
 
         private readonly List<Person> _people = new();
         public Person this[int index]
@@ -23,14 +35,15 @@ namespace gratch_core
             }
             set
             {
-                Add(value);
+                Add(value); //!!!!!!!!!
             }
         }
+
         private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
-            groups.Add(this);
+            instances.Add(this);
             graph = new Graph(ref _people);
         }
 
@@ -86,6 +99,10 @@ namespace gratch_core
             var samepeople = from p in _people where p.Name == person.Name select p.Name;
             if (!samepeople.Any())
             {
+                if (this == null) //InstanceReused
+                {
+                    instances.Add(this);
+                }
                 person.DutyDates = null;
                 _people.Add(person);
                 Graph.AssignEveryone();
@@ -108,7 +125,6 @@ namespace gratch_core
         }
         #endregion
         #region IEnumerator
-        //IEnumerator
         public IEnumerator<Person> GetEnumerator() => _people.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _people.GetEnumerator();
         #endregion
