@@ -8,12 +8,13 @@ namespace gratch_core
 {
     public class Person
     {
-        public string Name { get => Name; set => Rename(value); }
+        private string name;
+        public string Name { get => name; set => Rename(value); }
         public List<DateTime> DutyDates { get; internal set; }
 
         public Person(string name)
         {
-            Name = name;
+            this.name = name;
         }
 
         public void Rename(string name)
@@ -24,7 +25,7 @@ namespace gratch_core
                 bool renameExists = group.Where(reperson => reperson.Name == name).Any();
                 if (personExists && !renameExists) 
                 {
-                    Name = name;
+                    this.name = name;
                 }
             }
         }
