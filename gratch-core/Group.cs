@@ -33,9 +33,8 @@ namespace gratch_core
             {
                 return _people[index];
             }
-            set
-            {
-                Add(value); //!!!!!!!!!
+            set {
+                _people[index].Name = value.Name;
             }
         }
 

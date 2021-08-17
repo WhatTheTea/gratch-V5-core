@@ -8,7 +8,7 @@ namespace gratch_core
 {
     public class Person
     {
-        public string Name { get; internal set; }
+        public string Name { get => Name; internal set => Rename(value); }
         public List<DateTime> DutyDates { get; internal set; }
 
         public Person(string name)
