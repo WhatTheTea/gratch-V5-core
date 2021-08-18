@@ -71,10 +71,7 @@ namespace gratch_core
                 throw new ArgumentException("Person already exists");
             }
         }
-        public Person FindByDutyDate(DateTime dutydate) =>
-            _people?.SingleOrDefault(person =>
-            person?.DutyDates?.Where(date =>
-            date == dutydate).Any() == true);
+
         #region IList
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)

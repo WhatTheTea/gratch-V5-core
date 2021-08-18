@@ -25,7 +25,7 @@ namespace gratch_core_tests.Graph_tests
             group.Graph.AssignEveryone();
             group.Graph.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindByDutyDate(group.Graph.Workdates.First());
+            actualPerson = group.Graph[group.Graph.Workdates.First()];
         }
         [TestMethod]
         public void MoreThanDaysInMoth()
@@ -40,7 +40,7 @@ namespace gratch_core_tests.Graph_tests
             group.Graph.AssignEveryone();
             group.Graph.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindByDutyDate(group.Graph.Workdates.First());
+            actualPerson = group.Graph[group.Graph.Workdates.First()];
             Assert.AreEqual(expectedPerson, actualPerson);
         }
     }
