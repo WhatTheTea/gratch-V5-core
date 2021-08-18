@@ -60,9 +60,8 @@ namespace gratch_core
             _people[itIndex].Name = buffer;
         }
         public void Add(string name)
-        {
-            var samepeople = from p in _people where p.Name == name select p.Name;
-            if (!samepeople.Any())
+        { 
+            if (this.Contains(name))
             {
                 Add(new Person(name));
             }
@@ -90,10 +89,10 @@ namespace gratch_core
         public bool IsReadOnly => false;
         public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
         public bool Contains(Person person) => _people.Contains(person);
+        public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person)
         {
-            var samepeople = from p in _people where p.Name == person.Name select p.Name;
-            if (!samepeople.Any())
+            if (this.Contains(person.Name))
             {
                 if (this == null) //InstanceReused
                 {
