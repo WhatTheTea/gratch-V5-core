@@ -60,14 +60,14 @@ namespace gratch_core
             _people[itIndex].Name = buffer;
         }
         public void Add(string name)
-        { 
+        {
             if (this.Contains(name))
             {
-                Add(new Person(name));
+                throw new ArgumentException("Person already exists");
             }
             else
             {
-                throw new ArgumentException("Person already exists");
+                Add(new Person(name));
             }
         }
 
@@ -94,6 +94,10 @@ namespace gratch_core
         {
             if (this.Contains(person.Name))
             {
+                throw new ArgumentException("Person already exists");
+            }
+            else
+            {
                 if (this == null) //InstanceReused
                 {
                     instances.Add(this);
@@ -101,10 +105,6 @@ namespace gratch_core
                 person.DutyDates = null;
                 _people.Add(person);
                 Graph.AssignEveryone();
-            }
-            else
-            {
-                throw new ArgumentException("Person already exists");
             }
         }
         public void Clear()
