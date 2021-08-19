@@ -10,7 +10,14 @@ namespace gratch_core
 {
     public class Graph
     {
+        #region events
+        private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AssignEveryone();
+        }
+        #endregion
         private List<Person> people;
+        private string groupName;
         public IList<Person> AssignedPeople => (from p in people
                                                 where p.DutyDates != null
                                                 select p).ToList().AsReadOnly();
@@ -35,15 +42,11 @@ namespace gratch_core
             }
         }
 
-        internal Graph(ref List<Person> people)
+        internal Graph(ref List<Person> people, string groupName)
         {
             this.people = people;
+            this.groupName = groupName;
             Weekend.CollectionChanged += Weekend_CollectionChanged;
-        }
-
-        private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            AssignEveryone();
         }
 
         public void AssignEveryone(int startIndex = 0) //Главная механика

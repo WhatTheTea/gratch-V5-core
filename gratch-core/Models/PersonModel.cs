@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace gratch_core.Models
 {
-    [Table("graph")]
+    [Table(SQLiteDB.GroupTableName)]
     public class PersonModel
     {
         [AutoIncrement, PrimaryKey]
@@ -15,6 +16,6 @@ namespace gratch_core.Models
         public string Group { get; set; }
         [NotNull, MaxLength(50)]
         public string Name { get; set; }
-        public List<DateTime> DutyDates { get; set; }
+        public Collection<DateTime> DutyDates { get; set; }
     }
 }

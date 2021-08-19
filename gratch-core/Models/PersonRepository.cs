@@ -8,7 +8,7 @@ using SQLite;
 
 namespace gratch_core.Models
 {
-    public class PersonRepository
+    internal class PersonRepository
     {
         private readonly SQLiteAsyncConnection db;
         public PersonRepository()
@@ -30,7 +30,8 @@ namespace gratch_core.Models
         }
         public Task<List<PersonModel>> DeletePersonByIndex(int index)
         {
-            return db.QueryAsync<PersonModel>("DELETE FROM graph WHERE Index=?",index);
+            return db.QueryScalarsAsync<PersonModel>("DELETE FROM ? WHERE Index=?",
+                SQLiteDB.GroupTableName,index);
         }
         public Task<int> SavePerson(PersonModel person)
         {
@@ -44,6 +45,11 @@ namespace gratch_core.Models
                 rows += SavePerson(person).Result;
             }
             return Task.FromResult<int>(rows);
+        }
+        public Task<List<PersonModel>> ClearAll(string groupName)
+        {
+            return db.QueryScalarsAsync<PersonModel>("DELETE FROM ? WHERE Group=?",
+                SQLiteDB.GroupTableName, groupName);
         }
     }
 }

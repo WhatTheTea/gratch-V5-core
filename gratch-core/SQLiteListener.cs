@@ -8,33 +8,81 @@ namespace gratch_core
 {
     public class SQLiteListener 
     {
+        private static SQLiteListener listener;
         private readonly Models.PersonRepository repos = new();
-        SQLiteListener()
+        private SQLiteListener()
         {
-            Group.PersonAdded += Group_PersonAdded;
-            Group.PersonChanged += Group_PersonChanged;
-            Group.PersonRemoved += Group_PersonRemoved;
-            Group.GroupNameChanged += Group_GroupNameChanged;
+            Group.GroupChanged += Group_GroupChanged;
+            Person.PersonChanged += Person_PersonChanged;
+            Group.PersonDeleted += Person_PersonChanged;
+        }
+        public static SQLiteListener GetListener()
+        {
+            if(listener == null)
+            {
+                listener = new SQLiteListener();
+            }
+            return listener;
+        }
+        private void Person_PersonChanged(object sender, PersonChangedEventArgs args)
+        {
+            switch (args.EventType)
+            {
+                case PersonChangedEventType.PersonAdded:
+                    PersonAdded(sender as Person);
+                    break;
+                case PersonChangedEventType.PersonChanged:
+                    PersonChanged(sender as Person);
+                    break;
+                case PersonChangedEventType.PersonRemoved:
+                    PersonRemoved(Group.AllInstances.Single(grp => grp.Name == args.GroupName),
+                        sender as Person);
+                    break;
+                case PersonChangedEventType.AllPeopleRemoved:
+                    ClearPeople(Group.AllInstances.Single(grp => grp.Name == args.GroupName));
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
-        private async void Group_GroupNameChanged(object sender, EventArgs e)
+        private void Group_GroupChanged(object sender, GroupChangedEventArgs args)
         {
-            await repos.SavePeople(PersonAdapter.GetModels((sender as Group).ToList()));
+            switch (args.EventType)
+            {
+                case GroupChangedEventType.GroupNameChanged:
+                    GroupNameChanged(sender as Group);
+                    break;
+                case GroupChangedEventType.WeekendChanged:
+                    throw new NotImplementedException();
+
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
-        private async void Group_PersonRemoved(object sender, Person person)
+        private async void GroupNameChanged(Group sender)
         {
-            await repos.DeletePersonByIndex((sender as Group).IndexOf(person));
+            await repos.SavePeople(PersonAdapter.GetModels(sender.ToList()));
         }
 
-        private async void Group_PersonChanged(object sender, Person person)
+        private async void PersonRemoved(Group sender, Person person)
+        {
+            await repos.DeletePersonByIndex(sender.IndexOf(person));
+        }
+
+        private async void PersonChanged(Person person)
         {
             await repos.SavePerson(PersonAdapter.GetModel(person));
         }
 
-        private async void Group_PersonAdded(object sender, Person person)
+        private async void PersonAdded(Person person)
         {
             await repos.SavePerson(PersonAdapter.GetModel(person));
+        }
+        private async void ClearPeople(Group grp)
+        {
+            await repos.ClearAll(grp.Name);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace gratch_core.Models
         const string DBName = "gratch.db3";
         readonly static string DBPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+        public const string GroupTableName = "Graph";
+        public const string WeekendTableName = "Weekend";
         public static SQLite.SQLiteAsyncConnection GetAsyncConnection()
         {
             return new SQLite.SQLiteAsyncConnection(Path.Combine(DBPath, DBName));

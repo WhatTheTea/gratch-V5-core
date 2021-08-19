@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace gratch_core
         internal static Person GetPerson(PersonModel model)
         {
             Person person = new(model.Name);
-            person.DutyDates = model.DutyDates;
+            person.DutyDates = model.DutyDates as ObservableCollection<DateTime>;
             person.GroupName = model.Group;
 
             return person;
