@@ -8,13 +8,13 @@ namespace gratch_core
 {
     public class Person
     {
-        private string name;
-        public string Name { get => name; set => Rename(value); }
+        private string _name;
+        public string Name { get => _name; set => Rename(value); }
         public List<DateTime> DutyDates { get; internal set; }
 
         public Person(string name)
         {
-            this.name = name;
+            _name = name;
         }
 
         public void Rename(string name)
@@ -23,9 +23,14 @@ namespace gratch_core
             {
                 bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
                 bool renameExists = group.Where(reperson => reperson.Name == name).Any();
-                if (personExists && !renameExists) 
+                if (personExists && !renameExists)
                 {
-                    this.name = name;
+                    Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name}");
+                    _name = name;
+                }
+                else
+                {
+                    Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}, Rename: {name}");
                 }
             }
         }

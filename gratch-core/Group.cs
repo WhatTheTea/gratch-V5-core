@@ -53,11 +53,16 @@ namespace gratch_core
                 Add(name);
             }
         }
-        public void Replace(int itIndex, int withIndex)
+        public void Replace(int pIndex, int withIndex)
         {
-            string buffer = _people[withIndex].Name;
-            _people[withIndex].Name = _people[itIndex].Name;
-            _people[itIndex].Name = buffer;
+            string pBuffer = _people[pIndex].Name;
+            string withBuffer = _people[withIndex].Name;
+
+            _people[pIndex].Name = string.Empty;
+            _people[withIndex].Name = null;
+
+            _people[withIndex].Name = pBuffer;
+            _people[pIndex].Name = withBuffer;
         }
         public void Add(string name)
         {
