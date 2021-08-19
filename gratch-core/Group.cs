@@ -15,7 +15,7 @@ namespace gratch_core
         internal static IList<Group> AllInstances { 
             get 
             {
-                var realInstances = instances.Where(instance => instance != null);
+                var realInstances = instances.Where(instance => instance.Count > 0);
                 if (instances.Count != realInstances.Count())
                 {
                     instances.Clear();
