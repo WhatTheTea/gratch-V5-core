@@ -34,7 +34,8 @@ namespace gratch_core
                 return _people[index];
             }
             set {
-                _people[index].Name = value.Name;
+                var name = (value.Clone() as Person).Name;
+                _people[index].Name = name;
             }
         }
 
@@ -80,7 +81,7 @@ namespace gratch_core
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)
         {
-            _people.Insert(index, person);
+            _people.Insert(index, person.Clone() as Person);
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.

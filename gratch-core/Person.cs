@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-//[assembly: InternalsVisibleTo("gratch_core_tests")]
-
 namespace gratch_core
 {
-    public class Person
+    public class Person : ICloneable
     {
         private string _name;
         public string Name { get => _name; set => Rename(value); }
-        public List<DateTime> DutyDates { get; internal set; }
+        internal List<DateTime> DutyDates { get; set; }
 
         public Person(string name)
         {
@@ -19,20 +17,29 @@ namespace gratch_core
 
         public void Rename(string name)
         {
-            foreach(var group in Group.AllInstances)
+            foreach (var group in Group.AllInstances)
             {
                 bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
                 bool renameExists = group.Where(reperson => reperson.Name == name).Any();
                 if (personExists && !renameExists)
                 {
+#if DEBUG
                     Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name}");
+#endif
                     _name = name;
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}, Rename: {name}");
+#endif
                 }
             }
+        }
+        //ICloneable
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }
