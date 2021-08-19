@@ -10,6 +10,13 @@ namespace gratch_core
 {
     public class Group : IList<Person>
     {
+        #region events
+        public static event PersonHandler PersonChanged;
+        public static event PersonHandler PersonRemoved;
+        public static event PersonHandler PersonAdded;
+        public static event EventHandler GroupNameChanged;
+        public delegate void PersonHandler(Group sender, Person person);
+        #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
         internal static IList<Group> AllInstances
@@ -26,7 +33,14 @@ namespace gratch_core
             }
         }
         #endregion
-
+        private string _name;
+        public string Name { get => _name; 
+            set
+            {
+                _name = value;
+                GroupNameChanged.Invoke(this, new EventArgs());
+            }
+        }
         private readonly List<Person> _people = new();
         public Person this[int index]
         {
@@ -111,7 +125,7 @@ namespace gratch_core
                     instances.Add(this);
                 }
                 person.DutyDates = null;
-                _people.Add(person);
+                _people.Add(person.Clone() as Person);
                 Graph.AssignEveryone();
             }
         }
