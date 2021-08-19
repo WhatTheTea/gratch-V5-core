@@ -28,9 +28,13 @@ namespace gratch_core.Models
         {
             return db.DeleteAsync<PersonModel>(id);
         }
+        public Task<List<PersonModel>> DeletePersonByIndex(int index)
+        {
+            return db.QueryAsync<PersonModel>("DELETE FROM graph WHERE Index=?",index);
+        }
         public Task<int> SavePerson(PersonModel person)
         {
-            if (person.Id != 0)
+            if (person.Index != 0)
             {
                 db.UpdateAsync(person);
                 return Task.FromResult(person.Id);

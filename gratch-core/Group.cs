@@ -15,7 +15,7 @@ namespace gratch_core
         public static event PersonHandler PersonRemoved;
         public static event PersonHandler PersonAdded;
         public static event EventHandler GroupNameChanged;
-        public delegate void PersonHandler(Group sender, Person person);
+        public delegate void PersonHandler(object sender, Person person);
         #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();

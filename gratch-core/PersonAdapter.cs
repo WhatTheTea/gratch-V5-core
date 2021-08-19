@@ -8,22 +8,24 @@ using System.Threading.Tasks;
 
 namespace gratch_core
 {
-    public class PersonAdapter
+    internal static class PersonAdapter
     {
-        public static PersonModel GetModel(Person person)
+        internal static PersonModel GetModel(Person person)
         {
             PersonModel model = new();
-            model.Group = Group.AllInstances.Single(group => group.Contains(person)).Name;
+            model.Index = Group.AllInstances.Single(grp => grp.Name == person.GroupName).IndexOf(person);
+            model.Group = person.GroupName;
             model.Name = person.Name;
             model.DutyDates = person.DutyDates;
 
             return model;
         }
-        public static Person GetPerson(PersonModel model)
+        internal static Person GetPerson(PersonModel model)
         {
             Person person = new(model.Name);
             person.DutyDates = model.DutyDates;
             person.GroupName = model.Group;
+
             return person;
         }
     }

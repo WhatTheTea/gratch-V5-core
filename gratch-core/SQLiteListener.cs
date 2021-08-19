@@ -16,19 +16,17 @@ namespace gratch_core
             Group.PersonRemoved += Group_PersonRemoved;
         }
 
-        private void Group_PersonRemoved(Group sender, Person person)
+        private async void Group_PersonRemoved(object sender, Person person)
         {
-            throw new NotImplementedException();
+            await repos.DeletePersonByIndex((sender as Group).IndexOf(person));
         }
 
-        private async void Group_PersonChanged(Group sender, Person person)
+        private async void Group_PersonChanged(object sender, Person person)
         {
-            
-
-            //await repos.SavePerson(//model);
+            await repos.SavePerson(PersonAdapter.GetModel(person));
         }
 
-        private void Group_PersonAdded(Group sender, Person person)
+        private void Group_PersonAdded(object sender, Person person)
         {
             throw new NotImplementedException();
         }
