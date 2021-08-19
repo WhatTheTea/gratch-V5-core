@@ -18,7 +18,7 @@ namespace gratch_core_tests.Graph_tests
             //Act
             for(int i = 0; i < assigned.Count(); i++)
             {
-                if(group.People[i] != assigned[i])
+                if(group[i] != assigned[i])
                 {
                     result = false;
                     break;

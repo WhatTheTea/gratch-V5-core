@@ -18,14 +18,14 @@ namespace gratch_core_tests.Graph_tests
 
             var group = DataFiller.GetGroup(persCount);
             var expectedIndex = DateTime.Now.DaysInMonth() - persCount;
-            var expectedPerson = group.People[expectedIndex];
+            var expectedPerson = group[expectedIndex];
 
             Person actualPerson;
             //Act
             group.Graph.AssignEveryone();
             group.Graph.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindByDutyDate(group.Graph.Workdates.First());
+            actualPerson = group.Graph[group.Graph.Workdates.First()];
         }
         [TestMethod]
         public void MoreThanDaysInMoth()
@@ -34,13 +34,13 @@ namespace gratch_core_tests.Graph_tests
             const int persCount = 40;
 
             var group = DataFiller.GetGroup(persCount);
-            var expectedPerson = group.People[DateTime.Now.DaysInMonth()];
+            var expectedPerson = group[DateTime.Now.DaysInMonth()];
             Person actualPerson;
             //Act
             group.Graph.AssignEveryone();
             group.Graph.MonthlyUpdate();
             //Assert
-            actualPerson = group.FindByDutyDate(group.Graph.Workdates.First());
+            actualPerson = group.Graph[group.Graph.Workdates.First()];
             Assert.AreEqual(expectedPerson, actualPerson);
         }
     }

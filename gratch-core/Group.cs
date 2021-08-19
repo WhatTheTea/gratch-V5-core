@@ -15,7 +15,7 @@ namespace gratch_core
         internal static IList<Group> AllInstances { 
             get 
             {
-                var realInstances = instances.Where(instance => instance != null);
+                var realInstances = instances.Where(instance => instance.Count > 0);
                 if (instances.Count != realInstances.Count())
                 {
                     instances.Clear();
@@ -34,7 +34,8 @@ namespace gratch_core
                 return _people[index];
             }
             set {
-                _people[index].Name = value.Name;
+                var name = (value.Clone() as Person).Name;
+                _people[index].Name = name;
             }
         }
 
@@ -53,33 +54,34 @@ namespace gratch_core
                 Add(name);
             }
         }
-        public void Replace(int itIndex, int withIndex)
+        public void Replace(int pIndex, int withIndex)
         {
-            string buffer = _people[withIndex].Name;
-            _people[withIndex].Name = _people[itIndex].Name;
-            _people[itIndex].Name = buffer;
+            string pBuffer = _people[pIndex].Name;
+            string withBuffer = _people[withIndex].Name;
+
+            _people[pIndex].Name = string.Empty;
+            _people[withIndex].Name = null;
+
+            _people[withIndex].Name = pBuffer;
+            _people[pIndex].Name = withBuffer;
         }
         public void Add(string name)
         {
-            var samepeople = from p in _people where p.Name == name select p.Name;
-            if (!samepeople.Any())
-            {
-                Add(new Person(name));
-            }
-            else
+            if (this.Contains(name))
             {
                 throw new ArgumentException("Person already exists");
             }
+            else
+            {
+                Add(new Person(name));
+            }
         }
-        public Person FindByDutyDate(DateTime dutydate) =>
-            _people?.SingleOrDefault(person =>
-            person?.DutyDates?.Where(date =>
-            date == dutydate).Any() == true);
+
         #region IList
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)
         {
-            _people.Insert(index, person);
+            _people.Insert(index, person.Clone() as Person);
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
@@ -93,10 +95,14 @@ namespace gratch_core
         public bool IsReadOnly => false;
         public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
         public bool Contains(Person person) => _people.Contains(person);
+        public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person)
         {
-            var samepeople = from p in _people where p.Name == person.Name select p.Name;
-            if (!samepeople.Any())
+            if (this.Contains(person.Name))
+            {
+                throw new ArgumentException("Person already exists");
+            }
+            else
             {
                 if (this == null) //InstanceReused
                 {
@@ -105,10 +111,6 @@ namespace gratch_core
                 person.DutyDates = null;
                 _people.Add(person);
                 Graph.AssignEveryone();
-            }
-            else
-            {
-                throw new ArgumentException("Person already exists");
             }
         }
         public void Clear()

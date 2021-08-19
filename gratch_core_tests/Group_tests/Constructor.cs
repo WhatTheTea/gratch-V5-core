@@ -24,9 +24,9 @@ namespace gratch_core_tests.Group_tests
 
             group = new Group(names);
 
-            foreach(var person in group.People)
+            foreach(var person in group)
             {
-                var index = group.People.IndexOf(person);
+                var index = group.IndexOf(person);
                 Assert.IsTrue(person.Name == names[index]);
             }
         }

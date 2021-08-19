@@ -20,8 +20,8 @@ namespace gratch_core_tests.Group_tests
 
             group.Add(name);
 
-            Assert.IsTrue(group.People.Where(person => person.Name == name).Any());
-            person = group.People.Where(person => person.Name == name).Single();
+            Assert.IsTrue(group.Where(person => person.Name == name).Any());
+            person = group.Where(person => person.Name == name).Single();
             Assert.IsFalse(person.DutyDates == null);
         }
         [TestMethod]
@@ -34,15 +34,15 @@ namespace gratch_core_tests.Group_tests
 
             group.Add(name);
 
-            Assert.IsTrue(group.People.Where(person => person.Name == name).Any());
-            person = group.People.Where(person => person.Name == name).Single();
+            Assert.IsTrue(group.Where(person => person.Name == name).Any());
+            person = group.Where(person => person.Name == name).Single();
             Assert.IsTrue(person.DutyDates == null);
         }
         [TestMethod]
         public void ByNameUnsuccesful()
         {
             var group = DataFiller.GetGroup(4);
-            var name = group.People[0].Name;
+            var name = group[0].Name;
 
             Assert.ThrowsException<ArgumentException>(() => group.Add(name));
         }

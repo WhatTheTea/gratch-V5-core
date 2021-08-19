@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,25 +14,8 @@ namespace gratch_core
         public IList<Person> AssignedPeople => (from p in people
                                                 where p.DutyDates != null
                                                 select p).ToList().AsReadOnly();
-        public IList<DateTime> DutyDates
-        {
-            get
-            {
-                List<DateTime> dateTimes = new();
-                var NotNull = from p in people 
-                              where p.DutyDates != null 
-                              select p.DutyDates;
-                foreach(var dutyDates in NotNull)
-                {
-                    dateTimes.AddRange(dutyDates);
-                }
-                return (from dt in dateTimes
-                        orderby dt ascending
-                        select dt).ToList().AsReadOnly();
-            }
-        }
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
-        public List<DateTime> Workdates
+        public IList<DateTime> Workdates
         {
             get
             {
@@ -47,7 +31,7 @@ namespace gratch_core
                     }
                 }
 
-                return value;
+                return value.AsReadOnly();
             }
         }
 
@@ -92,7 +76,7 @@ namespace gratch_core
         }
         internal void ClearAssignment(int index)
         {
-            people[index].DutyDates.Clear();
+            people[index].DutyDates = null;
         }
         
         public void MonthlyUpdate()
@@ -130,14 +114,8 @@ namespace gratch_core
             }
             return false;
         }
-        public Dictionary<DateTime,Person> ToDictionary()
-        {
-            var result = new Dictionary<DateTime, Person>();
-            for(int i = 0; i < DutyDates.Count; i++)
-            {
-                result.Add(DutyDates[i], AssignedPeople[i]);
-            }
-            return result;
-        }
+        public Person this[DateTime dutyDate] => people?.SingleOrDefault(person =>
+                                                 person?.DutyDates?.Where(date =>
+                                                 date == dutyDate).Any() == true);
     }
 }
