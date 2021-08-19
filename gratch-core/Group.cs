@@ -34,11 +34,16 @@ namespace gratch_core
         }
         #endregion
         private string _name;
-        public string Name { get => _name; 
+        public string Name
+        {
+            get => _name;
             set
             {
-                _name = value;
-                GroupNameChanged.Invoke(this, new EventArgs());
+                if (!AllInstances.Any(grp => grp.Name == value))
+                {
+                    _name = value;
+                    GroupNameChanged.Invoke(this, new EventArgs());
+                }
             }
         }
         private readonly List<Person> _people = new();
@@ -67,7 +72,7 @@ namespace gratch_core
         {
             foreach (var name in names)
             {
-                Add(name);
+                AddSafely(name);
             }
         }
         public void Replace(int pIndex, int withIndex)
@@ -81,7 +86,7 @@ namespace gratch_core
             _people[withIndex].Name = pBuffer;
             _people[pIndex].Name = withBuffer;
         }
-        public void Add(string name)
+        public void AddSafely(string name)
         {
             if (this.Contains(name))
             {
@@ -90,6 +95,7 @@ namespace gratch_core
             else
             {
                 Add(new Person(name));
+                Graph.AssignEveryone();
             }
         }
 
@@ -97,7 +103,9 @@ namespace gratch_core
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)
         {
-            _people.Insert(index, person.Clone() as Person);
+            var _ = person.Clone() as Person;
+            _.GroupName = this.Name;
+            _people.Insert(index, _);
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
@@ -114,20 +122,13 @@ namespace gratch_core
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person)
         {
-            if (this.Contains(person.Name))
+            if (this == null) //InstanceReused
             {
-                throw new ArgumentException("Person already exists");
+                instances.Add(this);
             }
-            else
-            {
-                if (this == null) //InstanceReused
-                {
-                    instances.Add(this);
-                }
-                person.DutyDates = null;
-                _people.Add(person.Clone() as Person);
-                Graph.AssignEveryone();
-            }
+            var newperson = person.Clone() as Person;
+            newperson.GroupName = this.Name;
+            _people.Add(newperson);
         }
         public void Clear()
         {

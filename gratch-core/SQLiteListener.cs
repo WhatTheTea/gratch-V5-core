@@ -23,12 +23,9 @@ namespace gratch_core
 
         private async void Group_PersonChanged(Group sender, Person person)
         {
-            Models.PersonModel model = new();
-            model.Group = sender.Name;
-            model.Name = person.Name;
-            model.DutyDates = person.DutyDates;
+            
 
-            await repos.SavePerson(model);
+            //await repos.SavePerson(//model);
         }
 
         private void Group_PersonAdded(Group sender, Person person)

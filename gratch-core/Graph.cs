@@ -115,7 +115,7 @@ namespace gratch_core
             return false;
         }
         public Person this[DateTime dutyDate] => people?.SingleOrDefault(person =>
-                                                 person?.DutyDates?.Where(date =>
-                                                 date == dutyDate).Any() == true);
+                                                 person?.DutyDates?.Any(date =>
+                                                 date == dutyDate) == true);
     }
 }

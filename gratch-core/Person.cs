@@ -8,6 +8,15 @@ namespace gratch_core
     {
         private string _name;
         public string Name { get => _name; set => Rename(value); }
+        private string _groupName;
+        public string GroupName
+        {
+            get => _groupName;
+            internal set
+            {
+                _groupName = value;
+            }
+        }
         internal List<DateTime> DutyDates { get; set; }
 
         public Person(string name)
