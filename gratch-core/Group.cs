@@ -16,6 +16,11 @@ namespace gratch_core
 
         internal static event PersonHandler PersonDeleted;
         internal delegate void PersonHandler(object sender, PersonChangedEventArgs args);
+
+        private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            GroupChanged.Invoke(this, new GroupChangedEventArgs(GroupChangedEventType.WeekendChanged));
+        }
         #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
@@ -67,6 +72,8 @@ namespace gratch_core
         {
             instances.Add(this);
             graph = new Graph(ref _people, Name);
+
+            graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
         }
 
         public Group(IEnumerable<string> names) : this()

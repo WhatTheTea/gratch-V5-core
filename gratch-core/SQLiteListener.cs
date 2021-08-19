@@ -9,7 +9,7 @@ namespace gratch_core
     public class SQLiteListener 
     {
         private static SQLiteListener listener;
-        private readonly Models.PersonRepository repos = new();
+        private readonly Models.GroupRepository repos = new();
         private SQLiteListener()
         {
             Group.GroupChanged += Group_GroupChanged;
@@ -41,6 +41,7 @@ namespace gratch_core
                 case PersonChangedEventType.AllPeopleRemoved:
                     ClearPeople(Group.AllInstances.Single(grp => grp.Name == args.GroupName));
                     break;
+
                 default:
                     throw new NotSupportedException();
             }
@@ -60,7 +61,10 @@ namespace gratch_core
                     throw new NotSupportedException();
             }
         }
+        private async void WeekendChanged(Group grp)
+        {
 
+        }
         private async void GroupNameChanged(Group sender)
         {
             await repos.SavePeople(PersonAdapter.GetModels(sender.ToList()));
@@ -68,7 +72,7 @@ namespace gratch_core
 
         private async void PersonRemoved(Group sender, Person person)
         {
-            await repos.DeletePersonByIndex(sender.IndexOf(person));
+            await repos.DeletePersonByIndex(sender.IndexOf(person),sender.Name);
         }
 
         private async void PersonChanged(Person person)

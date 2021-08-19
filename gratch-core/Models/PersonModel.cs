@@ -1,21 +1,23 @@
 ﻿using SQLite;
 
+using SQLiteNetExtensions.Attributes;
+
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace gratch_core.Models
 {
-    [Table(SQLiteDB.GroupTableName)]
     public class PersonModel
     {
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
-        public int Index { get; set; }
-        [NotNull, MaxLength(50)]
-        public string Group { get; set; }
-        [NotNull, MaxLength(50)]
+        [NotNull, ForeignKey(typeof(GroupModel))]
+        public string GroupId { get; set; }
+        [NotNull, Unique]
         public string Name { get; set; }
+        [TextBlob("DutyDatesBlobbed")]
         public Collection<DateTime> DutyDates { get; set; }
+
+        public string DutyDatesBlobbed { get; set; }
     }
 }
