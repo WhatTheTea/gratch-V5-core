@@ -1,8 +1,5 @@
-﻿using gratch_core;
-
+﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using System;
 
 namespace gratch_core_tests.Group_tests
 {

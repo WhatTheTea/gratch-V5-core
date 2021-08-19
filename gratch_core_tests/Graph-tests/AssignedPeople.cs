@@ -16,9 +16,9 @@ namespace gratch_core_tests.Graph_tests
 
             bool result = true;
             //Act
-            for(int i = 0; i < assigned.Count(); i++)
+            for (int i = 0; i < assigned.Count(); i++)
             {
-                if(group[i] != assigned[i])
+                if (group[i] != assigned[i])
                 {
                     result = false;
                     break;

@@ -20,7 +20,7 @@ namespace gratch_core_tests
             for (int i = 0; i < peoplecount; i++) group.Add(GetPerson());
 
             gIterator++;
-            
+
             return group;
         }
     }

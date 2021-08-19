@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using gratch_core;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.Linq;
-
-using gratch_core;
 
 namespace gratch_core_tests.Graph_tests
 {

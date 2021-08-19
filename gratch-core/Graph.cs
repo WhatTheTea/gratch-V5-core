@@ -78,7 +78,7 @@ namespace gratch_core
         {
             people[index].DutyDates = null;
         }
-        
+
         public void MonthlyUpdate()
         {
             Person lastPerson = (from p in AssignedPeople

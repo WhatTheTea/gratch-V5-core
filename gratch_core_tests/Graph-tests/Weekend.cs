@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using gratch_core;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.Linq;
-
-using gratch_core;
 
 namespace gratch_core_tests.Graph_tests
 {
@@ -37,7 +37,7 @@ namespace gratch_core_tests.Graph_tests
         {
             var group = DataFiller.GetGroup(DaysInMonth);
 
-            for(int i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
                 group.Graph.Weekend.Add((DayOfWeek)i);
             }

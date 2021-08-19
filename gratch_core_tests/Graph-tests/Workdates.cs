@@ -22,6 +22,6 @@ namespace gratch_core_tests.Graph_tests
             result = isFirstDay & isLastDay;
             Assert.IsTrue(result);
         }
-        
+
     }
 }

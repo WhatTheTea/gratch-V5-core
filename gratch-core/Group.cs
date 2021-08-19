@@ -12,8 +12,9 @@ namespace gratch_core
     {
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
-        internal static IList<Group> AllInstances { 
-            get 
+        internal static IList<Group> AllInstances
+        {
+            get
             {
                 var realInstances = instances.Where(instance => instance.Count > 0);
                 if (instances.Count != realInstances.Count())
@@ -21,8 +22,8 @@ namespace gratch_core
                     instances.Clear();
                     instances.AddRange(realInstances);
                 }
-                return instances.AsReadOnly(); 
-            } 
+                return instances.AsReadOnly();
+            }
         }
         #endregion
 
@@ -33,7 +34,8 @@ namespace gratch_core
             {
                 return _people[index];
             }
-            set {
+            set
+            {
                 var name = (value.Clone() as Person).Name;
                 _people[index].Name = name;
             }
