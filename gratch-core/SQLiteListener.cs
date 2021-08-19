@@ -8,12 +8,18 @@ namespace gratch_core
 {
     public class SQLiteListener 
     {
-        private Models.PersonRepository repos = new();
+        private readonly Models.PersonRepository repos = new();
         SQLiteListener()
         {
             Group.PersonAdded += Group_PersonAdded;
             Group.PersonChanged += Group_PersonChanged;
             Group.PersonRemoved += Group_PersonRemoved;
+            Group.GroupNameChanged += Group_GroupNameChanged;
+        }
+
+        private void Group_GroupNameChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void Group_PersonRemoved(object sender, Person person)
@@ -26,9 +32,9 @@ namespace gratch_core
             await repos.SavePerson(PersonAdapter.GetModel(person));
         }
 
-        private void Group_PersonAdded(object sender, Person person)
+        private async void Group_PersonAdded(object sender, Person person)
         {
-            throw new NotImplementedException();
+            await repos.SavePerson(PersonAdapter.GetModel(person));
         }
     }
 }

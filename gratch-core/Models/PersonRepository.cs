@@ -34,12 +34,16 @@ namespace gratch_core.Models
         }
         public Task<int> SavePerson(PersonModel person)
         {
-            if (person.Index != 0)
+            return db.InsertOrReplaceAsync(person);
+        }
+        public Task<int> SavePeople(List<PersonModel> people)
+        {
+            int rows = 0;
+            foreach(var person in people)
             {
-                db.UpdateAsync(person);
-                return Task.FromResult(person.Id);
+                rows += SavePerson(person).Result;
             }
-            else return db.InsertAsync(person);
+            return Task.FromResult<int>(rows);
         }
     }
 }
