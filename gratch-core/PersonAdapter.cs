@@ -28,5 +28,14 @@ namespace gratch_core
 
             return person;
         }
+        internal static List<PersonModel> GetModels(List<Person> people)
+        {
+            var list = new List<PersonModel>();
+            foreach(var person in people)
+            {
+                list.Add(GetModel(person));
+            }
+            return list;
+        }
     }
 }

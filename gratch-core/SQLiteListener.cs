@@ -17,9 +17,9 @@ namespace gratch_core
             Group.GroupNameChanged += Group_GroupNameChanged;
         }
 
-        private void Group_GroupNameChanged(object sender, EventArgs e)
+        private async void Group_GroupNameChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            await repos.SavePeople(PersonAdapter.GetModels((sender as Group).ToList()));
         }
 
         private async void Group_PersonRemoved(object sender, Person person)
