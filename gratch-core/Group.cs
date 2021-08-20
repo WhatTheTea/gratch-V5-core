@@ -120,7 +120,6 @@ namespace gratch_core
         public void Insert(int index, Person person)
         {
             var _ = person.Clone() as Person;
-            _.GroupName = this.Name;
             _people.Insert(index, _);
             Graph.AssignEveryone();
         }
@@ -153,7 +152,6 @@ namespace gratch_core
                 instances.Add(this);
             }
             var newperson = person.Clone() as Person;
-            newperson.GroupName = this.Name;
             _people.Add(newperson);
         }
         public void Clear()

@@ -16,8 +16,7 @@ namespace gratch_core
         };
         internal static Person ToPerson(this PersonModel model) => new(model.Name)
         {
-            DutyDates = new ObservableCollection<DateTime>(model.DutyDates),
-            GroupName = new GroupRepository().GetGroup(model.GroupId).Result.Name,
+            DutyDates = new ObservableCollection<DateTime>(model.DutyDates)
         };
         internal static List<PersonModel> ToModels(this IList<Person> people)
         {
