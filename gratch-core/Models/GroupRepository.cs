@@ -29,7 +29,11 @@ namespace gratch_core.Models
         {
             return Task.Run(() => GetGroups().Result.Single(grp => grp.Name == name));
         }
-        public Task<List<DateTime>> GetGroupWeekend(string groupname)
+        public Task<GroupModel> GetGroup(int id)
+        {
+            return Task.Run(() => db.GetWithChildrenAsync<GroupModel>(id));
+        }
+        public Task<List<DayOfWeek>> GetGroupWeekend(string groupname)
         {
             return Task.Run(() => GetGroup(groupname).Result.Weekend);
         }

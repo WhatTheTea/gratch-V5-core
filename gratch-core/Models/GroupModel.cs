@@ -16,7 +16,7 @@ namespace gratch_core.Models
         [OneToMany]
         public List<PersonModel> People { get; set; }
         [TextBlob("WeekendBlobbed")]
-        public List<DateTime> Weekend { get; set; }
+        public List<DayOfWeek> Weekend { get; set; }
 
         public string WeekendBlobbed { get; set; }
     }

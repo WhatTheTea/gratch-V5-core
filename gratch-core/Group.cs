@@ -132,7 +132,7 @@ namespace gratch_core
         public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
         public bool Contains(Person person) => _people.Contains(person);
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
-        public void Add(Person person)
+        public void Add(Person person) // not safe for dutydates
         {
             if (this == null) //InstanceReused
             {

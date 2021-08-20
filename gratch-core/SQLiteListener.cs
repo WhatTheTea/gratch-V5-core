@@ -65,7 +65,7 @@ namespace gratch_core
         }
         private async void GroupNameChanged(Group sender)
         {
-            await repos.SavePeople(PersonAdapter.GetModels(sender.ToList()));
+            await repos.SavePeople(ModelConversionExtension.ToModels(sender.ToList()));
         }
 
         private async void PersonRemoved(Group sender, Person person)
@@ -75,12 +75,12 @@ namespace gratch_core
 
         private async void PersonChanged(Person person)
         {
-            await repos.SavePerson(PersonAdapter.GetModel(person));
+            await repos.SavePerson(ModelConversionExtension.ToModel(person));
         }
 
         private async void PersonAdded(Person person)
         {
-            await repos.SavePerson(PersonAdapter.GetModel(person));
+            await repos.SavePerson(ModelConversionExtension.ToModel(person));
         }
         private async void ClearPeople(Group grp)
         {
