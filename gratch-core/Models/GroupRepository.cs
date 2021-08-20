@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using SQLite;
 
+using SQLiteNetExtensionsAsync;
+using SQLiteNetExtensionsAsync.Extensions;
+
 namespace gratch_core.Models
 {
     internal class GroupRepository
@@ -14,40 +17,39 @@ namespace gratch_core.Models
         public GroupRepository()
         {
             db = SQLiteDB.GetAsyncConnection();
+            db.CreateTableAsync<GroupModel>();
             db.CreateTableAsync<PersonModel>();
         }
-        public Task<List<PersonModel>> GetPeople()
+        #region Getters
+        public Task<List<GroupModel>> GetGroups()
         {
-            return db.Table<PersonModel>().ToListAsync();
+            return db.GetAllWithChildrenAsync<GroupModel>();
         }
-        public Task<PersonModel> GetPerson(int id)
+        public Task<GroupModel> GetGroup(string name)
         {
-            return db.GetAsync<PersonModel>(id);
+            return Task.Run(() => GetGroups().Result.Single(grp => grp.Name == name));
         }
-        public Task<int> DeletePerson(int id)
+        public Task<List<DateTime>> GetGroupWeekend(string groupname)
         {
-            return db.DeleteAsync<PersonModel>(id);
+            return Task.Run(() => GetGroup(groupname).Result.Weekend);
         }
-        public Task<List<PersonModel>> DeletePersonByIndex(int index, string group)
+        public Task<PersonModel> GetPerson(string name, string groupname)
         {
-            
+            return Task.Run(() => GetGroup(groupname).Result.People.Single(pers => pers.Name == name));
         }
-        public Task<int> SavePerson(PersonModel person)
+        #endregion
+
+        public Task InsertGroup(GroupModel group)
         {
-            return db.InsertOrReplaceAsync(person);
+            return Task.Run(() => db.InsertOrReplaceWithChildrenAsync(group));
         }
-        public Task<int> SavePeople(List<PersonModel> people)
+        public Task UpdateGroup(GroupModel group)
         {
-            int rows = 0;
-            foreach(var person in people)
-            {
-                rows += SavePerson(person).Result;
-            }
-            return Task.FromResult<int>(rows);
+            return Task.Run(() => db.UpdateWithChildrenAsync(group));
         }
-        public Task<List<PersonModel>> ClearAll(string groupName)
+        public Task<int> DeleteGroup(GroupModel group)
         {
-            
+            return Task.Run(() => db.DeleteAsync(group));
         }
     }
 }

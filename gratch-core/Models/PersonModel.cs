@@ -3,7 +3,7 @@
 using SQLiteNetExtensions.Attributes;
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace gratch_core.Models
 {
@@ -16,7 +16,7 @@ namespace gratch_core.Models
         [NotNull, Unique]
         public string Name { get; set; }
         [TextBlob("DutyDatesBlobbed")]
-        public Collection<DateTime> DutyDates { get; set; }
+        public List<DateTime> DutyDates { get; set; }
 
         public string DutyDatesBlobbed { get; set; }
     }
