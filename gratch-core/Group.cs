@@ -128,7 +128,7 @@ namespace gratch_core
         {
             _people.RemoveAt(index);
 
-            if(Count > 0)
+            if (Count > 0)
             {
                 GroupChanged.Invoke(this);
             }
