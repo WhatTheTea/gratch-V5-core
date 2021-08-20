@@ -17,4 +17,8 @@
     <ProjectReference Include="..\gratch-core\gratch-core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Database\" />
+  </ItemGroup>
+
 </Project>

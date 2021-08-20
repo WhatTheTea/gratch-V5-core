@@ -18,7 +18,7 @@ namespace gratch_core_tests
             var group = new Group();
 
             for (int i = 0; i < peoplecount; i++) group.Add(GetPerson());
-
+            group.Graph.AssignEveryone();
             gIterator++;
 
             return group;
