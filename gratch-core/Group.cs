@@ -11,15 +11,14 @@ namespace gratch_core
     public class Group : IList<Person>
     {
         #region events
-        internal static event GroupEventHandler GroupChanged;
-        internal delegate void GroupEventHandler(object sender, GroupChangedEventArgs args);
-
-        internal static event PersonHandler PersonDeleted;
-        internal delegate void PersonHandler(object sender, PersonChangedEventArgs args);
+        public static event GroupEventHandler GroupChanged;
+        public static event GroupEventHandler GroupAdded;
+        public static event GroupEventHandler GroupRemoved;
+        public delegate void GroupEventHandler(object sender);
 
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            GroupChanged.Invoke(this, new GroupChangedEventArgs(GroupChangedEventType.WeekendChanged));
+            GroupChanged.Invoke(this);
         }
         #endregion
         #region Instances
@@ -47,8 +46,7 @@ namespace gratch_core
                 if (!AllInstances.Any(grp => grp.Name == value))
                 {
                     _name = value;
-                    GroupChanged.Invoke(this, new GroupChangedEventArgs(
-                        GroupChangedEventType.GroupNameChanged));
+                    GroupChanged.Invoke(this);
                 }
             }
         }
@@ -73,7 +71,16 @@ namespace gratch_core
             instances.Add(this);
             graph = new Graph(ref _people, Name);
 
+            Person.PersonChanged += Person_PersonChanged;
             graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
+        }
+
+        private void Person_PersonChanged(object sender)
+        {
+            if (_people.Any(pers => pers.Name == (sender as Person).Name))
+            {
+                GroupChanged.Invoke(this);
+            }
         }
 
         public Group(IEnumerable<string> names) : this()
@@ -103,6 +110,7 @@ namespace gratch_core
             else
             {
                 Add(new Person(name));
+                if (Count == 1) GroupAdded(this);
                 Graph.AssignEveryone();
             }
         }
@@ -120,8 +128,14 @@ namespace gratch_core
         {
             _people.RemoveAt(index);
 
-            PersonDeleted.Invoke(this[index],
-                new PersonChangedEventArgs(PersonChangedEventType.PersonRemoved, Name));
+            if(Count > 0)
+            {
+                GroupChanged.Invoke(this);
+            }
+            else
+            {
+                GroupRemoved.Invoke(this);
+            }
 
             Graph.AssignEveryone();
         }
@@ -144,9 +158,7 @@ namespace gratch_core
         }
         public void Clear()
         {
-            PersonDeleted.Invoke(this,
-            new PersonChangedEventArgs(PersonChangedEventType.AllPeopleRemoved, Name));
-
+            GroupRemoved.Invoke(this);
             _people.Clear();
             //groups.Remove(this);
         }
@@ -154,8 +166,14 @@ namespace gratch_core
         {
             var _ = _people.Remove(person);
 
-            PersonDeleted.Invoke(person,
-                new PersonChangedEventArgs(PersonChangedEventType.PersonRemoved, Name));
+            if (Count > 0)
+            {
+                GroupChanged.Invoke(this);
+            }
+            else
+            {
+                GroupRemoved.Invoke(this);
+            }
 
             Graph.AssignEveryone();
             return _;
