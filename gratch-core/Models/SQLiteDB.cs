@@ -7,9 +7,13 @@ namespace gratch_core.Models
     {
         private const string DBName = "gratch.db3";
         private static readonly string DBPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        public static SQLite.SQLiteAsyncConnection GetAsyncConnection()
+
+        private static string _fullPath;
+        public static string FullPath { get => _fullPath; }
+        public static SQLite.SQLiteConnection GetAsyncConnection()
         {
-            return new SQLite.SQLiteAsyncConnection(Path.Combine(DBPath, DBName));
+            _fullPath = Path.Combine(DBPath, DBName);
+            return new SQLite.SQLiteConnection(FullPath);
         }
     }
 }

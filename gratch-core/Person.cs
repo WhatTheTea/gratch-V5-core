@@ -4,16 +4,20 @@ using System.Linq;
 
 namespace gratch_core
 {
-    public class Person : ICloneable
+    public class Person : IPerson
     {
         #region events
         internal static event PersonHandler PersonChanged;
         internal delegate void PersonHandler(object sender);
+        private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            PersonChanged.Invoke(this);
+        }
         #endregion
 
         private string _name;
         public string Name { get => _name; set => Rename(value); }
-        internal ObservableCollection<DateTime> DutyDates { get; set; }
+        public ObservableCollection<DateTime> DutyDates { get; set; } = new(); //АвтоСвойство
 
         public Person(string name)
         {
@@ -22,10 +26,6 @@ namespace gratch_core
             DutyDates.CollectionChanged += DutyDates_CollectionChanged;
         }
 
-        private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            PersonChanged.Invoke(this);
-        }
 
         public void Rename(string name)
         {

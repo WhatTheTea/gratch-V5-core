@@ -1,4 +1,7 @@
-﻿
+﻿using gratch_core.Models;
+
+using System.Linq;
+
 namespace gratch_core
 {
     public class SQLiteListener
@@ -10,6 +13,10 @@ namespace gratch_core
             Group.GroupAdded += Group_GroupAdded;
             Group.GroupChanged += Group_GroupChanged;
             Group.GroupRemoved += Group_GroupRemoved;
+
+            Group.PersonAdded += Group_PersonAdded;
+            Group.PersonUpdated += Group_PersonUpdated;
+            Group.PersonRemoved += Group_PersonRemoved;
         }
         public static SQLiteListener GetListener()
         {
@@ -19,20 +26,39 @@ namespace gratch_core
             }
             return listener;
         }
-
-        private async void Group_GroupRemoved(object sender)
+        private PersonModel FindAndConvertPerson(object group, object person)
         {
-            await repos.DeleteGroup((sender as Group).ToModel());
+            return (group as Group).ToModel()
+                .People.Single(p => p.Name == (person as Person).Name);
+        }
+        private void Group_PersonRemoved(object sender, object person)
+        {
+            repos.DeletePerson(FindAndConvertPerson(sender,person));
         }
 
-        private async void Group_GroupChanged(object sender)
+        private void Group_PersonUpdated(object sender, object person)
         {
-            await repos.UpdateGroup((sender as Group).ToModel());
+            repos.UpdatePerson(FindAndConvertPerson(sender, person));
         }
 
-        private async void Group_GroupAdded(object sender)
+        private void Group_PersonAdded(object sender, object person)
         {
-            await repos.InsertGroup((sender as Group).ToModel());
+            repos.InsertPerson(FindAndConvertPerson(sender, person));
+        }
+
+        private void Group_GroupRemoved(object sender)
+        {
+            repos.DeleteGroup((sender as Group).ToModel());
+        }
+
+        private void Group_GroupChanged(object sender)
+        {
+            repos.UpdateGroup((sender as Group).ToModel());
+        }
+
+        private void Group_GroupAdded(object sender)
+        {
+            repos.InsertGroup((sender as Group).ToModel());
         }
     }
 }
