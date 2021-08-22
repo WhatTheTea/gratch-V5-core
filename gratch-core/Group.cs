@@ -18,18 +18,20 @@ namespace gratch_core
         public static event GroupEventHandler GroupRemoved;
         public delegate void GroupEventHandler(object sender);
 
-        public static event PersonChangedEventHandler PersonChanged;
+        public static event PersonChangedEventHandler PersonUpdated;
+        public static event PersonChangedEventHandler PersonRemoved;
+        public static event PersonChangedEventHandler PersonAdded;
         public delegate void PersonChangedEventHandler(object sender, object person);
 
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             GroupChanged.Invoke(this);
         }
-        private void Person_PersonChanged(object sender)
+        private void Person_PersonUpdated(object sender)
         {
             if (_people.Any(pers => pers.Name == (sender as Person).Name))
             {
-                GroupChanged.Invoke(this);
+                PersonUpdated.Invoke(this, sender);
             }
         }
         #endregion
@@ -70,7 +72,7 @@ namespace gratch_core
             instances.Add(this);
             graph = new Graph(ref _people);
 
-            Person.PersonChanged += Person_PersonChanged;
+            Person.PersonChanged += Person_PersonUpdated;
             graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
         }
         public Group(string GroupName) : this() => _name = GroupName;
@@ -123,17 +125,14 @@ namespace gratch_core
         {
             var _ = person.Clone() as Person;
             _people.Insert(index, _);
+            PersonAdded.Invoke(this, person); //!!!! at index
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
+            PersonRemoved.Invoke(this, _people[index]);
             _people.RemoveAt(index);
-
-            if (Count > 0)
-            {
-                GroupChanged.Invoke(this);
-            }
-            else
+            if (Count <= 0)
             {
                 GroupRemoved.Invoke(this);
             }
@@ -156,7 +155,11 @@ namespace gratch_core
             var newperson = person.Clone() as Person;
             _people.Add(newperson);
 
-            if(Count == 1) GroupAdded.Invoke(this);
+            if (Count == 1)
+            {
+                GroupAdded.Invoke(this);
+            } 
+            PersonAdded.Invoke(this, newperson);
         }
         public void Clear()
         {
@@ -170,7 +173,7 @@ namespace gratch_core
 
             if (Count > 0)
             {
-                GroupChanged.Invoke(this);
+                PersonRemoved.Invoke(this,person);
             }
             else
             {

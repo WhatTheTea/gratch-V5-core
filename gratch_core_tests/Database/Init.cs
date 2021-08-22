@@ -22,9 +22,10 @@ namespace gratch_core_tests.Database
             var group = DataFiller.GetGroup(20);
 
             var expected = group[0];
-            var actual = rep.GetPerson(group[0].Name, group.ToModel()).ToPerson();
+            var actual = rep.GetGroup(group.Name).People[0].ToPerson();
 
-            Assert.AreEqual(expected, actual);
+            Assert.IsTrue(expected.Name == actual.Name);
+            Assert.IsTrue(expected.DutyDates.First().Date == actual.DutyDates.First().Date);
         }
     }
 }

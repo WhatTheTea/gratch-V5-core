@@ -5,7 +5,9 @@ using SQLiteNetExtensions.Extensions.TextBlob;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace gratch_core.Models
@@ -37,37 +39,25 @@ namespace gratch_core.Models
         {
             return GetGroup(groupname).Weekend;
         }
-        public PersonModel GetPerson(string name, GroupModel group)
-        {
-            return db.Table<PersonModel>().SingleOrDefault(pers => pers.GroupModel == group);
-        }
+        public PersonModel GetPerson(string name, GroupModel group) => db.Table<PersonModel>()
+            .SingleOrDefault(pers => pers.GroupModel == group);
         #endregion
 
-        public void InsertGroup(GroupModel group) => db.InsertOrReplaceWithChildren(group);
-        public void UpdateGroup(GroupModel group)
+        public void InsertGroup(GroupModel group)
         {
-            var realGroup = GetGroup(group.Name);
+            db.Insert(group);
+            db.UpdateWithChildren(group);
+}
 
-            int groupCount = group.People.Count;
-            int realCount = realGroup.People.Count;
-            if (groupCount > realCount) // Is person added
-            {
-                db.InsertWithChildren(group.People.Last());
-            } else if (groupCount == realCount)
-            {
-                db.UpdateWithChildren(group);
-            } else
-            {
-                db.Delete(realGroup.People.Single(pers => !group.People.Contains(pers)));
-            }
-            
-        }
+        public void UpdateGroup(GroupModel group) => db.UpdateWithChildren(group);
         public void DeleteGroup(GroupModel group) => db.Delete(group);
-        //public void InsertPerson(PersonModel person) => db.InsertOrReplace(person);
+        public void InsertPerson(PersonModel person) => db.InsertWithChildren(person);
+        public void DeletePerson(PersonModel person) => db.Delete(person);
+        public void UpdatePerson(PersonModel person) => db.UpdateWithChildren(person);
         public void DeleteAll()
         {
-            db.DeleteAll<GroupModel>();
-            db.DeleteAll<PersonModel>();
+            db.DropTable<GroupModel>();
+            db.DropTable<PersonModel>();
         }
     }
 }

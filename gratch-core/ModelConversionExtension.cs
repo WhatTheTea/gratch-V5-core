@@ -1,5 +1,7 @@
 ﻿using gratch_core.Models;
 
+using System.Text.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,15 +10,17 @@ using System.Linq;
 namespace gratch_core
 {
     internal static class ModelConversionExtension
-    {
+    { 
+
         private static PersonModel ToModel(this Person person) => new()
         {
             Name = person.Name,
             DutyDates = person.DutyDates.ToList(),
         };
         internal static Person ToPerson(this PersonModel model) => new(model.Name)
-        {
-            DutyDates = new ObservableCollection<DateTime>(model.DutyDates)
+{
+            DutyDates = new ObservableCollection<DateTime>(
+                JsonSerializer.Deserialize<List<DateTime>>(model.DutyDatesBlobbed))
         };
         internal static List<PersonModel> ToModels(this IList<Person> people)
         {
@@ -42,12 +46,16 @@ namespace gratch_core
         {
             var model = new GroupModel
             {
-                //Id = Group.AllInstances.IndexOf(group),
+                Id = Group.AllInstances.IndexOf(group)+1,
                 Name = group.Name,
                 Weekend = group.Graph.Weekend.ToList(),
             };
             var people = group.ToModels();
-            people.ForEach(permod => permod.GroupModel = model);
+            people.ForEach(permod => { permod.GroupModel = model; permod.GroupId = model.Id; });
+            for(int i = 0; i < people.Count; i++)
+            {
+                people[i].Id = i+1;
+            }
             model.People = people;
             return model;
         }

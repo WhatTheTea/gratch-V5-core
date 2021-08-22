@@ -1,4 +1,7 @@
-﻿
+﻿using gratch_core.Models;
+
+using System.Linq;
+
 namespace gratch_core
 {
     public class SQLiteListener
@@ -10,14 +13,11 @@ namespace gratch_core
             Group.GroupAdded += Group_GroupAdded;
             Group.GroupChanged += Group_GroupChanged;
             Group.GroupRemoved += Group_GroupRemoved;
-            //Group.PersonChanged += Group_PersonChanged;
+
+            Group.PersonAdded += Group_PersonAdded;
+            Group.PersonUpdated += Group_PersonUpdated;
+            Group.PersonRemoved += Group_PersonRemoved;
         }
-
-        /*private void Group_PersonChanged(object sender, object person)
-        {
-            repos.InsertPerson((person as Person).ToModel());
-        }*/
-
         public static SQLiteListener GetListener()
         {
             if (listener == null)
@@ -25,6 +25,25 @@ namespace gratch_core
                 listener = new SQLiteListener();
             }
             return listener;
+        }
+        private PersonModel FindAndConvertPerson(object group, object person)
+        {
+            return (group as Group).ToModel()
+                .People.Single(p => p.Name == (person as Person).Name);
+        }
+        private void Group_PersonRemoved(object sender, object person)
+        {
+            repos.DeletePerson(FindAndConvertPerson(sender,person));
+        }
+
+        private void Group_PersonUpdated(object sender, object person)
+        {
+            repos.UpdatePerson(FindAndConvertPerson(sender, person));
+        }
+
+        private void Group_PersonAdded(object sender, object person)
+        {
+            repos.InsertPerson(FindAndConvertPerson(sender, person));
         }
 
         private void Group_GroupRemoved(object sender)
