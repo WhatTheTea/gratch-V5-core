@@ -11,14 +11,26 @@ namespace gratch_core
     public class Group : IList<Person>
     {
         #region events
+        private static SQLiteListener listener = SQLiteListener.GetListener();
+
         public static event GroupEventHandler GroupChanged;
         public static event GroupEventHandler GroupAdded;
         public static event GroupEventHandler GroupRemoved;
         public delegate void GroupEventHandler(object sender);
 
+        public static event PersonChangedEventHandler PersonChanged;
+        public delegate void PersonChangedEventHandler(object sender, object person);
+
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             GroupChanged.Invoke(this);
+        }
+        private void Person_PersonChanged(object sender)
+        {
+            if (_people.Any(pers => pers.Name == (sender as Person).Name))
+            {
+                GroupChanged.Invoke(this);
+            }
         }
         #endregion
         #region Instances
@@ -51,39 +63,18 @@ namespace gratch_core
             }
         }
         private readonly List<Person> _people = new();
-        public Person this[int index]
-        {
-            get
-            {
-                return _people[index];
-            }
-            set
-            {
-                var name = (value.Clone() as Person).Name;
-                _people[index].Name = name;
-            }
-        }
-
         private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
             instances.Add(this);
-            graph = new Graph(ref _people, Name);
+            graph = new Graph(ref _people);
 
             Person.PersonChanged += Person_PersonChanged;
             graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
         }
-
-        private void Person_PersonChanged(object sender)
-        {
-            if (_people.Any(pers => pers.Name == (sender as Person).Name))
-            {
-                GroupChanged.Invoke(this);
-            }
-        }
-
-        public Group(IEnumerable<string> names) : this()
+        public Group(string GroupName) : this() => _name = GroupName;
+        public Group(string GroupName, IEnumerable<string> names) : this()
         {
             foreach (var name in names)
             {
@@ -110,12 +101,23 @@ namespace gratch_core
             else
             {
                 Add(new Person(name));
-                if (Count == 1) GroupAdded(this);
                 Graph.AssignEveryone();
             }
         }
 
         #region IList
+        public Person this[int index]
+        {
+            get
+            {
+                return _people[index];
+            }
+            set
+            {
+                var name = (value.Clone() as Person).Name;
+                _people[index].Name = name;
+            }
+        }
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)
         {
@@ -153,6 +155,8 @@ namespace gratch_core
             }
             var newperson = person.Clone() as Person;
             _people.Add(newperson);
+
+            if(Count == 1) GroupAdded.Invoke(this);
         }
         public void Clear()
         {

@@ -12,12 +12,14 @@ namespace gratch_core.Models
         [AutoIncrement, PrimaryKey]
         public int Id { get; set; }
         [NotNull, ForeignKey(typeof(GroupModel))]
-        public string GroupId { get; set; }
-        [NotNull, Unique]
+        public int GroupId { get; set; }
+        [NotNull]
         public string Name { get; set; }
         [TextBlob("DutyDatesBlobbed")]
         public List<DateTime> DutyDates { get; set; }
 
         public string DutyDatesBlobbed { get; set; }
+        [ManyToOne]
+        public GroupModel GroupModel { get; set; }
     }
 }

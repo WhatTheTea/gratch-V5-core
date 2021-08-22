@@ -1,6 +1,7 @@
 ﻿using SQLite;
 
-using SQLiteNetExtensionsAsync.Extensions;
+using SQLiteNetExtensions.Extensions;
+using SQLiteNetExtensions.Extensions.TextBlob;
 
 using System;
 using System.Collections.Generic;
@@ -11,47 +12,62 @@ namespace gratch_core.Models
 {
     internal class GroupRepository
     {
-        private readonly SQLiteAsyncConnection db;
+        private readonly SQLiteConnection db;
         public GroupRepository()
         {
             db = SQLiteDB.GetAsyncConnection();
-            db.CreateTableAsync<GroupModel>();
-            db.CreateTableAsync<PersonModel>();
+            db.CreateTable<GroupModel>();
+            db.CreateTable<PersonModel>();
+            TextBlobOperations.SetTextSerializer(Newtonsoft.Json.JsonSerializer.Create() as ITextBlobSerializer);
         }
         #region Getters
-        public Task<List<GroupModel>> GetGroups()
+        public List<GroupModel> GetGroups()
         {
-            return db.GetAllWithChildrenAsync<GroupModel>();
+            return db.GetAllWithChildren<GroupModel>();
         }
-        public Task<GroupModel> GetGroup(string name)
+        public GroupModel GetGroup(string name)
         {
-            return Task.Run(() => GetGroups().Result.Single(grp => grp.Name == name));
+            return GetGroups().SingleOrDefault(grp => grp.Name == name);
         }
-        public Task<GroupModel> GetGroup(int id)
+        public GroupModel GetGroup(int id)
         {
-            return Task.Run(() => db.GetWithChildrenAsync<GroupModel>(id));
+            return db.GetWithChildren<GroupModel>(id);
         }
-        public Task<List<DayOfWeek>> GetGroupWeekend(string groupname)
+        public List<DayOfWeek> GetGroupWeekend(string groupname)
         {
-            return Task.Run(() => GetGroup(groupname).Result.Weekend);
+            return GetGroup(groupname).Weekend;
         }
-        public Task<PersonModel> GetPerson(string name, string groupname)
+        public PersonModel GetPerson(string name, GroupModel group)
         {
-            return Task.Run(() => GetGroup(groupname).Result.People.Single(pers => pers.Name == name));
+            return db.Table<PersonModel>().SingleOrDefault(pers => pers.GroupModel == group);
         }
         #endregion
 
-        public Task InsertGroup(GroupModel group)
+        public void InsertGroup(GroupModel group) => db.InsertOrReplaceWithChildren(group);
+        public void UpdateGroup(GroupModel group)
         {
-            return Task.Run(() => db.InsertOrReplaceWithChildrenAsync(group));
+            var realGroup = GetGroup(group.Name);
+
+            int groupCount = group.People.Count;
+            int realCount = realGroup.People.Count;
+            if (groupCount > realCount) // Is person added
+            {
+                db.InsertWithChildren(group.People.Last());
+            } else if (groupCount == realCount)
+            {
+                db.UpdateWithChildren(group);
+            } else
+            {
+                db.Delete(realGroup.People.Single(pers => !group.People.Contains(pers)));
+            }
+            
         }
-        public Task UpdateGroup(GroupModel group)
+        public void DeleteGroup(GroupModel group) => db.Delete(group);
+        //public void InsertPerson(PersonModel person) => db.InsertOrReplace(person);
+        public void DeleteAll()
         {
-            return Task.Run(() => db.UpdateWithChildrenAsync(group));
-        }
-        public Task<int> DeleteGroup(GroupModel group)
-        {
-            return Task.Run(() => db.DeleteAsync(group));
+            db.DeleteAll<GroupModel>();
+            db.DeleteAll<PersonModel>();
         }
     }
 }

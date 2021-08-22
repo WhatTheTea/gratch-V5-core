@@ -10,7 +10,14 @@ namespace gratch_core
             Group.GroupAdded += Group_GroupAdded;
             Group.GroupChanged += Group_GroupChanged;
             Group.GroupRemoved += Group_GroupRemoved;
+            //Group.PersonChanged += Group_PersonChanged;
         }
+
+        /*private void Group_PersonChanged(object sender, object person)
+        {
+            repos.InsertPerson((person as Person).ToModel());
+        }*/
+
         public static SQLiteListener GetListener()
         {
             if (listener == null)
@@ -20,19 +27,19 @@ namespace gratch_core
             return listener;
         }
 
-        private async void Group_GroupRemoved(object sender)
+        private void Group_GroupRemoved(object sender)
         {
-            await repos.DeleteGroup((sender as Group).ToModel());
+            repos.DeleteGroup((sender as Group).ToModel());
         }
 
-        private async void Group_GroupChanged(object sender)
+        private void Group_GroupChanged(object sender)
         {
-            await repos.UpdateGroup((sender as Group).ToModel());
+            repos.UpdateGroup((sender as Group).ToModel());
         }
 
-        private async void Group_GroupAdded(object sender)
+        private void Group_GroupAdded(object sender)
         {
-            await repos.InsertGroup((sender as Group).ToModel());
+            repos.InsertGroup((sender as Group).ToModel());
         }
     }
 }

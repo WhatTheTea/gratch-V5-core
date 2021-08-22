@@ -22,7 +22,7 @@ namespace gratch_core_tests.Group_tests
                 names.Add("name" + rng.Next());
             }
 
-            group = new Group(names);
+            group = new Group("test",names);
 
             foreach (var person in group)
             {

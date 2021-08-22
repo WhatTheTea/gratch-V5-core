@@ -9,10 +9,10 @@ namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
-        internal static PersonModel ToModel(this Person person) => new()
+        private static PersonModel ToModel(this Person person) => new()
         {
             Name = person.Name,
-            DutyDates = person.DutyDates.ToList()
+            DutyDates = person.DutyDates.ToList(),
         };
         internal static Person ToPerson(this PersonModel model) => new(model.Name)
         {
@@ -38,11 +38,18 @@ namespace gratch_core
             }
             return grp;
         }
-        internal static GroupModel ToModel(this Group group) => new GroupModel
+        internal static GroupModel ToModel(this Group group)
         {
-            Name = group.Name,
-            People = group.ToModels(),
-            Weekend = group.Graph.Weekend.ToList(),
-        };
+            var model = new GroupModel
+            {
+                //Id = Group.AllInstances.IndexOf(group),
+                Name = group.Name,
+                Weekend = group.Graph.Weekend.ToList(),
+            };
+            var people = group.ToModels();
+            people.ForEach(permod => permod.GroupModel = model);
+            model.People = people;
+            return model;
+        }
     }
 }

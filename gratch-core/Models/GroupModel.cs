@@ -11,9 +11,9 @@ namespace gratch_core.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        [Unique]
+        [NotNull, Unique]
         public string Name { get; set; }
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<PersonModel> People { get; set; }
         [TextBlob("WeekendBlobbed")]
         public List<DayOfWeek> Weekend { get; set; }
