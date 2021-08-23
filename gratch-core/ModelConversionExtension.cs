@@ -45,17 +45,23 @@ namespace gratch_core
         {
             var model = new GroupModel
             {
-                Id = Group.AllInstances.IndexOf(group) + 1,
+                Id = Group.AllInstances.IndexOf(group) != -1 ? Group.AllInstances.IndexOf(group) + 1 
+                                                                  : throw new ArgumentNullException("Id","groupId is not valid"),
                 Name = group.Name,
                 Weekend = group.Graph.Weekend.ToList(),
             };
+
+            model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
+
             var people = group.ToModels();
-            people.ForEach(permod => { permod.GroupModel = model; permod.GroupId = model.Id; });
             for (int i = 0; i < people.Count; i++)
             {
                 people[i].Id = i + 1;
+                people[i].GroupModel = model;
+                people[i].GroupId = model.Id;
             }
             model.People = people;
+
             return model;
         }
     }

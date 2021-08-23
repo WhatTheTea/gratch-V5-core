@@ -2,6 +2,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System.Linq;
+
 namespace gratch_core_tests.Graph_tests
 {
     [TestClass]
@@ -19,7 +21,7 @@ namespace gratch_core_tests.Graph_tests
 
             foreach (var person in group)
             {
-                Assert.IsTrue(person.DutyDates == null);
+                Assert.IsTrue(!person.DutyDates.Any());
             }
         }
     }

@@ -40,8 +40,12 @@ namespace gratch_core.Models
         {
             db.Insert(group);
             db.UpdateWithChildren(group);
-        }   
-        public void UpdateGroup(GroupModel group) => db.UpdateWithChildren(group);
+        }
+        public void UpdateGroup(GroupModel group)
+        {
+            db.Update(group);
+        }
+
         public void DeleteGroup(GroupModel group) => db.Delete(group);
         public void InsertPerson(PersonModel person) => db.InsertWithChildren(person);
         public void DeletePerson(PersonModel person) => db.Delete(person);
@@ -50,6 +54,8 @@ namespace gratch_core.Models
         {
             db.DropTable<GroupModel>();
             db.DropTable<PersonModel>();
+            db.CreateTable<GroupModel>();
+            db.CreateTable<PersonModel>();
         }
     }
 }

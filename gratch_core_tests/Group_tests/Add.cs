@@ -41,8 +41,8 @@ namespace gratch_core_tests.Group_tests
             group.Add(name);
 
             Assert.IsTrue(group.Where(person => person.Name == name).Any());
-            person = group.Where(person => person.Name == name).Single();
-            Assert.IsTrue(person.DutyDates == null);
+            person = group.Where(person => person.Name == name).First();
+            Assert.IsTrue(!person.DutyDates.Any());
         }
         [TestMethod]
         public void ByNameUnsuccesful()

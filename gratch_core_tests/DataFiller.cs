@@ -18,6 +18,7 @@ namespace gratch_core_tests
         }
         internal static Group GetGroup(int peoplecount)
         {
+            pIterator = 1;
             var group = new Group($"Grp{gIterator}");
 
             for (int i = 0; i < peoplecount; i++) group.Add(GetPerson());
