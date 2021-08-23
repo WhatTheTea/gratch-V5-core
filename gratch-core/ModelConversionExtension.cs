@@ -45,7 +45,7 @@ namespace gratch_core
         {
             var model = new GroupModel
             {
-                Id = Group.AllInstances.IndexOf(group) != -1 ? Group.AllInstances.IndexOf(group) + 1 
+                Id = Group.AllInstances.IndexOf(group) != -1 ? Group.AllInstances.IndexOf(group) + 1
                                                                   : throw new ArgumentNullException("Id","groupId is not valid"),
                 Name = group.Name,
                 Weekend = group.Graph.Weekend.ToList(),

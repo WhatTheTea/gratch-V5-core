@@ -37,19 +37,8 @@ namespace gratch_core
         #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
-        internal static IList<Group> AllInstances
-        {
-            get
-            {
-                var realInstances = instances.Where(instance => instance.Count > 0);
-                if (instances.Count != realInstances.Count())
-                {
-                    instances.Clear();
-                    instances.AddRange(realInstances);
-                }
-                return instances.AsReadOnly();
-            }
-        }
+        internal static IList<Group> AllInstances => 
+            instances.Where(instance => instance.Count > 0).ToList().AsReadOnly();
         #endregion
         private string _name;
         public string Name
@@ -78,6 +67,7 @@ namespace gratch_core
         public Group(string GroupName) : this() => _name = GroupName;
         public Group(string GroupName, IEnumerable<string> names) : this()
         {
+            _name = GroupName;
             foreach (var name in names)
             {
                 Add(name);
@@ -169,8 +159,6 @@ namespace gratch_core
         }
         public bool Remove(Person person)
         {
-            var _ = _people.Remove(person);
-
             if (Count > 0)
             {
                 PersonRemoved.Invoke(this, person);
@@ -179,6 +167,8 @@ namespace gratch_core
             {
                 GroupRemoved.Invoke(this);
             }
+
+            var _ = _people.Remove(person);
 
             Graph.AssignEveryone();
             return _;
