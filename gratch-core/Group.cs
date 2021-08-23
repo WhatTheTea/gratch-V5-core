@@ -25,13 +25,13 @@ namespace gratch_core
 
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            GroupChanged.Invoke(this);
+            GroupChanged?.Invoke(this);
         }
         private void Person_PersonUpdated(object sender)
         {
             if (_people.Any(pers => pers.Name == (sender as Person).Name))
             {
-                PersonUpdated.Invoke(this, sender);
+                PersonUpdated?.Invoke(this, sender);
             }
         }
         #endregion
@@ -51,7 +51,7 @@ namespace gratch_core
                 if (!AllInstances.Any(grp => grp.Name == value))
                 {
                     _name = value;
-                    GroupChanged.Invoke(this);
+                    GroupChanged?.Invoke(this);
                 }
             }
         }
@@ -111,16 +111,16 @@ namespace gratch_core
         {
             var _ = person.Clone() as Person;
             _people.Insert(index, _);
-            PersonAdded.Invoke(this, person); //!!!! at index
+            PersonAdded?.Invoke(this, person); //!!!! at index
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
-            PersonRemoved.Invoke(this, _people[index]);
+            PersonRemoved?.Invoke(this, _people[index]);
             _people.RemoveAt(index);
             if (Count <= 0)
             {
-                GroupRemoved.Invoke(this);
+                GroupRemoved?.Invoke(this);
             }
 
             Graph.AssignEveryone();
@@ -140,13 +140,13 @@ namespace gratch_core
             if (Count == 1)
             {
                 instances.Add(this);
-                GroupAdded.Invoke(this);
+                GroupAdded?.Invoke(this);
             }
-            PersonAdded.Invoke(this, newperson);
+            PersonAdded?.Invoke(this, newperson);
         }
         public void Clear()
         {
-            GroupRemoved.Invoke(this);
+            GroupRemoved?.Invoke(this);
             _people.Clear();
             //groups.Remove(this);
         }
@@ -154,11 +154,11 @@ namespace gratch_core
         {
             if (Count > 0)
             {
-                PersonRemoved.Invoke(this, person);
+                PersonRemoved?.Invoke(this, person);
             }
             else
             {
-                GroupRemoved.Invoke(this);
+                GroupRemoved?.Invoke(this);
             }
 
             var _ = _people.Remove(person);

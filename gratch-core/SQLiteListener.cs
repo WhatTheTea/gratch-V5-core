@@ -18,9 +18,9 @@ namespace gratch_core
             Group.PersonUpdated += Group_PersonUpdated;
             Group.PersonRemoved += Group_PersonRemoved;
         }
-        ~SQLiteListener()
+        public void Destroy()
         {
-            //listener = null;
+            listener = null;
 
             Group.GroupAdded -= Group_GroupAdded;
             Group.GroupChanged -= Group_GroupChanged;

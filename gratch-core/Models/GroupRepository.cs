@@ -26,7 +26,7 @@ namespace gratch_core.Models
         public List<IGroup> LoadAllGroups()
         {
             var list = new List<IGroup>();
-            Group.listener = null;
+            Group.listener.Destroy();
             foreach(var mod in GetAllGroups())
             {
                 list.Add(mod.ToGroup());

@@ -31,11 +31,13 @@ namespace gratch_core_tests.Database
         public void ReadGroups()
         {
             BasicReadWrite();
-            List<Group> groups = new();
+            List<IGroup> groups = new();
 
-            var models = new gratch_core.Models.GroupRepository().GetAllGroups();
+            Group.listener.Destroy();
             foreach (var grp in Group.AllInstances) grp.Clear();
-            foreach (var mod in models) groups.Add(mod.ToGroup());
+            Group.listener = SQLiteListener.GetListener();
+
+            groups = DataFiller.Repository.LoadAllGroups();
 
             groups.ForEach(grp => Assert.IsTrue(grp.Any()));
             groups.ForEach(grp =>

@@ -12,7 +12,7 @@ namespace gratch_core
         internal delegate void PersonHandler(object sender);
         private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PersonChanged.Invoke(this);
+            PersonChanged?.Invoke(this);
         }
         #endregion
 
@@ -42,7 +42,7 @@ namespace gratch_core
                     Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name} | InvokeMuted: {invokeMuted}");
 #endif              
                     _name = name;
-                    if (!invokeMuted) PersonChanged.Invoke(this);
+                    if (!invokeMuted) PersonChanged?.Invoke(this);
                 }
                 else if (renameExists)
                 {
