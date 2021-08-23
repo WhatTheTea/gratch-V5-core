@@ -13,7 +13,7 @@ namespace gratch_core.Models
         public static SQLite.SQLiteConnection GetAsyncConnection()
         {
             _fullPath = Path.Combine(DBPath, DBName);
-            return new SQLite.SQLiteConnection(FullPath,true);
+            return new SQLite.SQLiteConnection(FullPath, true);
         }
     }
 }

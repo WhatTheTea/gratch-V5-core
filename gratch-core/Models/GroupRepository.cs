@@ -3,7 +3,6 @@
 using SQLiteNetExtensions.Extensions;
 using SQLiteNetExtensions.Extensions.TextBlob;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

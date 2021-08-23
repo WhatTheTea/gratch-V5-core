@@ -40,9 +40,9 @@ namespace gratch_core
                     Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name} | InvokeMuted: {invokeMuted}");
 #endif              
                     _name = name;
-                    if(!invokeMuted) PersonChanged.Invoke(this);
+                    if (!invokeMuted) PersonChanged.Invoke(this);
                 }
-                else if(renameExists)
+                else if (renameExists)
                 {
 #if DEBUG
                     Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}," +

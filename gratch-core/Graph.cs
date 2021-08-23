@@ -17,8 +17,8 @@ namespace gratch_core
         }
         #endregion
         private List<Person> people;
-        public IList<Person> AssignedPeople => 
-            people.Where(p => 
+        public IList<Person> AssignedPeople =>
+            people.Where(p =>
             p.DutyDates.Any()).ToList().AsReadOnly();
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
         public IList<DateTime> Workdates

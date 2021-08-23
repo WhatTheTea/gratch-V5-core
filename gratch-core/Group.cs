@@ -37,7 +37,7 @@ namespace gratch_core
         #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
-        internal static IList<Group> AllInstances => 
+        internal static IList<Group> AllInstances =>
             instances.Where(instance => instance.Count > 0).ToList().AsReadOnly();
         #endregion
         private string _name;
@@ -75,10 +75,10 @@ namespace gratch_core
         }
         public void Replace(int pIndex, int withIndex)
         {   //Записываем имена в буфер
-            string pBuffer = _people[pIndex].Name; 
+            string pBuffer = _people[pIndex].Name;
             string withBuffer = _people[withIndex].Name;
             //Обходим ограничение на одно и то самое имя в группе
-            _people[pIndex].Rename(string.Empty,true);
+            _people[pIndex].Rename(string.Empty, true);
             _people[withIndex].Rename(null, true);
             //Присваиваем из буфера
             _people[withIndex].Name = pBuffer;

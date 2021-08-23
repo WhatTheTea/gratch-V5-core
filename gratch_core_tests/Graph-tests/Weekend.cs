@@ -1,5 +1,4 @@
 ﻿using gratch_core;
-using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +11,7 @@ namespace gratch_core_tests.Graph_tests
     public class Weekend
     {
         private readonly int DaysInMonth = DateTime.Now.DaysInMonth();
-        
+
         [TestMethod]
         public void Default()
         {

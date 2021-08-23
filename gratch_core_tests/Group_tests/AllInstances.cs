@@ -1,5 +1,4 @@
 ﻿using gratch_core;
-using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +7,7 @@ namespace gratch_core_tests.Group_tests
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class AllInstances
     {
-        
+
         [TestMethod]
         public void Default()
         {

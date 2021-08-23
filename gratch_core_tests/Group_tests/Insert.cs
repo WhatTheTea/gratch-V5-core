@@ -1,5 +1,4 @@
 ﻿using gratch_core;
-using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

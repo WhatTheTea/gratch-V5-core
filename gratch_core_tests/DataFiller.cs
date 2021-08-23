@@ -1,6 +1,5 @@
 ﻿
 using gratch_core;
-using gratch_core.Models;
 
 namespace gratch_core_tests
 {

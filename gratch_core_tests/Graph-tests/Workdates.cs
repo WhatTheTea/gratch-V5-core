@@ -1,5 +1,4 @@
-﻿using gratch_core.Models;
-
+﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
@@ -9,7 +8,7 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class Workdates
     {
-        
+
         [TestMethod]
         public void Default()
         {

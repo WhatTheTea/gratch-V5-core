@@ -1,5 +1,4 @@
 ﻿using gratch_core;
-using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,7 +9,7 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class Graph
     {
-        
+
         [TestMethod]
         public void Default()
         {
