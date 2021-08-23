@@ -8,13 +8,11 @@ using System.Linq;
 namespace gratch_core_tests.Database
 {
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
-    public class Init
+    public class Database
     {
         [TestMethod]
         public void BasicReadWrite()
         {
-            new gratch_core.Models.GroupRepository().DeleteAll();
-
             var rep = new gratch_core.Models.GroupRepository();
             var group = DataFiller.GetGroup(20);
 
@@ -30,7 +28,6 @@ namespace gratch_core_tests.Database
         [TestMethod] //!Должен выполнятся после предыдущего
         public void ReadGroups()
         {
-            BasicReadWrite();
             List<IGroup> groups = new();
 
             Group.listener.Destroy();
@@ -48,6 +45,14 @@ namespace gratch_core_tests.Database
                     Assert.IsTrue(p.DutyDates.Any());
                 }
             });
+        }
+        [ClassCleanup]
+        public static void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using gratch_core;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
@@ -12,7 +14,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(20);
 
@@ -22,6 +24,14 @@ namespace gratch_core_tests.Graph_tests
             {
                 Assert.IsTrue(!person.DutyDates.Any());
             }
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

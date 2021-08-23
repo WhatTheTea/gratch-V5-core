@@ -14,7 +14,6 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void LessThanDaysInMonth()
         {
-            DataFiller.Repository.DeleteAll();
 
             //Arrange
             const int persCount = 20;
@@ -33,7 +32,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void MoreThanDaysInMoth()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             //Arrange
             const int persCount = 40;
@@ -47,6 +46,14 @@ namespace gratch_core_tests.Graph_tests
             //Assert
             actualPerson = group.Graph[group.Graph.Workdates.First()];
             Assert.AreEqual(expectedPerson, actualPerson);
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using gratch_core;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace gratch_core_tests.Group_tests
@@ -9,7 +11,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(2);
 
@@ -20,6 +22,14 @@ namespace gratch_core_tests.Group_tests
 
             Assert.AreEqual(person1, group[1].Name);
             Assert.AreEqual(person2, group[0].Name);
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

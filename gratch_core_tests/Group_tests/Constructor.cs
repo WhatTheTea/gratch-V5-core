@@ -13,7 +13,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             Random rng = new Random();
             var names = new List<string>();
@@ -31,6 +31,14 @@ namespace gratch_core_tests.Group_tests
                 var index = group.IndexOf(person);
                 Assert.IsTrue(person.Name == names[index]);
             }
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

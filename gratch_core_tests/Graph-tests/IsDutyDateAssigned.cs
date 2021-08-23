@@ -13,7 +13,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void Assigned()
         {
-            DataFiller.Repository.DeleteAll();
+
             var group = DataFiller.GetGroup(20);
 
             Assert.IsTrue(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
@@ -21,7 +21,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void NotAssigned_Cleared()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(20);
 
@@ -32,13 +32,19 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void NotAssigned_Holiday()
         {
-            DataFiller.Repository.DeleteAll();
-
             var group = DataFiller.GetGroup(20);
 
             group.Graph.Weekend.Add(DateTime.Now.FirstDayOfMonth().DayOfWeek);
 
             Assert.IsFalse(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(20);
             var expectedPerson = group[9];
@@ -26,6 +26,14 @@ namespace gratch_core_tests.Group_tests
 
             Assert.AreEqual(expectedPerson, actualPerson);
 
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

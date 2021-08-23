@@ -1,4 +1,6 @@
 ﻿
+using gratch_core;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace gratch_core_tests.Group_tests
@@ -9,7 +11,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             const int index = 9;
 
@@ -19,6 +21,14 @@ namespace gratch_core_tests.Group_tests
             group.Remove(group[index]);
 
             Assert.IsFalse(group.Contains(deletedPerson));
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

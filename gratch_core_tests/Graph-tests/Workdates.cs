@@ -1,4 +1,6 @@
 ﻿
+using gratch_core;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
@@ -12,7 +14,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             //Arrange
             var grp = DataFiller.GetGroup(20);
@@ -26,6 +28,13 @@ namespace gratch_core_tests.Graph_tests
             result = isFirstDay & isLastDay;
             Assert.IsTrue(result);
         }
-
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
+        }
     }
 }

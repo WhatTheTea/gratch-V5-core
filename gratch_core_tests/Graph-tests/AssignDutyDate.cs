@@ -10,11 +10,9 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class AssignDutyDate
     {
-
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
             //Arrange
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             //Act
@@ -27,7 +25,6 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void FirstDayIsHoliday()
         {
-            DataFiller.Repository.DeleteAll();
             //Arrange
             Group testgroup = DataFiller.GetGroup(20);
 
@@ -40,7 +37,6 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void OneWorkday()
         {
-            DataFiller.Repository.DeleteAll();
             //Arrange
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             //Act
@@ -54,6 +50,15 @@ namespace gratch_core_tests.Graph_tests
                 Assert.AreEqual(DayOfWeek.Sunday, person.DutyDates.First().DayOfWeek);
                 Assert.IsTrue(person.DutyDates.Count == 1);
             }
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
@@ -24,7 +24,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Deletion()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
@@ -34,6 +34,14 @@ namespace gratch_core_tests.Group_tests
 
             Assert.IsFalse(Group.AllInstances.Contains(group1));
             Assert.IsFalse(Group.AllInstances.Contains(group2));
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

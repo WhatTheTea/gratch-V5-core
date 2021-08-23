@@ -15,7 +15,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void Default()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             //Arrange
             var grp = DataFiller.GetGroup(20);
@@ -38,7 +38,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void EverydayIsHoliday()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(DaysInMonth);
 
@@ -48,6 +48,14 @@ namespace gratch_core_tests.Graph_tests
             }
 
             Assert.IsFalse(group.Graph.Workdates.Any());
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }

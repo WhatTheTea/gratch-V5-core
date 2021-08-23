@@ -14,7 +14,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameSuccessful()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(4);
             var name = "test";
@@ -30,7 +30,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameDaysInMonth()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             var name = "test";
@@ -46,12 +46,20 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameUnsuccesful()
         {
-            DataFiller.Repository.DeleteAll();
+
 
             var group = DataFiller.GetGroup(4);
             var name = group[0].Name;
 
             Assert.ThrowsException<ArgumentException>(() => group.Add(name));
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
         }
     }
 }
