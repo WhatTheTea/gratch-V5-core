@@ -1,10 +1,13 @@
 ﻿
 using gratch_core;
+using gratch_core.Models;
 
 namespace gratch_core_tests
 {
     internal static class DataFiller
     {
+        internal static gratch_core.Models.GroupRepository Repository = new();
+
         private static int gIterator = 1;
         private static int pIterator = 1;
         private static Person GetPerson(bool iterate = true)

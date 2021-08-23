@@ -7,7 +7,7 @@ namespace gratch_core
     public class SQLiteListener
     {
         private static SQLiteListener listener;
-        private readonly Models.GroupRepository repos = new();
+        private readonly GroupRepository repos = new();
         private SQLiteListener()
         {
             Group.GroupAdded += Group_GroupAdded;
@@ -26,14 +26,11 @@ namespace gratch_core
             }
             return listener;
         }
-        private PersonModel FindAndConvertPerson(object group, object person)
-        {
-            return (group as Group).ToModel()
-                .People.Single(p => p.Name == (person as Person).Name);
-        }
+        private static PersonModel FindAndConvertPerson(object group,
+                                                        object person) => (group as Group).ToModel().People.First(p => p.Name == (person as Person).Name);
         private void Group_PersonRemoved(object sender, object person)
         {
-            repos.DeletePerson(FindAndConvertPerson(sender,person));
+            repos.DeletePerson(FindAndConvertPerson(sender, person));
         }
 
         private void Group_PersonUpdated(object sender, object person)

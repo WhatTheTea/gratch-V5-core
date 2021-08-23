@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,6 +13,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group = DataFiller.GetGroup(20);
             var expectedPerson = group[9];
             var now = DateTime.Now;

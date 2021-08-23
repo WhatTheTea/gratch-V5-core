@@ -158,7 +158,7 @@ namespace gratch_core
             if (Count == 1)
             {
                 GroupAdded.Invoke(this);
-            } 
+            }
             PersonAdded.Invoke(this, newperson);
         }
         public void Clear()
@@ -173,7 +173,7 @@ namespace gratch_core
 
             if (Count > 0)
             {
-                PersonRemoved.Invoke(this,person);
+                PersonRemoved.Invoke(this, person);
             }
             else
             {

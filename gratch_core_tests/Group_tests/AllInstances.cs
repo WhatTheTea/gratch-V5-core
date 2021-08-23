@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,9 +8,12 @@ namespace gratch_core_tests.Group_tests
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class AllInstances
     {
+        
         [TestMethod]
         public void Default()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
             var group3 = DataFiller.GetGroup(30);
@@ -21,6 +25,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Deletion()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
 

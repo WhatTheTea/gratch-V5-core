@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,9 +11,12 @@ namespace gratch_core_tests.Group_tests
     [TestClass]
     public class Add
     {
+        
         [TestMethod]
         public void ByNameSuccessful()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group = DataFiller.GetGroup(4);
             var name = "test";
 
@@ -27,6 +31,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameDaysInMonth()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             var name = "test";
 
@@ -41,6 +47,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameUnsuccesful()
         {
+            DataFiller.Repository.DeleteAll();
+
             var group = DataFiller.GetGroup(4);
             var name = group[0].Name;
 

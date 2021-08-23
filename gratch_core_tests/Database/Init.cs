@@ -1,12 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using gratch_core;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using gratch_core;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace gratch_core_tests.Database
 {
@@ -14,7 +8,7 @@ namespace gratch_core_tests.Database
     public class Init
     {
         [TestMethod]
-        public void Basic()
+        public void BasicReadWrite()
         {
             new gratch_core.Models.GroupRepository().DeleteAll();
 
@@ -22,10 +16,13 @@ namespace gratch_core_tests.Database
             var group = DataFiller.GetGroup(20);
 
             var expected = group[0];
-            var actual = rep.GetGroup(group.Name).People[0].ToPerson();
+            var actual = DataFiller.Repository.GetGroup(group.Name).People[0].ToPerson();
 
             Assert.IsTrue(expected.Name == actual.Name);
-            Assert.IsTrue(expected.DutyDates.First().Date == actual.DutyDates.First().Date);
+            for (int i = 0; i < expected.DutyDates.Count; i++)
+            {
+                Assert.AreEqual(expected.DutyDates[i], actual.DutyDates[i]);
+            }
         }
     }
 }

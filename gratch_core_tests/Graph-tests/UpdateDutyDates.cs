@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,9 +11,12 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class UpdateDutyDates
     {
+        
         [TestMethod]
         public void LessThanDaysInMonth()
         {
+            DataFiller.Repository.DeleteAll();
+
             //Arrange
             const int persCount = 20;
 
@@ -30,6 +34,8 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void MoreThanDaysInMoth()
         {
+            DataFiller.Repository.DeleteAll();
+
             //Arrange
             const int persCount = 40;
 

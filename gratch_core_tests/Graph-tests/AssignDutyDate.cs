@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,10 +11,11 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class AssignDutyDate
     {
-        //private readonly int DaysInMonth = DateTime.Now.DaysInMonth();
+        
         [TestMethod]
         public void Default()
         {
+            DataFiller.Repository.DeleteAll();
             //Arrange
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             //Act
@@ -26,6 +28,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void FirstDayIsHoliday()
         {
+            DataFiller.Repository.DeleteAll();
             //Arrange
             Group testgroup = DataFiller.GetGroup(20);
 
@@ -38,6 +41,7 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void OneWorkday()
         {
+            DataFiller.Repository.DeleteAll();
             //Arrange
             var group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
             //Act

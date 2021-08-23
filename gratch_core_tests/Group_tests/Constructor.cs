@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,6 +14,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+            DataFiller.Repository.DeleteAll();
+
             Random rng = new Random();
             var names = new List<string>();
             Group group;
@@ -22,7 +25,7 @@ namespace gratch_core_tests.Group_tests
                 names.Add("name" + rng.Next());
             }
 
-            group = new Group("test",names);
+            group = new Group("test", names);
 
             foreach (var person in group)
             {
