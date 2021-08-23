@@ -43,7 +43,7 @@ namespace gratch_core_tests.Database
             groups.ForEach(grp =>
             {
                 foreach (var p in grp)
-                { 
+                {
                     Assert.IsTrue(p.Name != null);
                     Assert.IsTrue(p.DutyDates.Any());
                 }
