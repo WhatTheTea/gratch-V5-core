@@ -74,13 +74,13 @@ namespace gratch_core
             }
         }
         public void Replace(int pIndex, int withIndex)
-        {
-            string pBuffer = _people[pIndex].Name;
+        {   //Записываем имена в буфер
+            string pBuffer = _people[pIndex].Name; 
             string withBuffer = _people[withIndex].Name;
-
-            _people[pIndex].Name = string.Empty;
-            _people[withIndex].Name = null;
-
+            //Обходим ограничение на одно и то самое имя в группе
+            _people[pIndex].Rename(string.Empty,true);
+            _people[withIndex].Rename(null, true);
+            //Присваиваем из буфера
             _people[withIndex].Name = pBuffer;
             _people[pIndex].Name = withBuffer;
         }

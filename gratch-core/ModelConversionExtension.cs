@@ -34,7 +34,8 @@ namespace gratch_core
         {
             var grp = new Group();
             grp.Name = model.Name;
-            grp.Graph.Weekend = new ObservableCollection<DayOfWeek>(model.Weekend);
+            grp.Graph.Weekend = new ObservableCollection<DayOfWeek>(
+                JsonSerializer.Deserialize<List<DayOfWeek>>(model.WeekendBlobbed));
             foreach (var person in model.People)
             {
                 grp.Add(person.ToPerson());

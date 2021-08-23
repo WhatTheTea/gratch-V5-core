@@ -27,24 +27,26 @@ namespace gratch_core
         }
 
 
-        public void Rename(string name)
+        public void Rename(string name, bool invokeMuted = false)
         {
             foreach (var group in Group.AllInstances)
             {
-                bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
-                bool renameExists = group.Where(reperson => reperson.Name == name).Any();
+                bool personExists = group.Any(
+                    person => person.Name == Name && person.DutyDates == DutyDates);// Select group, where this person is
+                bool renameExists = group.Any(reperson => reperson.Name == name);
                 if (personExists && !renameExists)
                 {
 #if DEBUG
-                    Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name}");
+                    Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name} | InvokeMuted: {invokeMuted}");
 #endif              
                     _name = name;
-                    PersonChanged.Invoke(this);
+                    if(!invokeMuted) PersonChanged.Invoke(this);
                 }
-                else
+                else if(renameExists)
                 {
 #if DEBUG
-                    Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}, Rename: {name}");
+                    Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}," +
+                        $" Rename: {name} | InvokeMuted: {invokeMuted}");
 #endif
                 }
             }
