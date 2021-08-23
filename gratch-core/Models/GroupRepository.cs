@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace gratch_core.Models
 {
-    internal class GroupRepository
+    public class GroupRepository : IGroupRepository
     {
         private readonly SQLiteConnection db;
         public GroupRepository()
@@ -19,13 +19,24 @@ namespace gratch_core.Models
             TextBlobOperations.SetTextSerializer(Newtonsoft.Json.JsonSerializer.Create() as ITextBlobSerializer);
         }
         #region Getters
-        public List<GroupModel> GetGroups()
+        public List<GroupModel> GetAllGroups()
         {
             return db.GetAllWithChildren<GroupModel>();
         }
+        public List<IGroup> LoadAllGroups()
+        {
+            var list = new List<IGroup>();
+            Group.listener = null;
+            foreach(var mod in GetAllGroups())
+            {
+                list.Add(mod.ToGroup());
+            }
+            Group.listener = SQLiteListener.GetListener();
+            return list;
+        }
         public GroupModel GetGroup(string name)
         {
-            return GetGroups().FirstOrDefault(grp => grp.Name == name);
+            return GetAllGroups().FirstOrDefault(grp => grp.Name == name);
         }
         public GroupModel GetGroup(int id)
         {

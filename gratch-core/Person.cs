@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -17,13 +18,14 @@ namespace gratch_core
 
         private string _name;
         public string Name { get => _name; set => Rename(value); }
-        public ObservableCollection<DateTime> DutyDates { get; set; } = new(); //АвтоСвойство
+        private ObservableCollection<DateTime> _dutyDates = new();
+        public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = value as ObservableCollection<DateTime>; }  //АвтоСвойство
 
         public Person(string name)
         {
             _name = name;
 
-            DutyDates.CollectionChanged += DutyDates_CollectionChanged;
+            _dutyDates.CollectionChanged += DutyDates_CollectionChanged;
         }
 
 

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace gratch_core
 {
-    public class SQLiteListener
+    internal class SQLiteListener
     {
         private static SQLiteListener listener;
         private readonly GroupRepository repos = new();
@@ -17,6 +17,18 @@ namespace gratch_core
             Group.PersonAdded += Group_PersonAdded;
             Group.PersonUpdated += Group_PersonUpdated;
             Group.PersonRemoved += Group_PersonRemoved;
+        }
+        ~SQLiteListener()
+        {
+            //listener = null;
+
+            Group.GroupAdded -= Group_GroupAdded;
+            Group.GroupChanged -= Group_GroupChanged;
+            Group.GroupRemoved -= Group_GroupRemoved;
+
+            Group.PersonAdded -= Group_PersonAdded;
+            Group.PersonUpdated -= Group_PersonUpdated;
+            Group.PersonRemoved -= Group_PersonRemoved;
         }
         public static SQLiteListener GetListener()
         {

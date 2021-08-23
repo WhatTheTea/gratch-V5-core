@@ -8,20 +8,20 @@ using System.Runtime.CompilerServices;
 
 namespace gratch_core
 {
-    public class Group : IList<Person>
+    public class Group : IGroup
     {
         #region events
-        private static SQLiteListener listener = SQLiteListener.GetListener();
+        internal static SQLiteListener listener = SQLiteListener.GetListener();
 
+        public delegate void GroupEventHandler(object sender);
         public static event GroupEventHandler GroupChanged;
         public static event GroupEventHandler GroupAdded;
         public static event GroupEventHandler GroupRemoved;
-        public delegate void GroupEventHandler(object sender);
 
+        public delegate void PersonChangedEventHandler(object sender, object person);
         public static event PersonChangedEventHandler PersonUpdated;
         public static event PersonChangedEventHandler PersonRemoved;
         public static event PersonChangedEventHandler PersonAdded;
-        public delegate void PersonChangedEventHandler(object sender, object person);
 
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -41,6 +41,8 @@ namespace gratch_core
             instances.Where(instance => instance.Count > 0).ToList().AsReadOnly();
         #endregion
         private string _name;
+        private readonly List<Person> _people = new();
+        private Graph graph;
         public string Name
         {
             get => _name;
@@ -53,8 +55,6 @@ namespace gratch_core
                 }
             }
         }
-        private readonly List<Person> _people = new();
-        private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
@@ -68,10 +68,7 @@ namespace gratch_core
         public Group(string GroupName, IEnumerable<string> names) : this()
         {
             _name = GroupName;
-            foreach (var name in names)
-            {
-                Add(name);
-            }
+            foreach (var name in names) Add(name);
         }
         public void Replace(int pIndex, int withIndex)
         {   //Записываем имена в буфер
@@ -96,7 +93,6 @@ namespace gratch_core
                 Graph.AssignEveryone();
             }
         }
-
         #region IList
         public Person this[int index]
         {
@@ -138,15 +134,12 @@ namespace gratch_core
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person) // not safe for dutydates
         {
-            if (this == null) //InstanceReused
-            {
-                instances.Add(this);
-            }
             var newperson = person.Clone() as Person;
             _people.Add(newperson);
 
             if (Count == 1)
             {
+                instances.Add(this);
                 GroupAdded.Invoke(this);
             }
             PersonAdded.Invoke(this, newperson);

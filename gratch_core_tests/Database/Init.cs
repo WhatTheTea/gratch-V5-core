@@ -33,7 +33,7 @@ namespace gratch_core_tests.Database
             BasicReadWrite();
             List<Group> groups = new();
 
-            var models = new gratch_core.Models.GroupRepository().GetGroups();
+            var models = new gratch_core.Models.GroupRepository().GetAllGroups();
             foreach (var grp in Group.AllInstances) grp.Clear();
             foreach (var mod in models) groups.Add(mod.ToGroup());
 
