@@ -24,12 +24,6 @@ namespace gratch_core_tests.Group_tests
             Assert.AreEqual(person2, group[0].Name);
         }
         [TestCleanup]
-        public void CleanUp()
-        {
-            DataFiller.Repository.DeleteAll();
-            Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
-        }
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

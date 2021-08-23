@@ -13,13 +13,10 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-
-
             const int people = 9;
             var group = DataFiller.GetGroup(people);
             var person = new Person("test");
-            person.DutyDates = new();
-            person.DutyDates.Add(DateTime.MinValue);
+            person.DutyDates = new System.Collections.ObjectModel.Collection<DateTime>{DateTime.MinValue};
 
             group.Insert(5, person);
 
@@ -28,12 +25,6 @@ namespace gratch_core_tests.Group_tests
             Assert.AreEqual(people + 1, group.Count);
         }
         [TestCleanup]
-        public void CleanUp()
-        {
-            DataFiller.Repository.DeleteAll();
-            Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
-        }
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

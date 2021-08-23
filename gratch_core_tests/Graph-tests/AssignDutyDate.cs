@@ -54,11 +54,7 @@ namespace gratch_core_tests.Graph_tests
         [TestCleanup]
         public void CleanUp()
         {
-            DataFiller.Repository.DeleteAll();
-
-            Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
+            DataFiller.CleanUp();
         }
     }
 }

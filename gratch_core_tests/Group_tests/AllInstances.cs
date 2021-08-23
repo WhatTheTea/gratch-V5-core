@@ -11,8 +11,6 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-
-
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
             var group3 = DataFiller.GetGroup(30);
@@ -38,10 +36,7 @@ namespace gratch_core_tests.Group_tests
         [TestCleanup]
         public void CleanUp()
         {
-            DataFiller.Repository.DeleteAll();
-            Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
+            DataFiller.CleanUp();
         }
     }
 }

@@ -39,12 +39,6 @@ namespace gratch_core_tests.Graph_tests
             Assert.IsFalse(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
         [TestCleanup]
-        public void CleanUp()
-        {
-            DataFiller.Repository.DeleteAll();
-            Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
-        }
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

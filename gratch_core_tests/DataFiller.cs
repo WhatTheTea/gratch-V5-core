@@ -26,5 +26,20 @@ namespace gratch_core_tests
 
             return group;
         }
+        private static void ResetIterators()
+        {
+            gIterator = 1;
+            pIterator = 1;
+        }
+        internal static void CleanUp()
+        {
+            DataFiller.Repository.DeleteAll();
+
+            Group.listener.Destroy();
+            foreach (var grp in Group.AllInstances) grp.Clear();
+            Group.listener = SQLiteListener.GetListener();
+
+            DataFiller.ResetIterators();
+        }
     }
 }
