@@ -30,7 +30,7 @@ namespace gratch_core_tests.Database
             }
         }
         [TestMethod] //!Должен выполнятся после предыдущего
-        public void ReadGroups()
+        public void LoadGroups()
         {
             BasicReadWrite();
 

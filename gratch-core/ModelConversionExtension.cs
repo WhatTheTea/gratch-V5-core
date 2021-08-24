@@ -18,8 +18,7 @@ namespace gratch_core
         };
         private static Person ToPerson(this PersonModel model) => new(model.Name)
         {
-            DutyDates = new Collection<DateTime>(
-                JsonSerializer.Deserialize<List<DateTime>>(model.DutyDatesBlob))
+            DutyDates = JsonSerializer.Deserialize<Collection<DateTime>>(model.DutyDatesBlob)
         };
         private static List<PersonModel> ToModels(this IList<Person> people)
         {

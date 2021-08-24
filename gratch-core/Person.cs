@@ -18,7 +18,7 @@ namespace gratch_core
         private string _name;
         public string Name { get => _name; set => Rename(value); }
         private ObservableCollection<DateTime> _dutyDates = new();
-        public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = value as ObservableCollection<DateTime>; }  //АвтоСвойство
+        public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = new ObservableCollection<DateTime>(value); }  //АвтоСвойство
 
         public Person(string name)
         {

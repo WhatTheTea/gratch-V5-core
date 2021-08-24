@@ -41,12 +41,14 @@ namespace gratch_core.Models
         public List<IGroup> LoadAllGroups()
         {
             var list = new List<IGroup>();
+
             Group.listener.Destroy();
             foreach (var mod in GetAllGroups())
             {
                 list.Add(mod.ToGroup());
             }
             Group.listener = SQLiteListener.GetListener();
+
             return list;
         }
         public GroupModel GetGroup(string name) => GetAllGroups().FirstOrDefault(grp => grp.Name == name);
