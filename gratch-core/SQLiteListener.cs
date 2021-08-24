@@ -1,4 +1,7 @@
-﻿using gratch_core.Models;
+﻿#define LOGGING
+#undef LOGGING
+
+using gratch_core.Models;
 
 using System;
 using System.Linq;
@@ -44,7 +47,7 @@ namespace gratch_core
         private void Group_PersonRemoved(object sender, object person)
         {
             repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonRemoved);
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} Removed from {(sender as Group).Name}");
 #endif
         }
@@ -52,7 +55,7 @@ namespace gratch_core
         private void Group_PersonUpdated(object sender, object person)
         {
             repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonChanged);
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} updated in {(sender as Group).Name}");
 #endif
         }
@@ -60,7 +63,7 @@ namespace gratch_core
         private void Group_PersonAdded(object sender, object person)
         {
             repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonAdded);
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} added from {(sender as Group).Name}");
 #endif
         }
@@ -68,7 +71,7 @@ namespace gratch_core
         private void Group_GroupRemoved(object sender)
         {
             repos.DeleteGroup((sender as Group));
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name} removed from table");
 #endif
         }
@@ -76,7 +79,7 @@ namespace gratch_core
         private void Group_GroupChanged(object sender)
         {
             repos.UpdateGroup((sender as Group), GroupRepository.UpdateType.GroupChanged);
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name} changed");
 #endif
         }
@@ -84,7 +87,7 @@ namespace gratch_core
         private void Group_GroupAdded(object sender)
         {
             repos.InsertGroup((sender as Group));
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name}  table");
 #endif
         }

@@ -37,8 +37,12 @@ namespace gratch_core
         #endregion
         #region Instances
         private static readonly List<Group> instances = new List<Group>();
-        internal static IList<Group> AllInstances =>
-            instances.Where(instance => instance.Count > 0).ToList().AsReadOnly();
+        internal static IList<Group> AllInstances {
+            get
+            {
+               return instances.Where(instance => instance.Count > 0).Distinct().ToList().AsReadOnly();
+            }
+    }
         #endregion
         private string _name;
         private readonly List<Person> _people = new();

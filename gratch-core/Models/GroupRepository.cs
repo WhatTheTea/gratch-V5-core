@@ -1,4 +1,7 @@
-﻿using SQLite;
+﻿#define LOGGING
+#undef LOGGING
+
+using SQLite;
 
 using SQLiteNetExtensions.Extensions;
 using SQLiteNetExtensions.Extensions.TextBlob;
@@ -89,11 +92,11 @@ namespace gratch_core.Models
                 p.GroupId = mod.Id;
                 p.GroupModel = mod;
                 p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)].DutyDates));
-#if DEBUG
+#if LOGGING
                 Console.WriteLine(DateTime.Now + $" | Repository | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");
 #endif
             });
-#if DEBUG
+#if LOGGING
             int RowsChanged = 0;
 #endif
             db.BeginTransaction();
@@ -101,7 +104,7 @@ namespace gratch_core.Models
             {
                 db.RunInTransaction(() =>
                 {
-#if DEBUG
+#if LOGGING
                     RowsChanged +=
 #endif
                 db.Execute("UPDATE PersonModel " +
@@ -114,7 +117,7 @@ namespace gratch_core.Models
                 });
 
             }
-#if DEBUG
+#if LOGGING
             Console.WriteLine(DateTime.Now + $" | Repository | RowsChanged: {RowsChanged}");
 #endif
             db.Commit();
