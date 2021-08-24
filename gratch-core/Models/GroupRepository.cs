@@ -160,7 +160,18 @@ namespace gratch_core.Models
             Update_People(group);
         }
 
-        public void DeleteGroup(IGroup group) => db.Delete(group);
+        public void DeleteGroup(IGroup group)
+        {
+            var deletedgroupId = (from g in GetAllGroups()
+                                 where g.Name == @group.Name
+                                 select g.Id).First();
+            db.Delete<GroupModel>(deletedgroupId);
+
+            db.BeginTransaction();
+            db.RunInTransaction(() => db.Execute("DELETE FROM PersonModel " +
+                "WHERE GroupId LIKE ?", deletedgroupId));
+            db.Commit();
+        }
 
         public void DeleteAll()
         {

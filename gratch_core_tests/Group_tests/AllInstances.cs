@@ -22,8 +22,6 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Deletion()
         {
-
-
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
 
