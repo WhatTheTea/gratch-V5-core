@@ -122,14 +122,16 @@ namespace gratch_core
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
-            PersonRemoved?.Invoke(this, _people[index]);
             _people.RemoveAt(index);
-            if (Count <= 0)
+            PersonRemoved?.Invoke(this, _people[index]);
+            if (Count < 1)
             {
                 GroupRemoved?.Invoke(this);
             }
-
-            Graph.AssignEveryone();
+            else
+            {
+                Graph.AssignEveryone();
+            }
         }
         #endregion
         #region ICollection
@@ -158,18 +160,16 @@ namespace gratch_core
         }
         public bool Remove(Person person)
         {
-            if (Count > 0)
-            {
-                PersonRemoved?.Invoke(this, person);
-            }
-            else
+            var _ = _people.Remove(person);
+            PersonRemoved?.Invoke(this, person);
+            if (Count < 1)
             {
                 GroupRemoved?.Invoke(this);
             }
-
-            var _ = _people.Remove(person);
-
-            Graph.AssignEveryone();
+            else
+            {
+                Graph.AssignEveryone();
+            }
             return _;
         }
         #endregion

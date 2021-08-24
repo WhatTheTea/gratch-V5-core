@@ -171,6 +171,7 @@ namespace gratch_core.Models
             db.RunInTransaction(() => db.Execute("DELETE FROM PersonModel " +
                 "WHERE GroupId LIKE ?", deletedgroupId));
             db.Commit();
+            if (GetAllGroups().Count == 0) DeleteAll();
         }
 
         public void DeleteAll()

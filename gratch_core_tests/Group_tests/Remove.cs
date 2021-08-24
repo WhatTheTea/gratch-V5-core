@@ -9,8 +9,6 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
-
-
             const int index = 9;
 
             var group = DataFiller.GetGroup(20);
