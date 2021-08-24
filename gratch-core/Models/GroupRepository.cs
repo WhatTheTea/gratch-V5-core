@@ -89,13 +89,11 @@ namespace gratch_core.Models
             var mod = group.ToModel();
             mod.Id = Group.AllInstances.IndexOf(group) + 1;
             mod.People.ForEach(p =>
-            { 
-                var compressedDutyDates = group[mod.Id - 1].DutyDates.Select(dd =>
-                dd.ToString("yyyy-MM-dd"));
-
+            {
                 p.GroupId = mod.Id;
                 p.GroupModel = mod;
-                p.DutyDatesBlob = new string(JsonSerializer.Serialize(compressedDutyDates));
+                p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)]
+                    .DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"))));
                 //p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)].DutyDates));
 #if LOGGING
                 Console.WriteLine(DateTime.Now + $" | Repository | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");

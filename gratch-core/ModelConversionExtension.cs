@@ -10,18 +10,13 @@ namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
-        private static PersonModel ToModel(this Person person)
+        private static PersonModel ToModel(this Person person) => new()
         {
-            var compressedDutyDates = person.DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"));
-            return new()
-            {
-
-                Name = person.Name,
-                DutyDates = person.DutyDates.ToList(),
-                DutyDatesBlob = JsonSerializer.Serialize(compressedDutyDates)
-            };
-        }
-
+            Name = person.Name,
+            DutyDates = person.DutyDates.ToList(),
+            DutyDatesBlob = JsonSerializer.Serialize(person
+                    .DutyDates.Select(dd => dd.ToString("yyyy-MM-dd")))
+        };
         private static Person ToPerson(this PersonModel model) => new(model.Name)
         {
             DutyDates = JsonSerializer.Deserialize<Collection<DateTime>>(model.DutyDatesBlob)
