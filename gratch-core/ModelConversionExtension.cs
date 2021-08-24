@@ -102,7 +102,8 @@ namespace gratch_core
             groupModel.Name = group.Name;
 
             groupModel.People = group.ToModels();
-            groupModel.People.ForEach(mod => {
+            groupModel.People.ForEach(mod =>
+            {
                 mod.GroupModel = groupModel;
                 mod.Id = groupModel.People.IndexOf(mod) + 1;
             });

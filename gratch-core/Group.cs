@@ -143,7 +143,7 @@ namespace gratch_core
                 instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
-                PersonAdded?.Invoke(this, newperson);
+            PersonAdded?.Invoke(this, newperson);
         }
         public void Clear()
         {

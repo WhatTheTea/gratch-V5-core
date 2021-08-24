@@ -75,7 +75,7 @@ namespace gratch_core
 
         private void Group_GroupChanged(object sender)
         {
-            repos.UpdateGroup((sender as Group),GroupRepository.UpdateType.GroupChanged);
+            repos.UpdateGroup((sender as Group), GroupRepository.UpdateType.GroupChanged);
 #if DEBUG
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name} changed");
 #endif
