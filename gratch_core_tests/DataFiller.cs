@@ -49,10 +49,10 @@ namespace gratch_core_tests
         {
             foreach (var grp in DataFiller.Repository.GetAllGroups())
             {
-                Console.WriteLine(DateTime.Now + " | GroupRepository.RunCheck | _id | Id | GrpID | Name | DutyDates");
+                Console.WriteLine(DateTime.Now + " | Table |_id|Id|GrpID| Name | DutyDates");
                 foreach (var p in grp.People)
                 {
-                    Console.WriteLine(DateTime.Now + $" | GroupRepository.RunCheck | {p._id} | {p.Id} | {p.GroupId} |" +
+                    Console.WriteLine(DateTime.Now + $" | Table | {p._id} |  {p.Id} | {p.GroupId} |" +
                         $" {p.Name} | {p.DutyDatesBlob}");
                 }
             }

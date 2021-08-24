@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace gratch_core.Models
 {
@@ -33,9 +32,9 @@ namespace gratch_core.Models
         }
         #region Getters
         public List<GroupModel> GetAllGroups()
-{
+        {
             var result = db.GetAllWithChildren<GroupModel>();
-            result.ForEach(g=>g.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob)));
+            result.ForEach(g => g.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob)));
             return result;
         }
         public List<IGroup> LoadAllGroups()
@@ -90,10 +89,14 @@ namespace gratch_core.Models
             var mod = group.ToModel();
             mod.Id = Group.AllInstances.IndexOf(group) + 1;
             mod.People.ForEach(p =>
-            {
+            { 
+                var compressedDutyDates = group[mod.Id - 1].DutyDates.Select(dd =>
+                dd.ToString("yyyy-MM-dd"));
+
                 p.GroupId = mod.Id;
                 p.GroupModel = mod;
-                p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)].DutyDates));
+                p.DutyDatesBlob = new string(JsonSerializer.Serialize(compressedDutyDates));
+                //p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)].DutyDates));
 #if LOGGING
                 Console.WriteLine(DateTime.Now + $" | Repository | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");
 #endif
@@ -109,13 +112,13 @@ namespace gratch_core.Models
 #if LOGGING
                     RowsChanged +=
 #endif
-                db.Execute("UPDATE PersonModel " +
-                        "SET Name = ?, DutyDatesBlob = ? " +
-                        "WHERE Id LIKE ? AND GroupId LIKE ?" +
-                        "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)",
-                        p.Name, p.DutyDatesBlob,
-                        p.Id, p.GroupId,
-                        p.Name, p.DutyDatesBlob);
+                    db.Execute("UPDATE PersonModel " +
+                            "SET Name = ?, DutyDatesBlob = ? " +
+                            "WHERE Id LIKE ? AND GroupId LIKE ?" +
+                            "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)",
+                            p.Name, p.DutyDatesBlob,
+                            p.Id, p.GroupId,
+                            p.Name, p.DutyDatesBlob);
                 });
 
             }
@@ -157,7 +160,7 @@ namespace gratch_core.Models
             person.GroupModel = mod;
             db.Delete(person);
             Update_People(group);
-        } 
+        }
 
         public void DeleteGroup(IGroup group) => db.Delete(group);
 

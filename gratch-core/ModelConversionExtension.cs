@@ -10,12 +10,18 @@ namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
-        private static PersonModel ToModel(this Person person) => new()
+        private static PersonModel ToModel(this Person person)
         {
-            Name = person.Name,
-            DutyDates = person.DutyDates.ToList(),
-            DutyDatesBlob = JsonSerializer.Serialize(person.DutyDates)
-        };
+            var compressedDutyDates = person.DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"));
+            return new()
+            {
+
+                Name = person.Name,
+                DutyDates = person.DutyDates.ToList(),
+                DutyDatesBlob = JsonSerializer.Serialize(compressedDutyDates)
+            };
+        }
+
         private static Person ToPerson(this PersonModel model) => new(model.Name)
         {
             DutyDates = JsonSerializer.Deserialize<Collection<DateTime>>(model.DutyDatesBlob)
@@ -40,47 +46,7 @@ namespace gratch_core
             }
             return grp;
         }
-        /*internal static GroupModel ToModel(this Group group)
-        {
-            //Последняя группа для получения GroupID при вставке
-            var lastGrp = new GroupRepository()?.GetAllGroups()?.LastOrDefault();
-            var model = new GroupModel
-            {
-                Id = lastGrp == null ? 1 : Group.AllInstances.IndexOf(group) + 1, //если последней группы нету, значит это первая
-                Name = group.Name,
-                Weekend = group.Graph.Weekend.ToList(),
-            };
-
-            model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
-
-            var people = group.ToModels();
-            people.ForEach(p =>
-            {
-                if (people.IndexOf(p) == 0)// Если он первый, то присвоить 1, иначе
-                {
-                    p.Id = 1;
-                }
-                else
-                {
-                    int globalCount = 0;
-                    new GroupRepository().GetAllGroups().ForEach(grp =>
-                    {
-                        if (grp.Name != group.Name)
-                        {
-                            globalCount += grp.People.Count;
-                        }
-                    });
-                    p.Id = globalCount + people.IndexOf(p) + 1;
-                }
-                p.GroupId = model.Id;
-                p.GroupModel = model;
-                p.DutyDatesBlobbed = JsonSerializer.Serialize(p.DutyDates);
-            });
-            model.People = people;
-
-            return model;
-        }*/
-        internal static GroupModel ToModel(this Group group, bool renamed = false)
+        internal static GroupModel ToModel(this IGroup group, bool renamed = false)
         {
             GroupRepository repository = new GroupRepository();
             var allGroupsInDB = repository.GetAllGroups();
