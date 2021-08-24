@@ -10,18 +10,18 @@ namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
-
         private static PersonModel ToModel(this Person person) => new()
         {
             Name = person.Name,
             DutyDates = person.DutyDates.ToList(),
+            DutyDatesBlob = JsonSerializer.Serialize(person.DutyDates)
         };
         internal static Person ToPerson(this PersonModel model) => new(model.Name)
         {
-            DutyDates = new ObservableCollection<DateTime>(
-                JsonSerializer.Deserialize<List<DateTime>>(model.DutyDatesBlobbed))
+            DutyDates = new Collection<DateTime>(
+                JsonSerializer.Deserialize<List<DateTime>>(model.DutyDatesBlob))
         };
-        internal static List<PersonModel> ToModels(this IList<Person> people)
+        private static List<PersonModel> ToModels(this IList<Person> people)
         {
             var list = new List<PersonModel>();
             foreach (var person in people)
@@ -32,8 +32,10 @@ namespace gratch_core
         }
         internal static Group ToGroup(this GroupModel model)
         {
-            var grp = new Group();
-            grp.Name = model.Name;
+            var grp = new Group
+            {
+                Name = model.Name
+            };
             grp.Graph.Weekend = new ObservableCollection<DayOfWeek>(
                 JsonSerializer.Deserialize<List<DayOfWeek>>(model.WeekendBlobbed));
             foreach (var person in model.People)
@@ -42,12 +44,13 @@ namespace gratch_core
             }
             return grp;
         }
-        internal static GroupModel ToModel(this Group group)
+        /*internal static GroupModel ToModel(this Group group)
         {
+            //Последняя группа для получения GroupID при вставке
+            var lastGrp = new GroupRepository()?.GetAllGroups()?.LastOrDefault();
             var model = new GroupModel
             {
-                Id = Group.AllInstances.IndexOf(group) != -1 ? Group.AllInstances.IndexOf(group) + 1
-                                                                  : throw new ArgumentNullException("Id", "groupId is not valid"),
+                Id = lastGrp == null ? 1 : Group.AllInstances.IndexOf(group) + 1, //если последней группы нету, значит это первая
                 Name = group.Name,
                 Weekend = group.Graph.Weekend.ToList(),
             };
@@ -55,15 +58,59 @@ namespace gratch_core
             model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
 
             var people = group.ToModels();
-            for (int i = 0; i < people.Count; i++)
+            people.ForEach(p =>
             {
-                people[i].Id = i + 1;
-                people[i].GroupModel = model;
-                people[i].GroupId = model.Id;
-            }
+                if (people.IndexOf(p) == 0)// Если он первый, то присвоить 1, иначе
+                {
+                    p.Id = 1;
+                }
+                else
+                {
+                    int globalCount = 0;
+                    new GroupRepository().GetAllGroups().ForEach(grp =>
+                    {
+                        if (grp.Name != group.Name)
+                        {
+                            globalCount += grp.People.Count;
+                        }
+                    });
+                    p.Id = globalCount + people.IndexOf(p) + 1;
+                }
+                p.GroupId = model.Id;
+                p.GroupModel = model;
+                p.DutyDatesBlobbed = JsonSerializer.Serialize(p.DutyDates);
+            });
             model.People = people;
 
             return model;
+        }*/
+        internal static GroupModel ToModel(this Group group, bool renamed = false)
+        {
+            GroupRepository repository = new GroupRepository();
+            var allGroupsInDB = repository.GetAllGroups();
+
+            GroupModel groupModel = new GroupModel();
+            if (allGroupsInDB.Exists(grp => grp.Name == group.Name)) //Если группа существует, значит она просто обновляется
+            {
+                groupModel.Id = allGroupsInDB.FindIndex(grp => grp.Name == group.Name) + 1;
+            }
+            else if (renamed) //Если не существует, то вставляется новая, где уже работает библиотека, но если группу переименовали, то:
+            {
+                throw new NotImplementedException();
+            }
+
+            groupModel.Name = group.Name;
+
+            groupModel.People = group.ToModels();
+            groupModel.People.ForEach(mod => {
+                mod.GroupModel = groupModel;
+                mod.Id = groupModel.People.IndexOf(mod) + 1;
+            });
+
+            groupModel.Weekend = group.Graph.Weekend.ToList();
+            groupModel.WeekendBlobbed = JsonSerializer.Serialize(groupModel.Weekend);
+
+            return groupModel;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 namespace gratch_core_tests.Database
 {
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
-    public class Database
+    public class Write_Read
     {
         [TestMethod]
         public void BasicReadWrite()
@@ -20,6 +20,7 @@ namespace gratch_core_tests.Database
             var actual = DataFiller.Repository.GetGroup(group.Name).People[0].ToPerson();
 
             Assert.IsTrue(expected.Name == actual.Name);
+            Assert.IsTrue(expected.DutyDates.Count == actual.DutyDates.Count);
             for (int i = 0; i < expected.DutyDates.Count; i++)
             {
                 Assert.AreEqual(expected.DutyDates[i], actual.DutyDates[i]);
@@ -28,6 +29,8 @@ namespace gratch_core_tests.Database
         [TestMethod] //!Должен выполнятся после предыдущего
         public void ReadGroups()
         {
+            BasicReadWrite();
+
             List<IGroup> groups = new();
 
             Group.listener.Destroy();
@@ -46,8 +49,8 @@ namespace gratch_core_tests.Database
                 }
             });
         }
-        [ClassCleanup]
-        public static void CleanUp()
+        [TestCleanup]
+        public void CleanUp()
         {
             DataFiller.Repository.DeleteAll();
             Group.listener.Destroy();

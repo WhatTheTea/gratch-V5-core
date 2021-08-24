@@ -46,17 +46,12 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void ByNameUnsuccesful()
         {
-
-
             var group = DataFiller.GetGroup(4);
             var name = group[0].Name;
 
             Assert.ThrowsException<ArgumentException>(() => group.Add(name));
         }
         [TestCleanup]
-        public void CleanUp()
-        {
-            DataFiller.CleanUp();
-        }
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

@@ -11,6 +11,7 @@ namespace gratch_core
     public class Graph : IGraph
     {
         #region events
+        internal event Person.PersonHandler PersonChanged;
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             AssignEveryone();
@@ -64,6 +65,7 @@ namespace gratch_core
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
                     people[pIndex].DutyDates.Add(dutyDate);
+                    PersonChanged.Invoke(people[pIndex]);
                 }
             }
         }

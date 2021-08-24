@@ -63,6 +63,7 @@ namespace gratch_core
 
             Person.PersonChanged += Person_PersonUpdated;
             graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
+            graph.PersonChanged += Person_PersonUpdated;
         }
         public Group(string GroupName) : this() => _name = GroupName;
         public Group(string GroupName, IEnumerable<string> names) : this()
@@ -142,7 +143,7 @@ namespace gratch_core
                 instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
-            PersonAdded?.Invoke(this, newperson);
+                PersonAdded?.Invoke(this, newperson);
         }
         public void Clear()
         {

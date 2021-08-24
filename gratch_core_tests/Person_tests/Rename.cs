@@ -1,6 +1,4 @@
 ﻿
-using gratch_core;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace gratch_core_tests.Person_tests

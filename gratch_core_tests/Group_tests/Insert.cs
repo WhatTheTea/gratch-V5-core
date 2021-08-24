@@ -16,7 +16,7 @@ namespace gratch_core_tests.Group_tests
             const int people = 9;
             var group = DataFiller.GetGroup(people);
             var person = new Person("test");
-            person.DutyDates = new System.Collections.ObjectModel.Collection<DateTime>{DateTime.MinValue};
+            person.DutyDates = new System.Collections.ObjectModel.Collection<DateTime> { DateTime.MinValue };
 
             group.Insert(5, person);
 

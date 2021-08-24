@@ -1,6 +1,4 @@
 ﻿
-using gratch_core;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
