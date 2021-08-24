@@ -16,7 +16,7 @@ namespace gratch_core
             DutyDates = person.DutyDates.ToList(),
             DutyDatesBlob = JsonSerializer.Serialize(person.DutyDates)
         };
-        internal static Person ToPerson(this PersonModel model) => new(model.Name)
+        private static Person ToPerson(this PersonModel model) => new(model.Name)
         {
             DutyDates = new Collection<DateTime>(
                 JsonSerializer.Deserialize<List<DateTime>>(model.DutyDatesBlob))
@@ -32,10 +32,7 @@ namespace gratch_core
         }
         internal static Group ToGroup(this GroupModel model)
         {
-            var grp = new Group
-            {
-                Name = model.Name
-            };
+            var grp = new Group(model.Name);
             grp.Graph.Weekend = new ObservableCollection<DayOfWeek>(
                 JsonSerializer.Deserialize<List<DayOfWeek>>(model.WeekendBlobbed));
             foreach (var person in model.People)

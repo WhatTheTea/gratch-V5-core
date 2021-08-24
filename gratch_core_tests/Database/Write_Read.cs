@@ -17,7 +17,10 @@ namespace gratch_core_tests.Database
             var group = DataFiller.GetGroup(20);
 
             var expected = group[0];
-            var actual = DataFiller.Repository.GetGroup(group.Name).People[0].ToPerson();
+
+            Group.listener.Destroy();
+            var actual = DataFiller.Repository.GetGroup(group.Name).People[0];
+            Group.listener = SQLiteListener.GetListener();
 
             Assert.IsTrue(expected.Name == actual.Name);
             Assert.IsTrue(expected.DutyDates.Count == actual.DutyDates.Count);

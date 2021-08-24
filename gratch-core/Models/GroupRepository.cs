@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace gratch_core.Models
 {
@@ -32,8 +33,10 @@ namespace gratch_core.Models
         }
         #region Getters
         public List<GroupModel> GetAllGroups()
-        {
-            return db.GetAllWithChildren<GroupModel>();
+{
+            var result = db.GetAllWithChildren<GroupModel>();
+            result.ForEach(g=>g.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob)));
+            return result;
         }
         public List<IGroup> LoadAllGroups()
         {
@@ -46,10 +49,7 @@ namespace gratch_core.Models
             Group.listener = SQLiteListener.GetListener();
             return list;
         }
-        public GroupModel GetGroup(string name)
-        {
-            return GetAllGroups().FirstOrDefault(grp => grp.Name == name);
-        }
+        public GroupModel GetGroup(string name) => GetAllGroups().FirstOrDefault(grp => grp.Name == name);
         public GroupModel GetGroup(int id)
         {
             return db.GetWithChildren<GroupModel>(id);
