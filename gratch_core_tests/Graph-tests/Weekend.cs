@@ -15,8 +15,6 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void Default()
         {
-
-
             //Arrange
             var grp = DataFiller.GetGroup(20);
             DayOfWeek holiday = DayOfWeek.Sunday;

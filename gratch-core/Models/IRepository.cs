@@ -2,18 +2,18 @@
 
 namespace gratch_core.Models
 {
-    public interface IRepository<G, P>
-        where G : IGroup
-        where P : IPerson
+    public interface IRepository<T1, T2>
+        where T1 : IGroup
+        where T2 : IPerson
     {
-        void AddGroup(G group);
-        void AddPerson(G group, P person);
+        void AddGroup(T1 group);
+        void AddPerson(T1 group, T2 person);
         void DeleteAll();
-        void DeleteGroup(G group);
-        void DeletePerson(G group, P person);
+        void DeleteGroup(T1 group);
+        void DeletePerson(T1 group, T2 person);
         List<GroupModel> GetAllGroups();
         GroupModel GetGroup(string name);
-        void UpdateGroup(G group);
-        void UpdatePeople(G group);
+        void UpdateGroup(T1 group);
+        void UpdatePeople(T1 group);
     }
 }

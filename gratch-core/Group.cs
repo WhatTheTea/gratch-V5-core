@@ -23,7 +23,7 @@ namespace gratch_core
         public static event PersonChangedEventHandler PersonRemoved;
         public static event PersonChangedEventHandler PersonAdded;
 
-        private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Weekend_CollectionChanged(object sender, EventArgs e)
         {
             GroupChanged?.Invoke(this);
         }
@@ -57,8 +57,7 @@ namespace gratch_core
             _graph = new Graph(ref _people);
 
             Person.PersonChanged += Person_PersonUpdated;
-            _graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
-            _graph.PersonChanged += Person_PersonUpdated;
+            _graph.WeekendChanged += Weekend_CollectionChanged;
         }
         public Group(string GroupName) : this() => _name = GroupName;
         public Group(string GroupName, IEnumerable<string> names) : this()

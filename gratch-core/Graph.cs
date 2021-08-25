@@ -11,10 +11,11 @@ namespace gratch_core
     public class Graph : IGraph
     {
         #region events
-        internal event Person.PersonHandler PersonChanged;
+        internal event EventHandler WeekendChanged;
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             AssignEveryone();
+            WeekendChanged.Invoke(this, new EventArgs());
         }
         #endregion
         private List<Person> _people;
@@ -22,7 +23,7 @@ namespace gratch_core
             _people.Where(p =>
             p.DutyDates.Any()).ToList().AsReadOnly();
         private ObservableCollection<DayOfWeek> _weekend = new();
-        public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
+        public Collection<DayOfWeek> Weekend { get => _weekend; set => _weekend = new ObservableCollection<DayOfWeek>(value); }
         public IList<DateTime> Workdates
         {
             get
@@ -46,17 +47,18 @@ namespace gratch_core
         internal Graph(ref List<Person> people)
         {
             this._people = people;
-            Weekend.CollectionChanged += Weekend_CollectionChanged;
+            _weekend.CollectionChanged += Weekend_CollectionChanged;
         }
 
         public void AssignEveryone(int startIndex = 0) //Главная механика
         {
-            if (_people[startIndex].DutyDates.Any()) ClearAllAssignments();
-
-            if (_people.Count != 0)
+            int pCount = _people.Count;
+            if (pCount > 0)
             {
+                if (_people[startIndex].DutyDates.Any()) ClearAllAssignments();
                 for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++, pIndex++)
                 {
+                    if (pCount > 1) Person.SupressInvocation = true;
                     if (IsHoliday(day)) // if day is holiday - skip;
                     {
                         pIndex--; //but do not skip person
@@ -65,8 +67,8 @@ namespace gratch_core
                     if (pIndex >= _people.Count) pIndex = 0;
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
+                    if (day == DateTime.Now.DaysInMonth() - 1) Person.SupressInvocation = false;
                     _people[pIndex].DutyDates.Add(dutyDate);
-                    PersonChanged.Invoke(_people[pIndex]);
                 }
             }
         }

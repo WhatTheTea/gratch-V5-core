@@ -6,11 +6,10 @@ namespace gratch_core
 {
     public interface IGraph
     {
-
         Person this[DateTime dutyDate] { get; }
 
         IList<Person> AssignedPeople { get; }
-        ObservableCollection<DayOfWeek> Weekend { get; set; }
+        Collection<DayOfWeek> Weekend { get; set; }
         IList<DateTime> Workdates { get; }
 
         void AssignEveryone(int startIndex = 0);

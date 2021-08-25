@@ -9,9 +9,10 @@ namespace gratch_core
         #region events
         internal static event PersonHandler PersonChanged;
         internal delegate void PersonHandler(object sender);
+        internal static bool SupressInvocation { get; set; } = false;
         private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PersonChanged?.Invoke(this);
+            if(!SupressInvocation) PersonChanged?.Invoke(this);
         }
         #endregion
 
@@ -19,7 +20,6 @@ namespace gratch_core
         public string Name { get => _name; set => Rename(value); }
         private ObservableCollection<DateTime> _dutyDates = new();
         public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = new ObservableCollection<DateTime>(value); }  //АвтоСвойство
-
         public Person(string name)
         {
             _name = name;
