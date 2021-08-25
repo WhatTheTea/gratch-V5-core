@@ -4,7 +4,6 @@
 using SQLite;
 
 using SQLiteNetExtensions.Extensions;
-using SQLiteNetExtensions.Extensions.TextBlob;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using System.Text.Json;
 
 namespace gratch_core.Models
 {
-    public class GroupRepository
+    public class GroupRepository : IRepository<Group, Person>
     {
         private readonly SQLiteConnection db;
         public GroupRepository()
@@ -32,18 +31,18 @@ namespace gratch_core.Models
         {
             var list = new List<IGroup>();
 
-            Group.listener.Destroy();
+            Group.subscriber.Destroy();
             foreach (var mod in GetAllGroups())
             {
                 list.Add(mod.ToGroup());
             }
-            Group.listener = SQLiteListener.GetListener();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
             return list;
         }
         public GroupModel GetGroup(string name) => GetAllGroups().FirstOrDefault(grp => grp.Name == name);
 
-        public void InsertGroup(Group group)
+        public void AddGroup(Group group)
         {
             db.Insert(group.ToModel());
         }
@@ -87,7 +86,7 @@ namespace gratch_core.Models
             PersonModel deleted = allGroups[model.Id - 1].People.First(p => p.Name == person.Name); //несуществующий человек
             db.Delete(deleted);
 
-            db.BeginTransaction(); 
+            db.BeginTransaction();
             foreach (var p in group)
             {
                 db.RunInTransaction(() =>

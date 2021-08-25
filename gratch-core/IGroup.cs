@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using static gratch_core.Group;
-
 namespace gratch_core
 {
     public interface IGroup : IList<Person>

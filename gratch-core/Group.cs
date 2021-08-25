@@ -11,7 +11,7 @@ namespace gratch_core
     public class Group : IGroup
     {
         #region events
-        internal static SQLiteListener listener = SQLiteListener.GetListener();
+        internal static SQLiteSubscriber subscriber = SQLiteSubscriber.GetSubscriber();
 
         public delegate void GroupEventHandler(object sender);
         public static event GroupEventHandler GroupChanged;
@@ -35,11 +35,7 @@ namespace gratch_core
             }
         }
         #endregion
-        #region Instances
-        #endregion
         private string _name;
-        private readonly List<Person> _people = new();
-        private Graph graph;
         public string Name
         {
             get => _name;
@@ -52,15 +48,17 @@ namespace gratch_core
                 }
             }
         }
-        public Graph Graph { get => graph; }
+        private readonly List<Person> _people = new();
+        private readonly Graph _graph;
+        public Graph Graph { get => _graph; }
         private Group()
         {
             IGroup.instances.Add(this);
-            graph = new Graph(ref _people);
+            _graph = new Graph(ref _people);
 
             Person.PersonChanged += Person_PersonUpdated;
-            graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
-            graph.PersonChanged += Person_PersonUpdated;
+            _graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
+            _graph.PersonChanged += Person_PersonUpdated;
         }
         public Group(string GroupName) : this() => _name = GroupName;
         public Group(string GroupName, IEnumerable<string> names) : this()

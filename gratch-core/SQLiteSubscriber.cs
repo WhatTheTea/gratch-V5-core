@@ -5,11 +5,11 @@ using gratch_core.Models;
 
 namespace gratch_core
 {
-    internal class SQLiteListener
+    internal class SQLiteSubscriber
     {
-        private static SQLiteListener listener;
+        private static SQLiteSubscriber _subscriber;
         private readonly GroupRepository repos = new();
-        private SQLiteListener()
+        private SQLiteSubscriber()
         {
             Group.GroupAdded += Group_GroupAdded;
             Group.GroupChanged += Group_GroupChanged;
@@ -21,7 +21,7 @@ namespace gratch_core
         }
         public void Destroy()
         {
-            listener = null;
+            _subscriber = null;
 
             Group.GroupAdded -= Group_GroupAdded;
             Group.GroupChanged -= Group_GroupChanged;
@@ -31,13 +31,13 @@ namespace gratch_core
             Group.PersonChanged -= Group_PersonChanged;
             Group.PersonRemoved -= Group_PersonRemoved;
         }
-        public static SQLiteListener GetListener()
+        public static SQLiteSubscriber GetSubscriber()
         {
-            if (listener == null)
+            if (_subscriber == null)
             {
-                listener = new SQLiteListener();
+                _subscriber = new SQLiteSubscriber();
             }
-            return listener;
+            return _subscriber;
         }
         private void Group_PersonRemoved(object sender, IPerson person)
         {
@@ -81,7 +81,7 @@ namespace gratch_core
 
         private void Group_GroupAdded(object sender)
         {
-            repos.InsertGroup((sender as Group));
+            repos.AddGroup((sender as Group));
 #if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name}  table");
 #endif

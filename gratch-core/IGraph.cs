@@ -6,7 +6,7 @@ namespace gratch_core
 {
     public interface IGraph
     {
-        
+
         Person this[DateTime dutyDate] { get; }
 
         IList<Person> AssignedPeople { get; }

@@ -18,9 +18,9 @@ namespace gratch_core_tests.Database
 
             var expected = group[0];
 
-            Group.listener.Destroy();
+            Group.subscriber.Destroy();
             var actual = DataFiller.Repository.GetGroup(group.Name).People[0];
-            Group.listener = SQLiteListener.GetListener();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
             Assert.IsTrue(expected.Name == actual.Name);
             Assert.IsTrue(expected.DutyDates.Count == actual.DutyDates.Count);
@@ -36,9 +36,9 @@ namespace gratch_core_tests.Database
 
             List<IGroup> groups = new();
 
-            Group.listener.Destroy();
+            Group.subscriber.Destroy();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
             groups = DataFiller.Repository.LoadAllGroups();
 
@@ -56,9 +56,9 @@ namespace gratch_core_tests.Database
         public void CleanUp()
         {
             DataFiller.Repository.DeleteAll();
-            Group.listener.Destroy();
+            Group.subscriber.Destroy();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.listener = SQLiteListener.GetListener();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();
         }
     }
 }
