@@ -9,9 +9,11 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class IsDutyDateAssigned
     {
+
         [TestMethod]
         public void Assigned()
         {
+
             var group = DataFiller.GetGroup(20);
 
             Assert.IsTrue(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
@@ -19,6 +21,8 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void NotAssigned_Cleared()
         {
+
+
             var group = DataFiller.GetGroup(20);
 
             group.Graph.ClearAllAssignments();
@@ -34,5 +38,7 @@ namespace gratch_core_tests.Graph_tests
 
             Assert.IsFalse(group.Graph.IsAssigned(DateTime.Now.FirstDayOfMonth()));
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

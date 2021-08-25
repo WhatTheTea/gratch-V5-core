@@ -18,5 +18,7 @@ namespace gratch_core_tests.Group_tests
 
             Assert.IsFalse(group.Contains(deletedPerson));
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

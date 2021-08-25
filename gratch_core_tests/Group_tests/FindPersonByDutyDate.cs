@@ -12,6 +12,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+
+
             var group = DataFiller.GetGroup(20);
             var expectedPerson = group[9];
             var now = DateTime.Now;
@@ -25,5 +27,7 @@ namespace gratch_core_tests.Group_tests
             Assert.AreEqual(expectedPerson, actualPerson);
 
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

@@ -9,6 +9,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+
+
             var group = DataFiller.GetGroup(2);
 
             var person1 = group[0].Name;
@@ -19,5 +21,7 @@ namespace gratch_core_tests.Group_tests
             Assert.AreEqual(person1, group[1].Name);
             Assert.AreEqual(person2, group[0].Name);
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

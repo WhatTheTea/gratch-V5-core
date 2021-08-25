@@ -8,30 +8,30 @@ using System.Runtime.CompilerServices;
 
 namespace gratch_core
 {
-    public class Group : IList<Person>
+    public class Group : IGroup
     {
         #region events
-        private static SQLiteListener listener = SQLiteListener.GetListener();
+        internal static SQLiteListener listener = SQLiteListener.GetListener();
 
+        public delegate void GroupEventHandler(object sender);
         public static event GroupEventHandler GroupChanged;
         public static event GroupEventHandler GroupAdded;
         public static event GroupEventHandler GroupRemoved;
-        public delegate void GroupEventHandler(object sender);
 
+        public delegate void PersonChangedEventHandler(object sender, object person);
         public static event PersonChangedEventHandler PersonUpdated;
         public static event PersonChangedEventHandler PersonRemoved;
         public static event PersonChangedEventHandler PersonAdded;
-        public delegate void PersonChangedEventHandler(object sender, object person);
 
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            GroupChanged.Invoke(this);
+            GroupChanged?.Invoke(this);
         }
         private void Person_PersonUpdated(object sender)
         {
             if (_people.Any(pers => pers.Name == (sender as Person).Name))
             {
-                PersonUpdated.Invoke(this, sender);
+                PersonUpdated?.Invoke(this, sender);
             }
         }
         #endregion
@@ -41,17 +41,13 @@ namespace gratch_core
         {
             get
             {
-                var realInstances = instances.Where(instance => instance.Count > 0);
-                if (instances.Count != realInstances.Count())
-                {
-                    instances.Clear();
-                    instances.AddRange(realInstances);
-                }
-                return instances.AsReadOnly();
+                return instances.Where(instance => instance.Count > 0).Distinct().ToList().AsReadOnly();
             }
         }
         #endregion
         private string _name;
+        private readonly List<Person> _people = new();
+        private Graph graph;
         public string Name
         {
             get => _name;
@@ -60,12 +56,10 @@ namespace gratch_core
                 if (!AllInstances.Any(grp => grp.Name == value))
                 {
                     _name = value;
-                    GroupChanged.Invoke(this);
+                    GroupChanged?.Invoke(this);
                 }
             }
         }
-        private readonly List<Person> _people = new();
-        private Graph graph;
         public Graph Graph { get => graph; }
         public Group()
         {
@@ -74,23 +68,22 @@ namespace gratch_core
 
             Person.PersonChanged += Person_PersonUpdated;
             graph.Weekend.CollectionChanged += Weekend_CollectionChanged;
+            graph.PersonChanged += Person_PersonUpdated;
         }
         public Group(string GroupName) : this() => _name = GroupName;
         public Group(string GroupName, IEnumerable<string> names) : this()
         {
-            foreach (var name in names)
-            {
-                Add(name);
-            }
+            _name = GroupName;
+            foreach (var name in names) Add(name);
         }
         public void Replace(int pIndex, int withIndex)
-        {
+        {   //Записываем имена в буфер
             string pBuffer = _people[pIndex].Name;
             string withBuffer = _people[withIndex].Name;
-
-            _people[pIndex].Name = string.Empty;
-            _people[withIndex].Name = null;
-
+            //Обходим ограничение на одно и то самое имя в группе
+            _people[pIndex].Rename(string.Empty, true);
+            _people[withIndex].Rename(null, true);
+            //Присваиваем из буфера
             _people[withIndex].Name = pBuffer;
             _people[pIndex].Name = withBuffer;
         }
@@ -106,7 +99,6 @@ namespace gratch_core
                 Graph.AssignEveryone();
             }
         }
-
         #region IList
         public Person this[int index]
         {
@@ -125,19 +117,21 @@ namespace gratch_core
         {
             var _ = person.Clone() as Person;
             _people.Insert(index, _);
-            PersonAdded.Invoke(this, person); //!!!! at index
+            PersonAdded?.Invoke(this, person); //!!!! at index
             Graph.AssignEveryone();
         }
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
-            PersonRemoved.Invoke(this, _people[index]);
             _people.RemoveAt(index);
-            if (Count <= 0)
+            PersonRemoved?.Invoke(this, _people[index]);
+            if (Count < 1)
             {
-                GroupRemoved.Invoke(this);
+                GroupRemoved?.Invoke(this);
             }
-
-            Graph.AssignEveryone();
+            else
+            {
+                Graph.AssignEveryone();
+            }
         }
         #endregion
         #region ICollection
@@ -148,39 +142,34 @@ namespace gratch_core
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person) // not safe for dutydates
         {
-            if (this == null) //InstanceReused
-            {
-                instances.Add(this);
-            }
             var newperson = person.Clone() as Person;
             _people.Add(newperson);
 
             if (Count == 1)
             {
-                GroupAdded.Invoke(this);
-            } 
-            PersonAdded.Invoke(this, newperson);
+                instances.Add(this);
+                GroupAdded?.Invoke(this);
+            }
+            PersonAdded?.Invoke(this, newperson);
         }
         public void Clear()
         {
-            GroupRemoved.Invoke(this);
+            GroupRemoved?.Invoke(this);
             _people.Clear();
             //groups.Remove(this);
         }
         public bool Remove(Person person)
         {
             var _ = _people.Remove(person);
-
-            if (Count > 0)
+            PersonRemoved?.Invoke(this, person);
+            if (Count < 1)
             {
-                PersonRemoved.Invoke(this,person);
+                GroupRemoved?.Invoke(this);
             }
             else
             {
-                GroupRemoved.Invoke(this);
+                Graph.AssignEveryone();
             }
-
-            Graph.AssignEveryone();
             return _;
         }
         #endregion

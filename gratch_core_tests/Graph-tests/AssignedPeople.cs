@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
 
@@ -7,6 +8,7 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class AssignedPeople
     {
+
         [TestMethod]
         public void Default()
         {
@@ -27,5 +29,7 @@ namespace gratch_core_tests.Graph_tests
             //Assert
             Assert.IsTrue(result);
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

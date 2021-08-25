@@ -13,7 +13,7 @@ namespace gratch_core.Models
         public int Id { get; set; }
         [NotNull, Unique]
         public string Name { get; set; }
-        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
         public List<PersonModel> People { get; set; }
         [TextBlob("WeekendBlobbed")]
         public List<DayOfWeek> Weekend { get; set; }

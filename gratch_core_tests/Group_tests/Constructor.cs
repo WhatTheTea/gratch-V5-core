@@ -13,6 +13,8 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+
+
             Random rng = new Random();
             var names = new List<string>();
             Group group;
@@ -22,7 +24,7 @@ namespace gratch_core_tests.Group_tests
                 names.Add("name" + rng.Next());
             }
 
-            group = new Group("test",names);
+            group = new Group("test", names);
 
             foreach (var person in group)
             {
@@ -30,5 +32,7 @@ namespace gratch_core_tests.Group_tests
                 Assert.IsTrue(person.Name == names[index]);
             }
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

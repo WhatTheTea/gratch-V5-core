@@ -9,6 +9,7 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class Graph
     {
+
         [TestMethod]
         public void Default()
         {
@@ -16,5 +17,7 @@ namespace gratch_core_tests.Graph_tests
 
             Assert.AreEqual(group[0], group.Graph[DateTime.Now.FirstDayOfMonth()]);
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

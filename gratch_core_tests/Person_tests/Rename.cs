@@ -26,5 +26,7 @@ namespace gratch_core_tests.Person_tests
 
             Assert.AreEqual(name, group[0].Name);
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

@@ -9,6 +9,7 @@ namespace gratch_core_tests.Group_tests
         [TestMethod]
         public void Default()
         {
+
             const int index = 9;
 
             var group = DataFiller.GetGroup(20);
@@ -18,5 +19,7 @@ namespace gratch_core_tests.Group_tests
 
             Assert.IsFalse(group.Contains(deletedPerson));
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

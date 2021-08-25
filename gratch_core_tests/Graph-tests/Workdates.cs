@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 
@@ -7,9 +8,12 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class Workdates
     {
+
         [TestMethod]
         public void Default()
         {
+
+
             //Arrange
             var grp = DataFiller.GetGroup(20);
             bool isFirstDay = false;
@@ -22,6 +26,7 @@ namespace gratch_core_tests.Graph_tests
             result = isFirstDay & isLastDay;
             Assert.IsTrue(result);
         }
-
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

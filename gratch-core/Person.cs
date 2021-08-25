@@ -11,40 +11,43 @@ namespace gratch_core
         internal delegate void PersonHandler(object sender);
         private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PersonChanged.Invoke(this);
+            PersonChanged?.Invoke(this);
         }
         #endregion
 
         private string _name;
         public string Name { get => _name; set => Rename(value); }
-        public ObservableCollection<DateTime> DutyDates { get; set; } = new(); //АвтоСвойство
+        private ObservableCollection<DateTime> _dutyDates = new();
+        public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = new ObservableCollection<DateTime>(value); }  //АвтоСвойство
 
         public Person(string name)
         {
             _name = name;
 
-            DutyDates.CollectionChanged += DutyDates_CollectionChanged;
+            _dutyDates.CollectionChanged += DutyDates_CollectionChanged;
         }
 
 
-        public void Rename(string name)
+        public void Rename(string name, bool invokeMuted = false)
         {
             foreach (var group in Group.AllInstances)
             {
-                bool personExists = group.Where(person => person.Name == Name).Any();// Select group, where this person is
-                bool renameExists = group.Where(reperson => reperson.Name == name).Any();
+                bool personExists = group.Any(
+                    person => person.Name == Name && person.DutyDates == DutyDates);// Select group, where this person is
+                bool renameExists = group.Any(reperson => reperson.Name == name);
                 if (personExists && !renameExists)
                 {
 #if DEBUG
-                    Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name}");
+                    Console.WriteLine(DateTime.Now + $" | Person | Renaming {Name} to {name} | InvokeMuted: {invokeMuted}");
 #endif              
                     _name = name;
-                    PersonChanged.Invoke(this);
+                    if (!invokeMuted) PersonChanged?.Invoke(this);
                 }
-                else
+                else if (renameExists)
                 {
 #if DEBUG
-                    Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}, Rename: {name}");
+                    Console.WriteLine(DateTime.Now + $" | Person | Rename failed. Name: {Name}," +
+                        $" Rename: {name} | InvokeMuted: {invokeMuted}");
 #endif
                 }
             }

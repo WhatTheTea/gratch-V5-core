@@ -10,9 +10,11 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class UpdateDutyDates
     {
+
         [TestMethod]
         public void LessThanDaysInMonth()
         {
+
             //Arrange
             const int persCount = 20;
 
@@ -30,6 +32,8 @@ namespace gratch_core_tests.Graph_tests
         [TestMethod]
         public void MoreThanDaysInMoth()
         {
+
+
             //Arrange
             const int persCount = 40;
 
@@ -43,5 +47,7 @@ namespace gratch_core_tests.Graph_tests
             actualPerson = group.Graph[group.Graph.Workdates.First()];
             Assert.AreEqual(expectedPerson, actualPerson);
         }
+        [TestCleanup]
+        public void CleanUp() => DataFiller.CleanUp();
     }
 }

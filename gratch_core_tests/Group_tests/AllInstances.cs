@@ -7,6 +7,7 @@ namespace gratch_core_tests.Group_tests
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class AllInstances
     {
+
         [TestMethod]
         public void Default()
         {
@@ -29,6 +30,11 @@ namespace gratch_core_tests.Group_tests
 
             Assert.IsFalse(Group.AllInstances.Contains(group1));
             Assert.IsFalse(Group.AllInstances.Contains(group2));
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.CleanUp();
         }
     }
 }

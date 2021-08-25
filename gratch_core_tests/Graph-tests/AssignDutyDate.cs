@@ -10,7 +10,6 @@ namespace gratch_core_tests.Graph_tests
     [TestClass]
     public class AssignDutyDate
     {
-        //private readonly int DaysInMonth = DateTime.Now.DaysInMonth();
         [TestMethod]
         public void Default()
         {
@@ -51,6 +50,11 @@ namespace gratch_core_tests.Graph_tests
                 Assert.AreEqual(DayOfWeek.Sunday, person.DutyDates.First().DayOfWeek);
                 Assert.IsTrue(person.DutyDates.Count == 1);
             }
+        }
+        [TestCleanup]
+        public void CleanUp()
+        {
+            DataFiller.CleanUp();
         }
     }
 }

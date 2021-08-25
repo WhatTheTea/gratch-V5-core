@@ -11,15 +11,16 @@ namespace gratch_core
     public class Graph : IGraph
     {
         #region events
+        internal event Person.PersonHandler PersonChanged;
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             AssignEveryone();
         }
         #endregion
         private List<Person> people;
-        public IList<Person> AssignedPeople => (from p in people
-                                                where p.DutyDates.Any() == true
-                                                select p).ToList().AsReadOnly();
+        public IList<Person> AssignedPeople =>
+            people.Where(p =>
+            p.DutyDates.Any()).ToList().AsReadOnly();
         public ObservableCollection<DayOfWeek> Weekend { get; set; } = new ObservableCollection<DayOfWeek>();
         public IList<DateTime> Workdates
         {
@@ -64,6 +65,7 @@ namespace gratch_core
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
                     people[pIndex].DutyDates.Add(dutyDate);
+                    PersonChanged.Invoke(people[pIndex]);
                 }
             }
         }
@@ -79,7 +81,7 @@ namespace gratch_core
         {
             Person lastPerson = (from p in AssignedPeople
                                  where p.DutyDates.Last() == Workdates.Last()
-                                 select p).Single();
+                                 select p).First();
             int lastIndex = people.IndexOf(lastPerson);
 
             ClearAllAssignments();
@@ -110,7 +112,7 @@ namespace gratch_core
             }
             return false;
         }
-        public Person this[DateTime dutyDate] => people.SingleOrDefault(person =>
+        public Person this[DateTime dutyDate] => people.FirstOrDefault(person =>
                                                  person.DutyDates.Any(date =>
                                                  date == dutyDate) == true);
     }
