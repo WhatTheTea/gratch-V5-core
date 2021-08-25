@@ -87,7 +87,7 @@ namespace gratch_core.Models
         private void Update_People(Group group)
         {
             var mod = group.ToModel();
-            mod.Id = Group.AllInstances.IndexOf(group) + 1;
+            /*mod.Id = Group.AllInstances.IndexOf(group) + 1; //
             mod.People.ForEach(p =>
             {
                 p.GroupId = mod.Id;
@@ -98,7 +98,7 @@ namespace gratch_core.Models
 #if LOGGING
                 Console.WriteLine(DateTime.Now + $" | Repository | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");
 #endif
-            });
+            });*/
 #if LOGGING
             int RowsChanged = 0;
 #endif
@@ -130,19 +130,19 @@ namespace gratch_core.Models
         {
             var allGroups = GetAllGroups();
             var mod = group.ToModel();
-            mod.Id = Group.AllInstances.IndexOf(group) + 1;
+            /*mod.Id = Group.AllInstances.IndexOf(group) + 1;
             mod.People.ForEach(p => p.GroupId = mod.Id);
-
+            */
             var person = mod.People.First(pers => !allGroups[mod.Id - 1]
                                             .People.Any(permod => pers.Name == permod.Name)); //новый человек
-            person.GroupModel = mod;
+            //person.GroupModel = mod; //?
             db.InsertWithChildren(person);
         }
         private void Update(Group group)
         {
             var mod = group.ToModel();
-            mod.Id = Group.AllInstances.IndexOf(group);
-            mod.People.ForEach(p => p.GroupId = mod.Id);
+            /*mod.Id = Group.AllInstances.IndexOf(group);
+            mod.People.ForEach(p => p.GroupId = mod.Id);*/
             db.Update(mod);
             Update_People(group);
         }
@@ -150,12 +150,12 @@ namespace gratch_core.Models
         {
             var allGroups = GetAllGroups();
             var mod = group.ToModel();
-            mod.Id = Group.AllInstances.IndexOf(group) + 1;
-            mod.People.ForEach(p => p.GroupId = mod.Id);
+            /*mod.Id = Group.AllInstances.IndexOf(group) + 1;
+            mod.People.ForEach(p => p.GroupId = mod.Id);*/
 
             var person = allGroups[mod.Id - 1].People.First(pers => !mod
                                             .People.Any(permod => pers.Name == permod.Name)); //несуществующий человек
-            person.GroupModel = mod;
+            person.GroupModel = mod; //?
             db.Delete(person);
 
             db.BeginTransaction();

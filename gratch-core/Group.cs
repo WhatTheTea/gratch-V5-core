@@ -61,7 +61,7 @@ namespace gratch_core
             }
         }
         public Graph Graph { get => graph; }
-        public Group()
+        private Group()
         {
             instances.Add(this);
             graph = new Graph(ref _people);
