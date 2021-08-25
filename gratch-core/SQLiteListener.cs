@@ -3,8 +3,6 @@
 
 using gratch_core.Models;
 
-using System.Linq;
-
 namespace gratch_core
 {
     internal class SQLiteListener
@@ -18,7 +16,7 @@ namespace gratch_core
             Group.GroupRemoved += Group_GroupRemoved;
 
             Group.PersonAdded += Group_PersonAdded;
-            Group.PersonUpdated += Group_PersonUpdated;
+            Group.PersonChanged += Group_PersonChanged;
             Group.PersonRemoved += Group_PersonRemoved;
         }
         public void Destroy()
@@ -30,7 +28,7 @@ namespace gratch_core
             Group.GroupRemoved -= Group_GroupRemoved;
 
             Group.PersonAdded -= Group_PersonAdded;
-            Group.PersonUpdated -= Group_PersonUpdated;
+            Group.PersonChanged -= Group_PersonChanged;
             Group.PersonRemoved -= Group_PersonRemoved;
         }
         public static SQLiteListener GetListener()
@@ -41,27 +39,25 @@ namespace gratch_core
             }
             return listener;
         }
-        private static PersonModel FindAndConvertPerson(object group,
-                                                        object person) => (group as Group).ToModel().People.First(p => p.Name == (person as Person).Name);
-        private void Group_PersonRemoved(object sender, object person)
+        private void Group_PersonRemoved(object sender, IPerson person)
         {
-            repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonRemoved);
+            repos.DeletePerson(sender as Group, person as Person);
 #if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} Removed from {(sender as Group).Name}");
 #endif
         }
 
-        private void Group_PersonUpdated(object sender, object person)
+        private void Group_PersonChanged(object sender, object person)
         {
-            repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonChanged);
+            repos.UpdatePeople(sender as Group);
 #if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} updated in {(sender as Group).Name}");
 #endif
         }
 
-        private void Group_PersonAdded(object sender, object person)
+        private void Group_PersonAdded(object sender, IPerson person)
         {
-            repos.UpdateGroup(sender as Group, GroupRepository.UpdateType.PersonAdded);
+            repos.AddPerson(sender as Group, person as Person);
 #if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Person {(person as Person).Name} added from {(sender as Group).Name}");
 #endif
@@ -77,7 +73,7 @@ namespace gratch_core
 
         private void Group_GroupChanged(object sender)
         {
-            repos.UpdateGroup((sender as Group), GroupRepository.UpdateType.GroupChanged);
+            repos.UpdateGroup(sender as Group);
 #if LOGGING
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name} changed");
 #endif

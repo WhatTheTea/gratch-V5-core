@@ -13,7 +13,7 @@ using System.Text.Json;
 
 namespace gratch_core.Models
 {
-    public class GroupRepository// : IGroupRepository
+    public class GroupRepository
     {
         private readonly SQLiteConnection db;
         public GroupRepository()
@@ -21,16 +21,7 @@ namespace gratch_core.Models
             db = SQLiteDB.GetAsyncConnection();
             db.CreateTable<GroupModel>();
             db.CreateTable<PersonModel>();
-            TextBlobOperations.SetTextSerializer(Newtonsoft.Json.JsonSerializer.Create() as ITextBlobSerializer);
         }
-        public enum UpdateType
-        {
-            PersonChanged,
-            PersonAdded,
-            PersonRemoved,
-            GroupChanged
-        }
-        #region Getters
         public List<GroupModel> GetAllGroups()
         {
             var result = db.GetAllWithChildren<GroupModel>();
@@ -51,65 +42,19 @@ namespace gratch_core.Models
             return list;
         }
         public GroupModel GetGroup(string name) => GetAllGroups().FirstOrDefault(grp => grp.Name == name);
-        public GroupModel GetGroup(int id)
-        {
-            return db.GetWithChildren<GroupModel>(id);
-        }
-        public PersonModel GetPerson(string name, GroupModel group) => GetAllGroups()
-            .FirstOrDefault(grp => grp.Name == group.Name).People
-            .FirstOrDefault(pers => pers.GroupModel == group);
-        #endregion
 
         public void InsertGroup(Group group)
         {
             db.Insert(group.ToModel());
         }
-
-        public void UpdateGroup(Group group, UpdateType type)
-        {
-            switch (type)
-            {
-                case UpdateType.GroupChanged:
-                    Update(group);
-                    break;
-                case UpdateType.PersonAdded:
-                    Update_AddPerson(group);
-                    break;
-                case UpdateType.PersonChanged:
-                    Update_People(group);
-                    break;
-                case UpdateType.PersonRemoved:
-                    Update_DeletePerson(group);
-                    break;
-            }
-        }
-
-        private void Update_People(Group group)
+        public void UpdatePeople(Group group)
         {
             var mod = group.ToModel();
-            /*mod.Id = Group.AllInstances.IndexOf(group) + 1; //
-            mod.People.ForEach(p =>
-            {
-                p.GroupId = mod.Id;
-                p.GroupModel = mod;
-                p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)]
-                    .DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"))));
-                //p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[mod.People.IndexOf(p)].DutyDates));
-#if LOGGING
-                Console.WriteLine(DateTime.Now + $" | Repository | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");
-#endif
-            });*/
-#if LOGGING
-            int RowsChanged = 0;
-#endif
             db.BeginTransaction();
             foreach (var p in mod.People)
             {
                 db.RunInTransaction(() =>
                 {
-#if LOGGING
-                    RowsChanged +=
-#endif
                     db.Execute("UPDATE PersonModel " +
                             "SET Name = ?, DutyDatesBlob = ? " +
                             "WHERE Id LIKE ? AND GroupId LIKE ?" +
@@ -120,65 +65,49 @@ namespace gratch_core.Models
                 });
 
             }
-#if LOGGING
-            Console.WriteLine(DateTime.Now + $" | Repository | RowsChanged: {RowsChanged}");
-#endif
             db.Commit();
         }
 
-        private void Update_AddPerson(Group group)
+        public void AddPerson(Group group, Person person)
         {
-            var allGroups = GetAllGroups();
             var mod = group.ToModel();
-            /*mod.Id = Group.AllInstances.IndexOf(group) + 1;
-            mod.People.ForEach(p => p.GroupId = mod.Id);
-            */
-            var person = mod.People.First(pers => !allGroups[mod.Id - 1]
-                                            .People.Any(permod => pers.Name == permod.Name)); //новый человек
-            //person.GroupModel = mod; //?
-            db.InsertWithChildren(person);
+            var added = mod.People.First(p => p.Name == person.Name); //новый человек
+            db.InsertWithChildren(added);
         }
-        private void Update(Group group)
+        public void UpdateGroup(Group group)
         {
             var mod = group.ToModel();
-            /*mod.Id = Group.AllInstances.IndexOf(group);
-            mod.People.ForEach(p => p.GroupId = mod.Id);*/
             db.Update(mod);
-            Update_People(group);
+            UpdatePeople(group);
         }
-        private void Update_DeletePerson(Group group)
+        public void DeletePerson(Group group, Person person)
         {
             var allGroups = GetAllGroups();
-            var mod = group.ToModel();
-            /*mod.Id = Group.AllInstances.IndexOf(group) + 1;
-            mod.People.ForEach(p => p.GroupId = mod.Id);*/
+            var model = group.ToModel();
+            PersonModel deleted = allGroups[model.Id - 1].People.First(p => p.Name == person.Name); //несуществующий человек
+            db.Delete(deleted);
 
-            var person = allGroups[mod.Id - 1].People.First(pers => !mod
-                                            .People.Any(permod => pers.Name == permod.Name)); //несуществующий человек
-            person.GroupModel = mod; //?
-            db.Delete(person);
-
-            db.BeginTransaction();
-            foreach(var p in group)
+            db.BeginTransaction(); 
+            foreach (var p in group)
             {
-                db.RunInTransaction(() => 
+                db.RunInTransaction(() =>
                 db.Execute("UPDATE PersonModel " +
                 "SET Id = ? " + // 3 аргумента
                 "WHERE GroupId LIKE ? AND Name LIKE ?",
                 group.IndexOf(p) + 1,
-                     mod.Id, p.Name)
+                     model.Id, p.Name)
                 );
             }
             db.Commit();
 
-            Update_People(group);
+            UpdatePeople(group);
         }
 
-        public void DeleteGroup(IGroup group)
+        public void DeleteGroup(Group group)
         {
             var deletedgroupId = (from g in GetAllGroups()
-                                 where g.Name == @group.Name
-                                 select g.Id).First();
+                                  where g.Name == @group.Name
+                                  select g.Id).First();
             db.Delete<GroupModel>(deletedgroupId);
 
             db.BeginTransaction();

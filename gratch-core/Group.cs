@@ -18,8 +18,8 @@ namespace gratch_core
         public static event GroupEventHandler GroupAdded;
         public static event GroupEventHandler GroupRemoved;
 
-        public delegate void PersonChangedEventHandler(object sender, object person);
-        public static event PersonChangedEventHandler PersonUpdated;
+        public delegate void PersonChangedEventHandler(object sender, IPerson person);
+        public static event PersonChangedEventHandler PersonChanged;
         public static event PersonChangedEventHandler PersonRemoved;
         public static event PersonChangedEventHandler PersonAdded;
 
@@ -29,9 +29,9 @@ namespace gratch_core
         }
         private void Person_PersonUpdated(object sender)
         {
-            if (_people.Any(pers => pers.Name == (sender as Person).Name))
+            if (_people.Any(pers => pers.Name == (sender as IPerson).Name))
             {
-                PersonUpdated?.Invoke(this, sender);
+                PersonChanged?.Invoke(this, sender as IPerson);
             }
         }
         #endregion
