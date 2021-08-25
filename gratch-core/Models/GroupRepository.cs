@@ -113,7 +113,7 @@ namespace gratch_core.Models
                     db.Execute("UPDATE PersonModel " +
                             "SET Name = ?, DutyDatesBlob = ? " +
                             "WHERE Id LIKE ? AND GroupId LIKE ?" +
-                            "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)",
+                            "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)", //6 аргументов
                             p.Name, p.DutyDatesBlob,
                             p.Id, p.GroupId,
                             p.Name, p.DutyDatesBlob);
@@ -157,6 +157,20 @@ namespace gratch_core.Models
                                             .People.Any(permod => pers.Name == permod.Name)); //несуществующий человек
             person.GroupModel = mod;
             db.Delete(person);
+
+            db.BeginTransaction();
+            foreach(var p in group)
+            {
+                db.RunInTransaction(() => 
+                db.Execute("UPDATE PersonModel " +
+                "SET Id = ? " + // 3 аргумента
+                "WHERE GroupId LIKE ? AND Name LIKE ?",
+                group.IndexOf(p) + 1,
+                     mod.Id, p.Name)
+                );
+            }
+            db.Commit();
+
             Update_People(group);
         }
 
