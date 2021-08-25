@@ -30,7 +30,7 @@ namespace gratch_core
 
         public void Rename(string name, bool invokeMuted = false)
         {
-            foreach (var group in Group.AllInstances)
+            foreach (var group in IGroup.AllInstances)
             {
                 bool personExists = group.Any(
                     person => person.Name == Name && person.DutyDates == DutyDates);// Select group, where this person is

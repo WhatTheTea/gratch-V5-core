@@ -38,14 +38,14 @@ namespace gratch_core
             }
             return grp;
         }
-        internal static GroupModel ToModel(this Group group)
+        internal static GroupModel ToModel(this IGroup group)
         {
             var model = new GroupModel()
             {
                 Name = group.Name,
                 People = group.ToModels(),
                 Weekend = group.Graph.Weekend.ToList(),
-                Id = Group.AllInstances.IndexOf(group) + 1
+                Id = IGroup.AllInstances.IndexOf(group) + 1
             };
             model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
             model.People.ForEach(p =>

@@ -40,7 +40,7 @@ namespace gratch_core_tests
             DataFiller.Repository.DeleteAll();
 
             Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
+            foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.listener = SQLiteListener.GetListener();
 
             DataFiller.ResetIterators();

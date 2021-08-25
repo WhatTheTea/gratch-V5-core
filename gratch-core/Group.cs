@@ -36,14 +36,6 @@ namespace gratch_core
         }
         #endregion
         #region Instances
-        private static readonly List<Group> instances = new List<Group>();
-        internal static IList<Group> AllInstances
-        {
-            get
-            {
-                return instances.Where(instance => instance.Count > 0).Distinct().ToList().AsReadOnly();
-            }
-        }
         #endregion
         private string _name;
         private readonly List<Person> _people = new();
@@ -53,7 +45,7 @@ namespace gratch_core
             get => _name;
             set
             {
-                if (!AllInstances.Any(grp => grp.Name == value))
+                if (!IGroup.AllInstances.Any(grp => grp.Name == value))
                 {
                     _name = value;
                     GroupChanged?.Invoke(this);
@@ -63,7 +55,7 @@ namespace gratch_core
         public Graph Graph { get => graph; }
         private Group()
         {
-            instances.Add(this);
+            IGroup.instances.Add(this);
             graph = new Graph(ref _people);
 
             Person.PersonChanged += Person_PersonUpdated;
@@ -147,7 +139,7 @@ namespace gratch_core
 
             if (Count == 1)
             {
-                instances.Add(this);
+                IGroup.instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
             PersonAdded?.Invoke(this, newperson);

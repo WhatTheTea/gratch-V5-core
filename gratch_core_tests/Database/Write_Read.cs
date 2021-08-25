@@ -37,7 +37,7 @@ namespace gratch_core_tests.Database
             List<IGroup> groups = new();
 
             Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
+            foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.listener = SQLiteListener.GetListener();
 
             groups = DataFiller.Repository.LoadAllGroups();
@@ -57,7 +57,7 @@ namespace gratch_core_tests.Database
         {
             DataFiller.Repository.DeleteAll();
             Group.listener.Destroy();
-            foreach (var grp in Group.AllInstances) grp.Clear();
+            foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.listener = SQLiteListener.GetListener();
         }
     }

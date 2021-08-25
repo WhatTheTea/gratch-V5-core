@@ -7,7 +7,6 @@ namespace gratch_core_tests.Group_tests
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class AllInstances
     {
-
         [TestMethod]
         public void Default()
         {
@@ -15,9 +14,9 @@ namespace gratch_core_tests.Group_tests
             var group2 = DataFiller.GetGroup(20);
             var group3 = DataFiller.GetGroup(30);
 
-            Assert.AreEqual(group1, Group.AllInstances[^3]);
-            Assert.AreEqual(group2, Group.AllInstances[^2]);
-            Assert.AreEqual(group3, Group.AllInstances[^1]);
+            Assert.AreEqual(group1, IGroup.AllInstances[^3]);
+            Assert.AreEqual(group2, IGroup.AllInstances[^2]);
+            Assert.AreEqual(group3, IGroup.AllInstances[^1]);
         }
         [TestMethod]
         public void Deletion()
@@ -28,13 +27,8 @@ namespace gratch_core_tests.Group_tests
             group1.Clear();
             group2.Clear();
 
-            Assert.IsFalse(Group.AllInstances.Contains(group1));
-            Assert.IsFalse(Group.AllInstances.Contains(group2));
-        }
-        [TestCleanup]
-        public void CleanUp()
-        {
-            DataFiller.CleanUp();
+            Assert.IsFalse(IGroup.AllInstances.Contains(group1));
+            Assert.IsFalse(IGroup.AllInstances.Contains(group2));
         }
     }
 }
