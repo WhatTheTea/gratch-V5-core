@@ -98,14 +98,14 @@ namespace gratch_core
             }
             set
             {
-                var name = (value.Clone() as Person).Name;
+                var name = value.Name;
                 _people[index].Name = name;
             }
         }
         public int IndexOf(Person person) => _people.IndexOf(person);
         public void Insert(int index, Person person)
         {
-            var _ = person.Clone() as Person;
+            var _ = person;
             _people.Insert(index, _);
             PersonAdded?.Invoke(this, person); //!!!! at index
             Graph.AssignEveryone();
@@ -132,15 +132,15 @@ namespace gratch_core
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
         public void Add(Person person) // not safe for dutydates
         {
-            var newperson = person.Clone() as Person;
-            _people.Add(newperson);
+            //var newperson = person.Clone() as Person;
+            _people.Add(person);
 
             if (Count == 1)
             {
                 IGroup.instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
-            PersonAdded?.Invoke(this, newperson);
+            PersonAdded?.Invoke(this, person);
         }
         public void Clear()
         {

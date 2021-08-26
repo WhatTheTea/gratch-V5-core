@@ -2,6 +2,7 @@
 using gratch_core;
 
 using System;
+using System.Collections.Generic;
 
 namespace gratch_core_tests
 {
@@ -22,6 +23,7 @@ namespace gratch_core_tests
         internal static Group GetGroup(int peoplecount)
         {
             pIterator = 1;
+            var people = new List<Person>();
             var group = new Group($"Grp{gIterator}");
 
             for (int i = 0; i < peoplecount; i++) group.Add(GetPerson());

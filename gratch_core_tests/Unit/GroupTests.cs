@@ -30,7 +30,7 @@ namespace gratch_core_tests.Unit
             gList.ForEach(g => Assert.AreEqual(g, IGroup.AllInstances[gList.IndexOf(g)]));
         }
         [TestMethod]
-        public void IGroup_AllInstances_Deletion_InstancesDontHaveEmptyGroups()
+        public void IGroup_AllInstances_Deletion_AllInstancesDontHaveEmptyGroups()
         {
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
@@ -90,7 +90,7 @@ namespace gratch_core_tests.Unit
             var person = new Person("test");
             person.DutyDates = new System.Collections.ObjectModel.Collection<DateTime> { DateTime.MinValue };
 
-            group.Insert(5, person);
+            group.Insert(5, new Person("test"));
 
             Assert.AreNotEqual(person, group[5]);
             Assert.AreEqual(person.Name, group[5].Name);

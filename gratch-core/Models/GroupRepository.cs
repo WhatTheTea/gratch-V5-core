@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
+using static SQLite.SQLite3;
+
 namespace gratch_core.Models
 {
     public class GroupRepository : IRepository<Group, Person>
@@ -42,8 +44,16 @@ namespace gratch_core.Models
         }
         public GroupModel GetGroup(string name) //=> GetAllGroups().FirstOrDefault(grp => grp.Name == name);
         {
-            var result = db.GetWithChildren<GroupModel>(db.Table<GroupModel>().First(g => g.Name == name).Id);
-            result.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob));
+            GroupModel result;
+            try
+            {
+                result = db.GetWithChildren<GroupModel>(db.Table<GroupModel>()?.FirstOrDefault(g => g.Name == name)?.Id);
+                result.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob));
+            }
+            catch (InvalidOperationException)
+            {
+                result = null;
+            }
             return result;
         }
         public void AddGroup(Group group)
@@ -97,11 +107,11 @@ namespace gratch_core.Models
         public void DeletePerson(Group group, Person person)
         {
             var model = group.ToModel();
-            PersonModel deleted = db.GetWithChildren<GroupModel>(model.Id - 1).People.First(p => p.Name == person.Name); //несуществующий человек
+            PersonModel deleted = db.GetWithChildren<GroupModel>(model.Id).People.First(p => p.Name == person.Name); //несуществующий человек
             db.Delete(deleted);
             db.RunInTransaction(() =>
             {
-                foreach(var p in group)
+                foreach (var p in group)
                 {
                     db.Execute("UPDATE PersonModel " +
                     "SET Id = ? " + // 3 аргумента
@@ -118,13 +128,12 @@ namespace gratch_core.Models
 
         public void DeleteGroup(Group group)
         {
-            var table = db.Table<GroupModel>();
-            var deletedgroupId = db.Table<GroupModel>().First(g => g.Name == group.Name).Id;
-            db.Delete<GroupModel>(deletedgroupId);
+            var deletedGroupId = GetGroup(group.Name).Id;
+            db.Delete<GroupModel>(deletedGroupId);
 
             db.Execute("DELETE FROM PersonModel " +
-                "WHERE GroupId LIKE ?", deletedgroupId);
-            if (table.Count() == 0) DeleteAll();
+                "WHERE GroupId LIKE ?", deletedGroupId);
+            if (db.Table<GroupModel>().Count() == 0) DeleteAll();
         }
 
         public void DeleteAll()

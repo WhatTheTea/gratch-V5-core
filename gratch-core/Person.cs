@@ -52,10 +52,5 @@ namespace gratch_core
                 }
             }
         }
-        //ICloneable
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
     }
 }
