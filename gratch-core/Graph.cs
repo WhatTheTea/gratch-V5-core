@@ -23,7 +23,20 @@ namespace gratch_core
             _people.Where(p =>
             p.DutyDates.Any()).ToList().AsReadOnly();
         private ObservableCollection<DayOfWeek> _weekend = new();
-        public Collection<DayOfWeek> Weekend { get => _weekend; set => _weekend = new ObservableCollection<DayOfWeek>(value); }
+        public IList<DayOfWeek> Weekend
+        {
+            get => _weekend.ToList().AsReadOnly();
+            set
+            {
+                Group.subscriber?.Destroy();
+                _weekend.Clear();
+                for (int i = 0; i < value.Count; i++)
+                {
+                    if (value[i] == value.Last()) Group.subscriber = SQLiteSubscriber.GetSubscriber();
+                    _weekend.Add(value[i]);
+                }
+            }
+        }
         public IList<DateTime> Workdates
         {
             get
@@ -67,7 +80,7 @@ namespace gratch_core
                     if (pIndex >= _people.Count) pIndex = 0;
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
-                    if (day == DateTime.Now.DaysInMonth() - 1) Person.SupressInvocation = false;
+                    if (day == DateTime.Now.DaysInMonth()) Person.SupressInvocation = false;
                     _people[pIndex].DutyDates.Add(dutyDate);
                 }
             }

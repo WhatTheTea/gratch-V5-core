@@ -9,6 +9,8 @@ namespace gratch_core_tests
     {
         internal static gratch_core.Models.GroupRepository Repository = new();
 
+        internal const int dinm_flag = -5;
+
         private static int gIterator = 1;
         private static int pIterator = 1;
         private static Person GetPerson(bool iterate = true)
@@ -28,18 +30,16 @@ namespace gratch_core_tests
 
             return group;
         }
-        private static void ResetIterators()
+        public static void ResetIterators()
         {
             gIterator = 1;
             pIterator = 1;
         }
         internal static void CleanUp()
         {
-            ReturnTable();
-
             DataFiller.Repository.DeleteAll();
 
-            Group.subscriber.Destroy();
+            Group.subscriber?.Destroy();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
 

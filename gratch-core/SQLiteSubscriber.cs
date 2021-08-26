@@ -19,6 +19,10 @@ namespace gratch_core
             Group.PersonChanged += Group_PersonChanged;
             Group.PersonRemoved += Group_PersonRemoved;
         }
+        ~SQLiteSubscriber()
+        {
+            Destroy();
+        }
         public void Destroy()
         {
             _subscriber = null;

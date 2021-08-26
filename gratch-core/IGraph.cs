@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace gratch_core
 {
@@ -9,7 +8,7 @@ namespace gratch_core
         Person this[DateTime dutyDate] { get; }
 
         IList<Person> AssignedPeople { get; }
-        Collection<DayOfWeek> Weekend { get; set; }
+        IList<DayOfWeek> Weekend { get; set; }
         IList<DateTime> Workdates { get; }
 
         void AssignEveryone(int startIndex = 0);

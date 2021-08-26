@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json;
 
@@ -31,7 +30,7 @@ namespace gratch_core
         internal static Group ToGroup(this GroupModel model)
         {
             var grp = new Group(model.Name);
-            grp.Graph.Weekend = JsonSerializer.Deserialize<Collection<DayOfWeek>>(model.WeekendBlobbed);
+            grp.Graph.Weekend = JsonSerializer.Deserialize<List<DayOfWeek>>(model.WeekendBlobbed);
             foreach (var person in model.People)
             {
                 grp.Add(person.ToPerson());
