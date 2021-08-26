@@ -40,8 +40,12 @@ namespace gratch_core.Models
 
             return list;
         }
-        public GroupModel GetGroup(string name) => GetAllGroups().FirstOrDefault(grp => grp.Name == name);
-
+        public GroupModel GetGroup(string name) //=> GetAllGroups().FirstOrDefault(grp => grp.Name == name);
+        {
+            var result = db.GetWithChildren<GroupModel>(db.Table<GroupModel>().First(g => g.Name == name).Id);
+            result.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob));
+            return result;
+        }
         public void AddGroup(Group group)
         {
             db.Insert(group.ToModel());
@@ -83,16 +87,15 @@ namespace gratch_core.Models
             db.Delete(deleted);
             db.RunInTransaction(() =>
             {
-                new List<Person>(group).ForEach(p =>
+                foreach(var p in group)
                 {
-
                     db.Execute("UPDATE PersonModel " +
                     "SET Id = ? " + // 3 аргумента
                     "WHERE GroupId LIKE ? AND Name LIKE ?",
                     group.IndexOf(p) + 1,
                          model.Id, p.Name
                     );
-                });
+                }
             }
             );
 
@@ -101,14 +104,15 @@ namespace gratch_core.Models
 
         public void DeleteGroup(Group group)
         {
-            var deletedgroupId = (from g in GetAllGroups()
+            var table = db.Table<GroupModel>();
+            var deletedgroupId = (from g in table
                                   where g.Name == @group.Name
                                   select g.Id).First();
             db.Delete<GroupModel>(deletedgroupId);
 
             db.RunInTransaction(() => db.Execute("DELETE FROM PersonModel " +
                 "WHERE GroupId LIKE ?", deletedgroupId));
-            if (GetAllGroups().Count == 0) DeleteAll();
+            if (table.Count() == 0) DeleteAll();
         }
 
         public void DeleteAll()

@@ -120,7 +120,6 @@ namespace gratch_core_tests.Unit
 
             group = DataFiller.GetGroup(pCount);
             expectedPerson = group[pIndex];
-            group.Graph.AssignEveryone();
             group.Graph.MonthlyUpdate();
             //Assert
             actualPerson = group.Graph[group.Graph.Workdates.First()];

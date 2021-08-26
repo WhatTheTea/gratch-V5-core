@@ -19,9 +19,7 @@ namespace gratch_core
         }
         #endregion
         private List<Person> _people;
-        public IList<Person> AssignedPeople =>
-            _people.Where(p =>
-            p.DutyDates.Any()).ToList().AsReadOnly();
+        public IList<Person> AssignedPeople => _people.Where(p => p.DutyDates.Any()).ToList().AsReadOnly();
         private ObservableCollection<DayOfWeek> _weekend = new();
         public IList<DayOfWeek> Weekend
         {
@@ -97,21 +95,14 @@ namespace gratch_core
         }
         public void ClearAllAssignments()
         {
-            foreach (var person in _people)
-            {
-                person.DutyDates.Clear();
-            }
+            _people.ForEach(p => p.DutyDates.Clear());
         }
         internal void ClearAssignment(int index) => _people[index].DutyDates.Clear();
         public void MonthlyUpdate()
         {
-            Person lastPerson = (from p in AssignedPeople
-                                 where p.DutyDates.Last() == Workdates.Last()
-                                 select p).First();
+            Person lastPerson = AssignedPeople.First(p => p.DutyDates.Last() == Workdates.Last());
             int lastIndex = _people.IndexOf(lastPerson);
-
             ClearAllAssignments();
-
             AssignEveryone(lastIndex + 1);
         }
         public bool IsHoliday(DateTime date)
