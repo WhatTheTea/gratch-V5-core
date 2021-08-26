@@ -101,7 +101,7 @@ namespace gratch_core_tests.Unit
 
             for (int i = 0; i < assigned.Count; i++)
             {
-                Assert.IsTrue(group[i] != assigned[i]);
+                Assert.IsTrue(group[i] == assigned[i]);
             }
         }
         [DataTestMethod]

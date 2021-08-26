@@ -89,7 +89,7 @@ namespace gratch_core_tests.Integration
                         Assert.AreEqual(gList[mList.IndexOf(gModel)]
                             [gModel.People.IndexOf(pModel)].Name, pModel.Name);//pModel.Name == Person.Name
                     }));
-                    DataFiller.ReturnTable();
+                    //DataFiller.ReturnTable();
                 }
             }
             else

@@ -30,7 +30,7 @@ namespace gratch_core_tests
 
             return group;
         }
-        private static void ResetIterators()
+        public static void ResetIterators()
         {
             gIterator = 1;
             pIterator = 1;
