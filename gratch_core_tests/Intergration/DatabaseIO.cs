@@ -83,7 +83,6 @@ namespace gratch_core_tests.Integration
                 {
                     mList.ForEach(gModel => gModel.People.ForEach(pModel =>
                     {
-                        Assert.AreEqual(gModel.Name, pModel.GroupModel.Name);
                         Assert.AreEqual(gModel.Id, pModel.GroupId);
                         Assert.AreEqual(gList[mList.IndexOf(gModel)]
                             [gModel.People.IndexOf(pModel)].Name, pModel.Name);//pModel.Name == Person.Name

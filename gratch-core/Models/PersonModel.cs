@@ -24,7 +24,5 @@ namespace gratch_core.Models
         public List<DateTime> DutyDates { get; set; }
 
         public string DutyDatesBlob { get; set; }
-        [ManyToOne(CascadeOperations = CascadeOperation.CascadeDelete | CascadeOperation.CascadeRead)]
-        public GroupModel GroupModel { get; set; }
     }
 }

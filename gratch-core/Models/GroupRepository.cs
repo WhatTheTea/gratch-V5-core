@@ -85,8 +85,7 @@ namespace gratch_core.Models
 
         public void AddPerson(Group group, Person person) // Можно превратить чисто модель человека, а не в целую групу
         {
-            var mod = group.ToModel();
-            var added = mod.People.First(p => p.Name == person.Name); //новый человек
+            var added = person.ToModel(group); //новый человек
             db.InsertWithChildren(added);
         }
         public void UpdateGroup(Group group)
@@ -120,9 +119,7 @@ namespace gratch_core.Models
         public void DeleteGroup(Group group)
         {
             var table = db.Table<GroupModel>();
-            var deletedgroupId = (from g in table
-                                  where g.Name == @group.Name
-                                  select g.Id).First();
+            var deletedgroupId = db.Table<GroupModel>().First(g => g.Name == group.Name).Id;
             db.Delete<GroupModel>(deletedgroupId);
 
             db.Execute("DELETE FROM PersonModel " +

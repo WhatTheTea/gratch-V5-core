@@ -3,27 +3,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 
 namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
-        internal static PersonModel ToModel(this Person person) => new()
+        internal static PersonModel ToModel(this Person person, Group group)
         {
-            Name = person.Name,
-            DutyDates = person.DutyDates.ToList()
-        };
+            PersonModel result = new()
+            {
+                Name = person.Name,
+                DutyDates = person.DutyDates.ToList(),
+                GroupId = IGroup.AllInstances.IndexOf(group) + 1,
+                Id = group.IndexOf(person) + 1
+            };  
+            result.DutyDatesBlob = new string(JsonSerializer.Serialize(
+                person.DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"))));
+            return result;
+        }
+
         internal static Person ToPerson(this PersonModel model) => new(model.Name)
         {
             DutyDates = new(model.DutyDates)
         };
-        internal static List<PersonModel> ToModels(this IList<Person> people)
+        internal static List<PersonModel> ToModels(this IList<Person> people, Group group)
         {
             var list = new List<PersonModel>();
             foreach (var person in people)
             {
-                list.Add(person.ToModel());
+                list.Add(person.ToModel(group));
             }
             return list;
         }
@@ -31,33 +41,19 @@ namespace gratch_core
         {
             var grp = new Group(model.Name);
             grp.Graph.Weekend = JsonSerializer.Deserialize<List<DayOfWeek>>(model.WeekendBlobbed);
-            foreach (var person in model.People)
-            {
-                grp.Add(person.ToPerson());
-            }
+            model.People.ForEach( p => grp.Add(p.ToPerson()));
             return grp;
         }
-        internal static GroupModel ToModel(this IGroup group)
+        internal static GroupModel ToModel(this Group group)
         {
             var model = new GroupModel()
             {
                 Name = group.Name,
-                People = group.ToModels(),
+                People = group.ToModels(group),
                 Weekend = group.Graph.Weekend.ToList(),
                 Id = IGroup.AllInstances.IndexOf(group) + 1
             };
             model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
-            model.People.ForEach(p =>
-            {
-                p.Id = model.People.IndexOf(p) + 1;
-                p.GroupId = model.Id;
-                p.GroupModel = model;
-                p.DutyDatesBlob = new string(JsonSerializer.Serialize(group[model.People.IndexOf(p)]
-                    .DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"))));
-#if LOGGING
-                Console.WriteLine(DateTime.Now + $" | MCE | {p.Name} DutyDatesBlob: {p.DutyDatesBlob}");
-#endif
-            });
             return model;
         }
     }
