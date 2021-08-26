@@ -65,23 +65,33 @@ namespace gratch_core
 
         public void AssignEveryone(int startIndex = 0) //Главная механика
         {
+            DateTime now = DateTime.Now;
             int pCount = _people.Count;
+            int dinm = now.DaysInMonth();
+
             if (pCount > 0)
             {
                 if (_people[startIndex].DutyDates.Any()) ClearAllAssignments();
-                for (int pIndex = startIndex, day = 1; day <= DateTime.Now.DaysInMonth(); day++, pIndex++)
+                for (int pIndex = startIndex, day = 1; day <= dinm; day++, pIndex++)
                 {
-                    if (pCount > 1) Person.SupressInvocation = true;
-                    if (IsHoliday(day)) // if day is holiday - skip;
+                    if (!IsHoliday(day)) // if day is holiday - skip;
+                    {
+                        if (pCount > 1 && day != dinm)
+                        {
+                            Person.SupressInvocation = true;
+                        }
+                        else Person.SupressInvocation = false;
+
+                        if (pIndex >= pCount) pIndex = 0;
+                        var dutyDate = new DateTime(now.Year, now.Month, day);
+
+                        _people[pIndex].DutyDates.Add(dutyDate);
+                    }
+                    else
                     {
                         pIndex--; //but do not skip person
                         continue;
                     }
-                    if (pIndex >= _people.Count) pIndex = 0;
-
-                    var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
-                    if (day == DateTime.Now.DaysInMonth()) Person.SupressInvocation = false;
-                    _people[pIndex].DutyDates.Add(dutyDate);
                 }
             }
         }
