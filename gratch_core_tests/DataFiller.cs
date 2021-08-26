@@ -9,7 +9,7 @@ namespace gratch_core_tests
     {
         internal static gratch_core.Models.GroupRepository Repository = new();
 
-        internal const string FirstPersonName = "Grp: 1 Person: 1";
+        internal const int dinm_flag = -5;
 
         private static int gIterator = 1;
         private static int pIterator = 1;
@@ -39,7 +39,7 @@ namespace gratch_core_tests
         {
             DataFiller.Repository.DeleteAll();
 
-            Group.subscriber.Destroy();
+            Group.subscriber?.Destroy();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
