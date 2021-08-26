@@ -93,7 +93,8 @@ namespace gratch_core
         {
             get
             {
-                return _people[index];
+                return _people.Count != 0 ?
+                _people[index] : null;
             }
             set
             {

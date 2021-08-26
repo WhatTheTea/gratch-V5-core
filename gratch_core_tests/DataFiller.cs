@@ -9,6 +9,8 @@ namespace gratch_core_tests
     {
         internal static gratch_core.Models.GroupRepository Repository = new();
 
+        internal const string FirstPersonName = "Grp: 1 Person: 1";
+
         private static int gIterator = 1;
         private static int pIterator = 1;
         private static Person GetPerson(bool iterate = true)
@@ -35,8 +37,6 @@ namespace gratch_core_tests
         }
         internal static void CleanUp()
         {
-            ReturnTable();
-
             DataFiller.Repository.DeleteAll();
 
             Group.subscriber.Destroy();

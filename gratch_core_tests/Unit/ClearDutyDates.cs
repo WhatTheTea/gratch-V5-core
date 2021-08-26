@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
 
-namespace gratch_core_tests.Graph_tests
+namespace gratch_core_tests.Unit
 {
     [TestClass]
     public class ClearDutyDates

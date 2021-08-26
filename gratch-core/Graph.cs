@@ -67,7 +67,7 @@ namespace gratch_core
                     if (pIndex >= _people.Count) pIndex = 0;
 
                     var dutyDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, day);
-                    if (day == DateTime.Now.DaysInMonth() - 1) Person.SupressInvocation = false;
+                    if (day == DateTime.Now.DaysInMonth()) Person.SupressInvocation = false;
                     _people[pIndex].DutyDates.Add(dutyDate);
                 }
             }
