@@ -12,7 +12,7 @@ namespace gratch_core
         internal static bool SupressInvocation { get; set; } = false;
         private void DutyDates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(!SupressInvocation) PersonChanged?.Invoke(this);
+            if (!SupressInvocation) PersonChanged?.Invoke(this);
         }
         #endregion
 

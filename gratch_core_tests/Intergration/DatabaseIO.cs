@@ -4,7 +4,6 @@ using gratch_core.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace gratch_core_tests.Integration

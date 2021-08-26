@@ -32,10 +32,10 @@ namespace gratch_core.Models
             var list = new List<IGroup>();
 
             Group.subscriber.Destroy();
-            GetAllGroups().ForEach( model =>
-            {
-                list.Add(model.ToGroup());
-            });
+            GetAllGroups().ForEach(model =>
+           {
+               list.Add(model.ToGroup());
+           });
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
             return list;

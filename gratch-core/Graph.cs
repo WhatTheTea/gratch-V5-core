@@ -25,7 +25,7 @@ namespace gratch_core
         private ObservableCollection<DayOfWeek> _weekend = new();
         public IList<DayOfWeek> Weekend
         {
-            get => _weekend.ToList().AsReadOnly(); 
+            get => _weekend.ToList().AsReadOnly();
             set
             {
                 Group.subscriber?.Destroy();

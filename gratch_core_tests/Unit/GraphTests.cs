@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace gratch_core_tests.Unit
@@ -73,7 +72,7 @@ namespace gratch_core_tests.Unit
             Person actual;
 
             group = DataFiller.GetGroup(DateTime.Now.DaysInMonth());
-            expected = group[DoF-1];
+            expected = group[DoF - 1];
             actual = group.Graph[new DateTime(DateTime.Now.Year, DateTime.Now.Month, DoF)];
 
             Assert.AreEqual(expected, actual);

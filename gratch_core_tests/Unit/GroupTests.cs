@@ -3,12 +3,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gratch_core_tests.Unit
 {
