@@ -66,8 +66,24 @@ namespace gratch_core.Models
                 });
             });
         }
+        public void UpdatePeople(GroupModel group)
+        {
+            db.RunInTransaction(() =>
+            {
+                group.People.ForEach(p =>
+                {
+                    db.Execute("UPDATE PersonModel " +
+                                "SET Name = ?, DutyDatesBlob = ? " +
+                                "WHERE Id LIKE ? AND GroupId LIKE ?" +
+                                "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)", //6 аргументов
+                                p.Name, p.DutyDatesBlob,
+                                p.Id, p.GroupId,
+                                p.Name, p.DutyDatesBlob);
+                });
+            });
+        }
 
-        public void AddPerson(Group group, Person person)
+        public void AddPerson(Group group, Person person) // Можно превратить чисто модель человека, а не в целую групу
         {
             var mod = group.ToModel();
             var added = mod.People.First(p => p.Name == person.Name); //новый человек
@@ -77,13 +93,12 @@ namespace gratch_core.Models
         {
             var mod = group.ToModel();
             db.Update(mod);
-            UpdatePeople(group);
+            UpdatePeople(mod);
         }
         public void DeletePerson(Group group, Person person)
         {
-            var allGroups = GetAllGroups();
             var model = group.ToModel();
-            PersonModel deleted = allGroups[model.Id - 1].People.First(p => p.Name == person.Name); //несуществующий человек
+            PersonModel deleted = db.GetWithChildren<GroupModel>(model.Id - 1).People.First(p => p.Name == person.Name); //несуществующий человек
             db.Delete(deleted);
             db.RunInTransaction(() =>
             {
@@ -99,7 +114,7 @@ namespace gratch_core.Models
             }
             );
 
-            UpdatePeople(group);
+            UpdatePeople(model);
         }
 
         public void DeleteGroup(Group group)
@@ -110,8 +125,8 @@ namespace gratch_core.Models
                                   select g.Id).First();
             db.Delete<GroupModel>(deletedgroupId);
 
-            db.RunInTransaction(() => db.Execute("DELETE FROM PersonModel " +
-                "WHERE GroupId LIKE ?", deletedgroupId));
+            db.Execute("DELETE FROM PersonModel " +
+                "WHERE GroupId LIKE ?", deletedgroupId);
             if (table.Count() == 0) DeleteAll();
         }
 
