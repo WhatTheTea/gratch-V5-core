@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
-using static SQLite.SQLite3;
-
 namespace gratch_core.Models
 {
     public class GroupRepository : IRepository<Group, Person>
@@ -19,7 +17,7 @@ namespace gratch_core.Models
         private readonly SQLiteConnection db;
         public GroupRepository()
         {
-            db = SQLiteDB.GetAsyncConnection();
+            db = SQLiteDB.GetConnection();
             db.CreateTable<GroupModel>();
             db.CreateTable<PersonModel>();
         }
@@ -62,21 +60,9 @@ namespace gratch_core.Models
         }
         public void UpdatePeople(Group group)
         {
-            db.RunInTransaction(() =>
-            {
-                group.ToModel().People.ForEach(p =>
-                {
-                    db.Execute("UPDATE PersonModel " +
-                                "SET Name = ?, DutyDatesBlob = ? " +
-                                "WHERE Id LIKE ? AND GroupId LIKE ?" +
-                                "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)", //6 аргументов
-                                p.Name, p.DutyDatesBlob,
-                                p.Id, p.GroupId,
-                                p.Name, p.DutyDatesBlob);
-                });
-            });
+            UpdatePeople(group.ToModel());
         }
-        public void UpdatePeople(GroupModel group)
+        private void UpdatePeople(GroupModel group)
         {
             db.RunInTransaction(() =>
             {
@@ -84,8 +70,8 @@ namespace gratch_core.Models
                 {
                     db.Execute("UPDATE PersonModel " +
                                 "SET Name = ?, DutyDatesBlob = ? " +
-                                "WHERE Id LIKE ? AND GroupId LIKE ?" +
-                                "AND (Name NOT LIKE ? OR DutyDatesBlob NOT LIKE ?)", //6 аргументов
+                                "WHERE Id == ? AND GroupId == ?" +
+                                "AND (Name != ? OR DutyDatesBlob != ?)", //6 аргументов
                                 p.Name, p.DutyDatesBlob,
                                 p.Id, p.GroupId,
                                 p.Name, p.DutyDatesBlob);
@@ -115,7 +101,7 @@ namespace gratch_core.Models
                 {
                     db.Execute("UPDATE PersonModel " +
                     "SET Id = ? " + // 3 аргумента
-                    "WHERE GroupId LIKE ? AND Name LIKE ?",
+                    "WHERE GroupId == ? AND Name == ?",
                     group.IndexOf(p) + 1,
                          model.Id, p.Name
                     );
@@ -132,7 +118,7 @@ namespace gratch_core.Models
             db.Delete<GroupModel>(deletedGroupId);
 
             db.Execute("DELETE FROM PersonModel " +
-                "WHERE GroupId LIKE ?", deletedGroupId);
+                "WHERE GroupId == ?", deletedGroupId);
             if (db.Table<GroupModel>().Count() == 0) DeleteAll();
         }
 
@@ -143,5 +129,33 @@ namespace gratch_core.Models
             db.CreateTable<GroupModel>();
             db.CreateTable<PersonModel>();
         }
+
+        #region IDisposable
+        private bool disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    db.Close();
+                }
+                disposed = true;
+
+                db.Dispose();
+            }
+        }
+
+        ~GroupRepository()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }

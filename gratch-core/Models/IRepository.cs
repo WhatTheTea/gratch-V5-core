@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace gratch_core.Models
 {
-    public interface IRepository<T1, T2>
+    public interface IRepository<T1, T2> : IDisposable
         where T1 : IGroup
         where T2 : IPerson
     {
