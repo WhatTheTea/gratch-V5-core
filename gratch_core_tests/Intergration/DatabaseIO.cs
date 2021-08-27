@@ -28,6 +28,8 @@ namespace gratch_core_tests.Integration
             {
                 Assert.AreEqual(expected?.DutyDates?[i], actual?.DutyDates?[i]);
             }
+
+            DataFiller.ReturnTable();
         }
         [DataTestMethod]
         [DataRow(0)]

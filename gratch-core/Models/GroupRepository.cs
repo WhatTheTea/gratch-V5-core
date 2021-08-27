@@ -15,11 +15,16 @@ namespace gratch_core.Models
     public class GroupRepository : IRepository<Group, Person>
     {
         private readonly SQLiteConnection db;
+        private readonly string journalMode;
+        private readonly string sync;
         public GroupRepository()
         {
             db = SQLiteDB.GetConnection();
             db.CreateTable<GroupModel>();
             db.CreateTable<PersonModel>();
+
+            journalMode = db.ExecuteScalar<string>("PRAGMA journal_mode = wal");
+            sync = db.ExecuteScalar<string>("PRAGMA synchronous = OFF");
         }
         public List<GroupModel> GetAllGroups()
         {
@@ -82,7 +87,7 @@ namespace gratch_core.Models
         public void AddPerson(Group group, Person person) // Можно превратить чисто модель человека, а не в целую групу
         {
             var added = person.ToModel(group); //новый человек
-            db.InsertWithChildren(added);
+            db.Insert(added);
         }
         public void UpdateGroup(Group group)
         {
