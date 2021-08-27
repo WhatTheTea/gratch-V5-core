@@ -29,7 +29,7 @@ namespace gratch_core_tests.Integration
                 Assert.AreEqual(expected?.DutyDates?[i], actual?.DutyDates?[i]);
             }
 
-            DataFiller.ReturnTable();
+            //DataFiller.ReturnTable();
         }
         [DataTestMethod]
         [DataRow(0)]
@@ -41,7 +41,7 @@ namespace gratch_core_tests.Integration
 
             List<IGroup> groups = new();
 
-            Group.subscriber.Destroy();
+            Group.subscriber.Dispose();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
@@ -101,7 +101,7 @@ namespace gratch_core_tests.Integration
         public void CleanUp()
         {
             DataFiller.Repository.DeleteAll();
-            Group.subscriber.Destroy();
+            Group.subscriber.Dispose();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
         }

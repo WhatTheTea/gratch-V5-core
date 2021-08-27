@@ -26,7 +26,7 @@ namespace gratch_core
             get => _weekend.ToList().AsReadOnly();
             set
             {
-                Group.subscriber?.Destroy();
+                Group.subscriber?.Dispose();
                 _weekend.Clear();
                 for (int i = 0; i < value.Count; i++)
                 {

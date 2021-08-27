@@ -41,7 +41,7 @@ namespace gratch_core_tests
         {
             DataFiller.Repository.DeleteAll();
 
-            Group.subscriber?.Destroy();
+            Group.subscriber?.Dispose();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
             Group.subscriber = SQLiteSubscriber.GetSubscriber();
 

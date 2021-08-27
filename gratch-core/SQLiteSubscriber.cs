@@ -3,9 +3,11 @@
 
 using gratch_core.Models;
 
+using System;
+
 namespace gratch_core
 {
-    internal class SQLiteSubscriber
+    internal class SQLiteSubscriber : IDisposable
     {
         private static SQLiteSubscriber _subscriber;
         private readonly GroupRepository repos = new();
@@ -21,9 +23,9 @@ namespace gratch_core
         }
         ~SQLiteSubscriber()
         {
-            Destroy();
+            Dispose(false);
         }
-        public void Destroy()
+        private void Destroy()
         {
             _subscriber = null;
 
@@ -90,5 +92,27 @@ namespace gratch_core
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name}  table");
 #endif
         }
+        #region IDisposable
+        private bool disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Destroy();
+                }
+                disposed = true;
+
+                repos.Dispose();
+            }
+        }
+        #endregion
     }
 }

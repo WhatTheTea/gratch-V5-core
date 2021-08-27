@@ -34,7 +34,7 @@ namespace gratch_core.Models
         {
             var list = new List<IGroup>();
 
-            Group.subscriber.Destroy();
+            Group.subscriber.Dispose();
             GetAllGroups().ForEach(model =>
            {
                list.Add(model.ToGroup());
