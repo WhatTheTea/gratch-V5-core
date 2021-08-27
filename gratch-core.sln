@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gratch-core", "gratch-core\gratch-core.csproj", "{648A930E-A88F-4AE8-9379-128134F501D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gratch_core_tests", "gratch_core_tests\gratch_core_tests.csproj", "{FF129454-BA14-4339-82A8-1C9D7F25D4BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gratch_core_tests", "gratch_core_tests\gratch_core_tests.csproj", "{FF129454-BA14-4339-82A8-1C9D7F25D4BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gratch-core-net-framework", "gratch-core-net-framework\gratch-core-net-framework.csproj", "{8B18ECF0-5702-4263-A0FE-FB75C91CE4F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FF129454-BA14-4339-82A8-1C9D7F25D4BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF129454-BA14-4339-82A8-1C9D7F25D4BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF129454-BA14-4339-82A8-1C9D7F25D4BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B18ECF0-5702-4263-A0FE-FB75C91CE4F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B18ECF0-5702-4263-A0FE-FB75C91CE4F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B18ECF0-5702-4263-A0FE-FB75C91CE4F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B18ECF0-5702-4263-A0FE-FB75C91CE4F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
