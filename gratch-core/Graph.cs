@@ -55,7 +55,7 @@ namespace gratch_core
             }
         }
 
-        internal Graph(ref List<Person> people)
+        internal Graph(List<Person> people)
         {
             this._people = people;
             _weekend.CollectionChanged += Weekend_CollectionChanged;

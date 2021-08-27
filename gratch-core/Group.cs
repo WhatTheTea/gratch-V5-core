@@ -54,7 +54,7 @@ namespace gratch_core
         private Group()
         {
             IGroup.instances.Add(this);
-            _graph = new Graph(ref _people);
+            _graph = new Graph(_people);
 
             Person.PersonChanged += Person_PersonUpdated;
             _graph.WeekendChanged += Weekend_CollectionChanged;
