@@ -18,7 +18,7 @@ namespace gratch_core
 
         private string _name;
         public string Name { get => _name; set => Rename(value); }
-        private ObservableCollection<DateTime> _dutyDates = new();
+        private ObservableCollection<DateTime> _dutyDates = new ObservableCollection<DateTime>();
         public Collection<DateTime> DutyDates { get => _dutyDates; set => _dutyDates = new ObservableCollection<DateTime>(value); }  //АвтоСвойство
         public Person(string name)
         {
@@ -30,7 +30,7 @@ namespace gratch_core
 
         public void Rename(string name, bool invokeMuted = false)
         {
-            foreach (var group in IGroup.AllInstances)
+            foreach (var group in Group.AllInstances)
             {
                 bool personExists = group.Any(
                     person => person.Name == Name && person.DutyDates == DutyDates);// Select group, where this person is

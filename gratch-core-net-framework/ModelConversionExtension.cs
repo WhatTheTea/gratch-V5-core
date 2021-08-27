@@ -11,21 +11,21 @@ namespace gratch_core
     {
         internal static PersonModel ToModel(this Person person, Group group)
         {
-            PersonModel result = new()
+            PersonModel result = new PersonModel()
             {
                 Name = person.Name,
                 DutyDates = person.DutyDates.ToList(),
-                GroupId = IGroup.AllInstances.IndexOf(group) + 1,
+                GroupId = Group.AllInstances.IndexOf(group) + 1,
                 Id = group.IndexOf(person) + 1
             };
-            result.DutyDatesBlob = new string(JsonSerializer.Serialize(
-                person.DutyDates.Select(dd => dd.ToString("yyyy-MM-dd"))));
+            result.DutyDatesBlob = JsonSerializer.Serialize(
+                person.DutyDates.Select(dd => dd.ToString("yyyy-MM-dd")));
             return result;
         }
 
-        internal static Person ToPerson(this PersonModel model) => new(model.Name)
+        internal static Person ToPerson(this PersonModel model) => new Person(model.Name)
         {
-            DutyDates = new(model.DutyDates)
+            DutyDates = new System.Collections.ObjectModel.Collection<DateTime>(model.DutyDates)
         };
         internal static List<PersonModel> ToModels(this IList<Person> people, Group group)
         {
@@ -50,7 +50,7 @@ namespace gratch_core
                 Name = group.Name,
                 People = group.ToModels(group),
                 Weekend = group.Graph.Weekend.ToList(),
-                Id = IGroup.AllInstances.IndexOf(group) + 1
+                Id = Group.AllInstances.IndexOf(group) + 1
             };
             model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
             return model;

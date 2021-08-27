@@ -10,6 +10,15 @@ namespace gratch_core
 {
     public class Group : IGroup
     {
+        protected static readonly List<IGroup> instances = new List<IGroup>();
+        internal static IList<IGroup> AllInstances
+        {
+            get
+            {
+                return instances.Where(instance => instance.Count > 0).Distinct().ToList().AsReadOnly();
+            }
+        }
+
         #region events
         internal static SQLiteSubscriber subscriber = SQLiteSubscriber.GetSubscriber();
 
@@ -41,19 +50,19 @@ namespace gratch_core
             get => _name;
             set
             {
-                if (!IGroup.AllInstances.Any(grp => grp.Name == value))
+                if (!Group.AllInstances.Any(grp => grp.Name == value))
                 {
                     _name = value;
                     GroupChanged?.Invoke(this);
                 }
             }
         }
-        private readonly List<Person> _people = new();
+        private readonly List<Person> _people = new List<Person>();
         private readonly Graph _graph;
         public Graph Graph { get => _graph; }
         private Group()
         {
-            IGroup.instances.Add(this);
+            Group.instances.Add(this);
             _graph = new Graph(_people);
 
             Person.PersonChanged += Person_PersonUpdated;
@@ -137,7 +146,7 @@ namespace gratch_core
 
             if (Count == 1)
             {
-                IGroup.instances.Add(this);
+                Group.instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
             PersonAdded?.Invoke(this, person);

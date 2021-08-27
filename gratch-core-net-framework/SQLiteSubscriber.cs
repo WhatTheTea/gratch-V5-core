@@ -10,7 +10,7 @@ namespace gratch_core
     internal class SQLiteSubscriber : IDisposable
     {
         private static SQLiteSubscriber _subscriber;
-        private readonly GroupRepository repos = new();
+        private readonly GroupRepository repos = new GroupRepository();
         private SQLiteSubscriber()
         {
             Group.GroupAdded += Group_GroupAdded;

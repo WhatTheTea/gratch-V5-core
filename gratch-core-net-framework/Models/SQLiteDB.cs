@@ -9,6 +9,6 @@ namespace gratch_core.Models
         private static readonly string DBPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         public static string FullPath { get => Path.Combine(DBPath, DBName); }
-        public static SQLite.SQLiteConnection GetConnection() => new(FullPath, true);
+        public static SQLite.SQLiteConnection GetConnection() => new SQLite.SQLiteConnection(FullPath, true);
     }
 }
