@@ -30,7 +30,7 @@ namespace gratch_core
                 _weekend.Clear();
                 for (int i = 0; i < value.Count; i++)
                 {
-                    if (value[i] == value.Last()) Group.subscriber = SQLiteSubscriber.GetSubscriber();
+                    if(i == value.Count-1) Group.subscriber = SQLiteSubscriber.GetSubscriber();
                     _weekend.Add(value[i]);
                 }
             }
@@ -93,10 +93,7 @@ namespace gratch_core
                 }
             }
         }
-        public void ClearAllAssignments()
-        {
-            _people.ForEach(p => p.DutyDates.Clear());
-        }
+        public void ClearAllAssignments() => _people.ForEach(p => p.DutyDates.Clear());
         internal void ClearAssignment(int index) => _people[index].DutyDates.Clear();
         public void MonthlyUpdate()
         {
@@ -115,20 +112,7 @@ namespace gratch_core
             return Weekend.Contains(new DateTime(DateTime.Now.Year,
                     DateTime.Now.Month, day).DayOfWeek);
         }
-        public bool IsAssigned(DateTime date)
-        {
-            foreach (var person in _people)
-            {
-                if (person.DutyDates.Any() == true)
-                {
-                    foreach (var dutydate in person.DutyDates)
-                    {
-                        if (dutydate == date) return true;
-                    }
-                }
-            }
-            return false;
-        }
+        public bool IsAssigned(DateTime date) => _people.Any(p => p.DutyDates.Any(dd => dd == date));
         public Person this[DateTime dutyDate] => _people.FirstOrDefault(person =>
                                                  person.DutyDates.Any(date =>
                                                  date == dutyDate) == true);
