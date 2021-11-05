@@ -1,20 +1,20 @@
 ﻿using gratch_core;
 using gratch_core.Models;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using System.Collections.Generic;
 using System.Linq;
 
 namespace gratch_core_tests.Integration
 {
-    [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
+    [TestFixture]
     public class DatabaseIO
     {
-        [DataTestMethod]
-        [DataRow(0)]
-        [DataRow(1)]
-        [DataRow(40)]
+        
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(40)]
         public void Repository_BasicReadWrite_GroupEqualsGroupModel(int pCount)
         {
             var group = DataFiller.GetGroup(pCount);
@@ -31,10 +31,10 @@ namespace gratch_core_tests.Integration
 
             //DataFiller.ReturnTable();
         }
-        [DataTestMethod]
-        [DataRow(0)]
-        [DataRow(1)]
-        [DataRow(30)]
+        
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(30)]
         public void Repository_LoadAllGroups_GroupsAreLoaded(int pCount)
         {
             var group = DataFiller.GetGroup(pCount);
@@ -57,16 +57,16 @@ namespace gratch_core_tests.Integration
                 }
             });
         }
-        [DataTestMethod]
-        [DataRow(1, 0)]
-        [DataRow(1, 1)]
-        [DataRow(1, 40)]
-        [DataRow(2, 0)]
-        [DataRow(2, 1)]
-        [DataRow(2, 40)]
-        [DataRow(3, 0)]
-        [DataRow(3, 1)]
-        [DataRow(3, 40)]
+        
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 40)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 40)]
+        [TestCase(3, 0)]
+        [TestCase(3, 1)]
+        [TestCase(3, 40)]
         public void Repository_SeveralGroups_ModelsShouldntBeCorrupted(int gCount, int pCount)
         {
             var gList = new List<Group>();
@@ -97,13 +97,10 @@ namespace gratch_core_tests.Integration
                 Assert.Fail("Models or groups are corrupted");
             }
         }
-        [TestCleanup]
+        [TearDown]
         public void CleanUp()
         {
-            DataFiller.Repository.DeleteAll();
-            /*Group.subscriber.Dispose();
-            foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.subscriber = SQLiteSubscriber.GetSubscriber();*/
+            DataFiller.CleanUp();
         }
     }
 }

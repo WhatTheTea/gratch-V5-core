@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace gratch_core_tests.Unit
 {
-    [TestClass]
+    [TestFixture]
     public class PersonTests
     {
-        [TestMethod]
+        [Test]
         public void Rename_UnSuccessful_PersonIsNotRenamed()
         {
             var group = DataFiller.GetGroup(20);
@@ -15,7 +15,7 @@ namespace gratch_core_tests.Unit
 
             Assert.AreNotEqual(name, group[4]);
         }
-        [TestMethod]
+        [Test]
         public void Rename_Succesful_PersonRenamed()
         {
             var group = DataFiller.GetGroup(20);
@@ -25,7 +25,7 @@ namespace gratch_core_tests.Unit
 
             Assert.AreEqual(name, group[0].Name);
         }
-        [TestCleanup]
+        [TearDown]
         public void CleanUp()
         {
             DataFiller.CleanUp();

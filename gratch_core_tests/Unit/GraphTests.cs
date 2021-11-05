@@ -1,6 +1,6 @@
 ﻿using gratch_core;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace gratch_core_tests.Unit
 {
-    [TestClass]
+    [TestFixture]
     public class GraphTests
     {
-        [TestMethod]
+        [Test]
         public void AssignEveryone_PeopleСountIsDINM_DutydatesNotNullOrZero()
         {
             //Arrange
@@ -24,7 +24,7 @@ namespace gratch_core_tests.Unit
                 Assert.IsTrue(person.DutyDates.Count == 1);
             }
         }
-        [TestMethod]
+        [Test]
         public void AssignEveryone_FirstDayIsHoliday_DutydatesDontHaveHoliday()
         {
             //Arrange
@@ -36,14 +36,14 @@ namespace gratch_core_tests.Unit
             //Assert
             Assert.IsFalse(testgroup.Graph.IsAssigned(dutydate));
         }
-        [DataTestMethod]
-        [DataRow(0)]
-        [DataRow(0, 1)]
-        [DataRow(0, 1, 2)]
-        [DataRow(0, 1, 2, 3)]
-        [DataRow(0, 1, 2, 3, 4)]
-        [DataRow(0, 1, 2, 3, 4, 5)]
-        [DataRow(0, 1, 2, 3, 4, 5, 6)]
+        
+        [TestCase(0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 1, 2)]
+        [TestCase(0, 1, 2, 3)]
+        [TestCase(0, 1, 2, 3, 4)]
+        [TestCase(0, 1, 2, 3, 4, 5)]
+        [TestCase(0, 1, 2, 3, 4, 5, 6)]
         public void AssignEveryone_Holidays_DutydatesDontHaveHolidays(params int[] intdays)
         {
             //Arrange
@@ -60,9 +60,9 @@ namespace gratch_core_tests.Unit
                });
             }
         }
-        [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(DataFiller.dinm_flag)]
+        
+        [TestCase(1)]
+        [TestCase(DataFiller.dinm_flag)]
         public void Brackets_GetPersonByDutyDate_ReturnsPerson(int DoF)
         {
             DoF = DoF == DataFiller.dinm_flag ? DateTime.Now.DaysInMonth() : DoF;
@@ -77,7 +77,7 @@ namespace gratch_core_tests.Unit
 
             Assert.AreEqual(expected, actual);
         }
-        [TestMethod]
+        [Test]
         public void ClearAllAssignments_ClearAndCheck_PersonDontHaveDD()
         {
             var group = DataFiller.GetGroup(20);
@@ -89,7 +89,7 @@ namespace gratch_core_tests.Unit
                 Assert.IsFalse(person.DutyDates.Any());
             }
         }
-        [TestMethod]
+        [Test]
         public void AssignedPeople_Check_ReturnPeople()
         {
             Group group;
@@ -103,9 +103,9 @@ namespace gratch_core_tests.Unit
                 Assert.IsTrue(group[i] == assigned[i]);
             }
         }
-        [DataTestMethod]
-        [DataRow(20)] // LessThanDINM
-        [DataRow(40)] // MoreThanDINM
+        
+        [TestCase(20)] // LessThanDINM
+        [TestCase(40)] // MoreThanDINM
         public void UpdateDutyDates_VariousPersCount_LastPersonIsFirst(int pCount)
         {
             //Arrange
@@ -125,7 +125,7 @@ namespace gratch_core_tests.Unit
             actualPerson = group.Graph[group.Graph.Workdates.First()];
             Assert.AreEqual(expectedPerson, actualPerson);
         }
-        [TestCleanup]
+        [TearDown]
         public void CleanUp()
         {
             DataFiller.CleanUp();
