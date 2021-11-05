@@ -1,7 +1,7 @@
 ﻿using gratch_core;
 using gratch_core.Models;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using System;
 using System.Collections.Generic;
@@ -9,16 +9,16 @@ using System.Linq;
 
 namespace gratch_core_tests.Unit
 {
-    [TestClass]
+    [TestFixture]
     public class GroupTests
     {
-        [DataTestMethod]
-        [DataRow(1, 1)]
-        [DataRow(1, 40)]
-        [DataRow(2, 1)]
-        [DataRow(2, 40)]
-        [DataRow(3, 1)]
-        [DataRow(3, 40)]
+        
+        [TestCase(1, 1)]
+        [TestCase(1, 40)]
+        [TestCase(2, 1)]
+        [TestCase(2, 40)]
+        [TestCase(3, 1)]
+        [TestCase(3, 40)]
         public void IGroup_AllInstances_IsWorkingProperly(int gCount, int pCount)
         {
             var gList = new List<Group>();
@@ -30,7 +30,7 @@ namespace gratch_core_tests.Unit
 
             gList.ForEach(g => Assert.AreEqual(g.Name, new GroupRepository().GetAllGroups()[gList.IndexOf(g)].Name));
         }
-        [TestMethod]
+        [Test]
         public void IGroup_AllInstances_Deletion_AllInstancesDontHaveEmptyGroups()
         {
             var group1 = DataFiller.GetGroup(10);
@@ -47,7 +47,7 @@ namespace gratch_core_tests.Unit
             Assert.IsFalse(repos.GetAllGroups().Any(g => g.Name == name1));
             Assert.IsFalse(repos.GetAllGroups().Any(g => g.Name == name2));
         }
-        [TestMethod]
+        [Test]
         public void Add_ByNameDaysInMonth_Exists()
         {
             Group group;
@@ -62,15 +62,15 @@ namespace gratch_core_tests.Unit
             Assert.IsTrue(group.Where(person => person.Name == name).Any());
             Assert.IsFalse(person.DutyDates.Any());
         }
-        [TestMethod]
+        [Test]
         public void Add_ByName_ThrowsException()
         {
             var group = DataFiller.GetGroup(4);
             var name = group[0].Name;
 
-            Assert.ThrowsException<ArgumentException>(() => group.Add(name));
+            Assert.Catch<ArgumentException>(() => group.Add(name));
         }
-        [TestMethod]
+        [Test]
         public void Constructor_ByListOfNames_IsPersonCreated()
         {
             Random rng = new Random();
@@ -88,7 +88,7 @@ namespace gratch_core_tests.Unit
                 Assert.IsTrue(person.Name == names[index]);
             }
         }
-        [TestMethod]
+        [Test]
         public void Insert_Insert5WithDutyDate_PersonIsAfter5()
         {
             const int people = 9;
@@ -102,7 +102,7 @@ namespace gratch_core_tests.Unit
             Assert.AreEqual(person.Name, group[5].Name);
             Assert.AreEqual(people + 1, group.Count);
         }
-        [TestMethod]
+        [Test]
         public void Remove_ByPerson_GroupDontHavePerson()
         {
             const int index = 9;
@@ -114,7 +114,7 @@ namespace gratch_core_tests.Unit
 
             Assert.IsFalse(group.Contains(deletedPerson));
         }
-        [TestMethod]
+        [Test]
         public void Remove_ByIndex_GroupDontHavePerson()
         {
             const int index = 9;
@@ -126,7 +126,7 @@ namespace gratch_core_tests.Unit
 
             Assert.IsFalse(group.Contains(deletedPerson));
         }
-        [TestMethod]
+        [Test]
         public void Replace_ByIndex_P1IsP2()
         {
             var group = DataFiller.GetGroup(2);
@@ -139,7 +139,7 @@ namespace gratch_core_tests.Unit
             Assert.AreEqual(person1, group[1].Name);
             Assert.AreEqual(person2, group[0].Name);
         }
-        [TestCleanup]
+        [TearDown]
         public void TestCleanUp()
         {
             DataFiller.CleanUp();

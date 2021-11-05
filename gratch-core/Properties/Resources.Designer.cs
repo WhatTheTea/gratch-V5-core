@@ -59,20 +59,5 @@ namespace gratch_core.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Monday = &quot;Понедельник&quot;
-        ///Tuesday = &quot;Вторник&quot;
-        ///Wednesday = &quot;Среда&quot;
-        ///Thursday = &quot;Четверг&quot;
-        ///Friday = &quot;Пятница&quot;
-        ///Saturday = &quot;Суббота&quot;  
-        ///Sunday = &quot;Воскресенье&quot;.
-        /// </summary>
-        public static string dayofweek_ru {
-            get {
-                return ResourceManager.GetString("dayofweek-ru", resourceCulture);
-            }
-        }
     }
 }
