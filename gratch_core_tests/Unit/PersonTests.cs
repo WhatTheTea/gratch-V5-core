@@ -11,7 +11,7 @@ namespace gratch_core_tests.Unit
             var group = DataFiller.GetGroup(20);
             var name = group[0].Name;
 
-            group[4].Rename(name);
+            group.RenamePerson(4,name);
 
             Assert.AreNotEqual(name, group[4]);
         }
@@ -21,7 +21,7 @@ namespace gratch_core_tests.Unit
             var group = DataFiller.GetGroup(20);
             var name = "Gosha";
 
-            group[0].Rename(name);
+            group.RenamePerson(0,name);
 
             Assert.AreEqual(name, group[0].Name);
         }

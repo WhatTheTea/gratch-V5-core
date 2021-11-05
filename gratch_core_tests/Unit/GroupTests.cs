@@ -1,4 +1,5 @@
 ﻿using gratch_core;
+using gratch_core.Models;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,7 +28,7 @@ namespace gratch_core_tests.Unit
                 gList.Add(DataFiller.GetGroup(pCount));
             }
 
-            gList.ForEach(g => Assert.AreEqual(g, IGroup.AllInstances[gList.IndexOf(g)]));
+            gList.ForEach(g => Assert.AreEqual(g.Name, new GroupRepository().GetAllGroups()[gList.IndexOf(g)].Name));
         }
         [TestMethod]
         public void IGroup_AllInstances_Deletion_AllInstancesDontHaveEmptyGroups()
@@ -35,11 +36,16 @@ namespace gratch_core_tests.Unit
             var group1 = DataFiller.GetGroup(10);
             var group2 = DataFiller.GetGroup(20);
 
+            var name1 = group1.Name;
+            var name2 = group2.Name;
+
+            var repos = new GroupRepository();
+
             group1.Clear();
             group2.Clear();
 
-            Assert.IsFalse(IGroup.AllInstances.Contains(group1));
-            Assert.IsFalse(IGroup.AllInstances.Contains(group2));
+            Assert.IsFalse(repos.GetAllGroups().Any(g => g.Name == name1));
+            Assert.IsFalse(repos.GetAllGroups().Any(g => g.Name == name2));
         }
         [TestMethod]
         public void Add_ByNameDaysInMonth_Exists()

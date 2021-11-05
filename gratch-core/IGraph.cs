@@ -12,9 +12,13 @@ namespace gratch_core
         IList<DateTime> Workdates { get; }
 
         void AssignEveryone(int startIndex = 0);
+
         void ClearAllAssignments();
+
         bool IsAssigned(DateTime date);
+
         bool IsHoliday(DateTime date);
+
         void MonthlyUpdate();
     }
 }

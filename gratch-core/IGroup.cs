@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace gratch_core
 {
@@ -8,13 +7,13 @@ namespace gratch_core
         Graph Graph { get; }
         string Name { get; set; }
 
-        protected static readonly List<IGroup> instances = new List<IGroup>();
+        /*protected static readonly List<IGroup> instances = new List<IGroup>(); //кыш
         internal static IList<IGroup> AllInstances
         {
             get
             {
                 return instances.Where(instance => instance.Count > 0).Distinct().ToList().AsReadOnly();
             }
-        }
+        }*/
     }
 }

@@ -15,6 +15,7 @@ namespace gratch_core.Models
     public class GroupRepository : IRepository<Group, Person>
     {
         private readonly SQLiteConnection db;
+
         public GroupRepository()
         {
             db = SQLiteDB.GetConnection();
@@ -24,12 +25,14 @@ namespace gratch_core.Models
             db.ExecuteScalar<string>("PRAGMA journal_mode = wal");
             db.ExecuteScalar<string>("PRAGMA synchronous = OFF");
         }
+
         public List<GroupModel> GetAllGroups()
         {
             var result = db.GetAllWithChildren<GroupModel>();
             result.ForEach(g => g.People.ForEach(p => p.DutyDates = JsonSerializer.Deserialize<List<DateTime>>(p.DutyDatesBlob)));
             return result;
         }
+
         public List<IGroup> LoadAllGroups()
         {
             var list = new List<IGroup>();
@@ -43,6 +46,7 @@ namespace gratch_core.Models
 
             return list;
         }
+
         public GroupModel GetGroup(string name) //=> GetAllGroups().FirstOrDefault(grp => grp.Name == name);
         {
             GroupModel result;
@@ -57,14 +61,17 @@ namespace gratch_core.Models
             }
             return result;
         }
+
         public void AddGroup(Group group)
         {
             db.Insert(group.ToModel());
         }
+
         public void UpdatePeople(Group group)
         {
             UpdatePeople(group.ToModel());
         }
+
         private void UpdatePeople(GroupModel group)
         {
             db.RunInTransaction(() =>
@@ -87,12 +94,14 @@ namespace gratch_core.Models
             var added = person.ToModel(group); //новый человек
             db.Insert(added);
         }
+
         public void UpdateGroup(Group group)
         {
             var mod = group.ToModel();
             db.Update(mod);
             UpdatePeople(mod);
         }
+
         public void DeletePerson(Group group, Person person)
         {
             var model = group.ToModel();
@@ -134,13 +143,16 @@ namespace gratch_core.Models
         }
 
         #region IDisposable
+
         private bool disposed = false;
+
         public void Dispose()
         {
             Dispose(true);
 
             GC.SuppressFinalize(this);
         }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -159,6 +171,7 @@ namespace gratch_core.Models
         {
             Dispose(false);
         }
-        #endregion
+
+        #endregion IDisposable
     }
 }

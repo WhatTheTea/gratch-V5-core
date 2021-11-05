@@ -11,22 +11,30 @@ namespace gratch_core
     public class Group : IGroup
     {
         #region events
+
         internal static SQLiteSubscriber subscriber = SQLiteSubscriber.GetSubscriber();
 
         public delegate void GroupEventHandler(object sender);
+
         public static event GroupEventHandler GroupChanged;
+
         public static event GroupEventHandler GroupAdded;
+
         public static event GroupEventHandler GroupRemoved;
 
         public delegate void PersonChangedEventHandler(object sender, IPerson person);
+
         public static event PersonChangedEventHandler PersonChanged;
+
         public static event PersonChangedEventHandler PersonRemoved;
+
         public static event PersonChangedEventHandler PersonAdded;
 
         private void Weekend_CollectionChanged(object sender, EventArgs e)
         {
             GroupChanged?.Invoke(this);
         }
+
         private void Person_PersonUpdated(object sender)
         {
             if (_people.Any(pers => pers.Name == (sender as IPerson).Name))
@@ -34,37 +42,46 @@ namespace gratch_core
                 PersonChanged?.Invoke(this, sender as IPerson);
             }
         }
-        #endregion
+
+        #endregion events
+
         private string _name;
+
         public string Name
         {
             get => _name;
             set
             {
-                if (!IGroup.AllInstances.Any(grp => grp.Name == value))
+                if (database.GetAllGroups().Any(grp => grp.Name == value))
                 {
                     _name = value;
                     GroupChanged?.Invoke(this);
                 }
             }
         }
+
         private readonly List<Person> _people = new();
         private readonly Graph _graph;
+        private readonly Models.GroupRepository database = new Models.GroupRepository();
         public Graph Graph { get => _graph; }
+
         private Group()
         {
-            IGroup.instances.Add(this);
+            //IGroup.instances.Add(this);
             _graph = new Graph(_people);
 
             Person.PersonChanged += Person_PersonUpdated;
             _graph.WeekendChanged += Weekend_CollectionChanged;
         }
+
         public Group(string GroupName) : this() => _name = GroupName;
+
         public Group(string GroupName, IEnumerable<string> names) : this()
         {
             _name = GroupName;
             foreach (var name in names) Add(name);
         }
+
         public void Replace(int pIndex, int withIndex)
         {   //Записываем имена в буфер
             string pBuffer = _people[pIndex].Name;
@@ -76,6 +93,16 @@ namespace gratch_core
             _people[withIndex].Name = pBuffer;
             _people[pIndex].Name = withBuffer;
         }
+
+        public void RenamePerson(int index, string name)
+        {
+            bool renameExists = this.Any(reperson => reperson.Name == name);
+            if (!renameExists)
+            {
+                this[index].Rename(name);
+            }
+        }
+
         public void Add(string name)
         {
             if (this.Contains(name))
@@ -88,7 +115,9 @@ namespace gratch_core
                 Graph.AssignEveryone();
             }
         }
+
         #region IList
+
         public Person this[int index]
         {
             get
@@ -102,7 +131,9 @@ namespace gratch_core
                 _people[index].Name = name;
             }
         }
+
         public int IndexOf(Person person) => _people.IndexOf(person);
+
         public void Insert(int index, Person person)
         {
             var _ = person;
@@ -110,6 +141,7 @@ namespace gratch_core
             PersonAdded?.Invoke(this, person); //!!!! at index
             Graph.AssignEveryone();
         }
+
         public void RemoveAt(int index) // если плохо с производительностью - сюды.
         {
             _people.RemoveAt(index);
@@ -123,13 +155,20 @@ namespace gratch_core
                 Graph.AssignEveryone();
             }
         }
-        #endregion
+
+        #endregion IList
+
         #region ICollection
+
         public int Count => _people.Count;
         public bool IsReadOnly => false;
+
         public void CopyTo(Person[] people, int index) => _people.CopyTo(people, index);
+
         public bool Contains(Person person) => _people.Contains(person);
+
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
+
         public void Add(Person person) // not safe for dutydates
         {
             //var newperson = person.Clone() as Person;
@@ -137,17 +176,19 @@ namespace gratch_core
 
             if (Count == 1)
             {
-                IGroup.instances.Add(this);
+                //IGroup.instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
             PersonAdded?.Invoke(this, person);
         }
+
         public void Clear()
         {
             GroupRemoved?.Invoke(this);
             _people.Clear();
             //groups.Remove(this);
         }
+
         public bool Remove(Person person)
         {
             var _ = _people.Remove(person);
@@ -162,11 +203,15 @@ namespace gratch_core
             }
             return _;
         }
-        #endregion
-        #region IEnumerator
-        public IEnumerator<Person> GetEnumerator() => _people.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => _people.GetEnumerator();
-        #endregion
-    }
 
+        #endregion ICollection
+
+        #region IEnumerator
+
+        public IEnumerator<Person> GetEnumerator() => _people.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _people.GetEnumerator();
+
+        #endregion IEnumerator
+    }
 }

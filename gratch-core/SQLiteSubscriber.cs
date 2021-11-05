@@ -11,6 +11,7 @@ namespace gratch_core
     {
         private static SQLiteSubscriber _subscriber;
         private readonly GroupRepository repos = new();
+
         private SQLiteSubscriber()
         {
             Group.GroupAdded += Group_GroupAdded;
@@ -21,10 +22,12 @@ namespace gratch_core
             Group.PersonChanged += Group_PersonChanged;
             Group.PersonRemoved += Group_PersonRemoved;
         }
+
         ~SQLiteSubscriber()
         {
             Dispose(false);
         }
+
         private void Destroy()
         {
             _subscriber = null;
@@ -37,6 +40,7 @@ namespace gratch_core
             Group.PersonChanged -= Group_PersonChanged;
             Group.PersonRemoved -= Group_PersonRemoved;
         }
+
         public static SQLiteSubscriber GetSubscriber()
         {
             if (_subscriber == null)
@@ -45,6 +49,7 @@ namespace gratch_core
             }
             return _subscriber;
         }
+
         private void Group_PersonRemoved(object sender, IPerson person)
         {
             repos.DeletePerson(sender as Group, person as Person);
@@ -92,14 +97,18 @@ namespace gratch_core
             Console.WriteLine(DateTime.Now + $" | SQLiteListener | Group {(sender as Group).Name}  table");
 #endif
         }
+
         #region IDisposable
+
         private bool disposed = false;
+
         public void Dispose()
         {
             Dispose(true);
 
             GC.SuppressFinalize(this);
         }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -113,6 +122,7 @@ namespace gratch_core
                 repos.Dispose();
             }
         }
-        #endregion
+
+        #endregion IDisposable
     }
 }

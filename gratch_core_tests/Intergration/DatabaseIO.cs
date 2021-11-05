@@ -23,10 +23,10 @@ namespace gratch_core_tests.Integration
             var actual = DataFiller.Repository?.GetGroup(group.Name)?.People?[0];
 
             Assert.IsTrue(expected?.Name == actual?.Name);
-            Assert.IsTrue(expected?.DutyDates?.Count == actual?.DutyDates?.Count);
+            Assert.IsTrue(expected?.DutyDates?.Count == actual?.ToPerson()?.DutyDates?.Count);
             for (int i = 0; i < expected?.DutyDates?.Count; i++)
             {
-                Assert.AreEqual(expected?.DutyDates?[i], actual?.DutyDates?[i]);
+                Assert.AreEqual(expected?.DutyDates?[i], actual?.ToPerson()?.DutyDates?[i]);
             }
 
             //DataFiller.ReturnTable();
@@ -41,9 +41,9 @@ namespace gratch_core_tests.Integration
 
             List<IGroup> groups = new();
 
-            Group.subscriber.Dispose();
+            /*Group.subscriber.Dispose();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.subscriber = SQLiteSubscriber.GetSubscriber();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();*/
 
             groups = DataFiller.Repository.LoadAllGroups();
 
@@ -81,7 +81,7 @@ namespace gratch_core_tests.Integration
 
             if (gList.Count == mList.Count)
             {
-                if (IGroup.AllInstances.Count != 0)
+                if (new GroupRepository().GetAllGroups().Count != 0)
                 {
                     mList.ForEach(gModel => gModel.People.ForEach(pModel =>
                     {
@@ -101,9 +101,9 @@ namespace gratch_core_tests.Integration
         public void CleanUp()
         {
             DataFiller.Repository.DeleteAll();
-            Group.subscriber.Dispose();
+            /*Group.subscriber.Dispose();
             foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.subscriber = SQLiteSubscriber.GetSubscriber();
+            Group.subscriber = SQLiteSubscriber.GetSubscriber();*/
         }
     }
 }

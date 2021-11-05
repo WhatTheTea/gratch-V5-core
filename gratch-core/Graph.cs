@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,16 +10,21 @@ namespace gratch_core
     public class Graph : IGraph
     {
         #region events
+
         internal event EventHandler WeekendChanged;
+
         private void Weekend_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             AssignEveryone();
             WeekendChanged.Invoke(this, new EventArgs());
         }
-        #endregion
+
+        #endregion events
+
         private List<Person> _people;
         public IList<Person> AssignedPeople => _people.Where(p => p.DutyDates.Any()).ToList().AsReadOnly();
         private ObservableCollection<DayOfWeek> _weekend = new();
+
         public IList<DayOfWeek> Weekend
         {
             get => _weekend.ToList().AsReadOnly();
@@ -35,6 +39,7 @@ namespace gratch_core
                 }
             }
         }
+
         public IList<DateTime> Workdates
         {
             get
@@ -93,8 +98,14 @@ namespace gratch_core
                 }
             }
         }
+
+        ///
+        // Можно оптимизировать если обновить людей только после очистки последнего
+        ///
         public void ClearAllAssignments() => _people.ForEach(p => p.DutyDates.Clear());
+
         internal void ClearAssignment(int index) => _people[index].DutyDates.Clear();
+
         public void MonthlyUpdate()
         {
             Person lastPerson = AssignedPeople.First(p => p.DutyDates.Last() == Workdates.Last());
@@ -102,6 +113,7 @@ namespace gratch_core
             ClearAllAssignments();
             AssignEveryone(lastIndex + 1);
         }
+
         public bool IsHoliday(DateTime date)
         {
             return Weekend.Contains(date.DayOfWeek);
@@ -112,9 +124,11 @@ namespace gratch_core
             return Weekend.Contains(new DateTime(DateTime.Now.Year,
                     DateTime.Now.Month, day).DayOfWeek);
         }
+
         public bool IsAssigned(DateTime date) => _people.Any(p => p.DutyDates.Any(dd => dd == date));
+
         public Person this[DateTime dutyDate] => _people.FirstOrDefault(person =>
-                                                 person.DutyDates.Any(date =>
-                                                 date == dutyDate) == true);
+                                                  person.DutyDates.Any(date =>
+                                                  date == dutyDate) == true);
     }
 }

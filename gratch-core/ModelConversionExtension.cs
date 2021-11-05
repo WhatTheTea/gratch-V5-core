@@ -9,13 +9,17 @@ namespace gratch_core
 {
     internal static class ModelConversionExtension
     {
+        private static readonly GroupRepository database = new();
+
         internal static PersonModel ToModel(this Person person, Group group)
         {
             PersonModel result = new()
             {
                 Name = person.Name,
                 DutyDates = person.DutyDates.ToList(),
-                GroupId = IGroup.AllInstances.IndexOf(group) + 1,
+                GroupId = (database.GetAllGroups()?
+                                  .FirstOrDefault(g => g.Name == group.Name)?
+                                  .Id ?? 1),
                 Id = group.IndexOf(person) + 1
             };
             result.DutyDatesBlob = new string(JsonSerializer.Serialize(
@@ -27,6 +31,7 @@ namespace gratch_core
         {
             DutyDates = new(model.DutyDates)
         };
+
         internal static List<PersonModel> ToModels(this IList<Person> people, Group group)
         {
             var list = new List<PersonModel>();
@@ -36,6 +41,7 @@ namespace gratch_core
             }
             return list;
         }
+
         internal static Group ToGroup(this GroupModel model)
         {
             var grp = new Group(model.Name);
@@ -43,6 +49,7 @@ namespace gratch_core
             model.People.ForEach(p => grp.Add(p.ToPerson()));
             return grp;
         }
+
         internal static GroupModel ToModel(this Group group)
         {
             var model = new GroupModel()
@@ -50,7 +57,9 @@ namespace gratch_core
                 Name = group.Name,
                 People = group.ToModels(group),
                 Weekend = group.Graph.Weekend.ToList(),
-                Id = IGroup.AllInstances.IndexOf(group) + 1
+                Id = (database.GetAllGroups()?
+                                  .FirstOrDefault(g => g.Name == group.Name)?
+                                  .Id ?? 1)
             };
             model.WeekendBlobbed = JsonSerializer.Serialize(model.Weekend);
             return model;
