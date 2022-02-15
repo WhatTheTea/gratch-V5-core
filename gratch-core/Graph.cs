@@ -105,10 +105,10 @@ namespace gratch_core
         public void ClearAllAssignments() => _people.ForEach(p => p.DutyDates.Clear());
 
         internal void ClearAssignment(int index) => _people[index].DutyDates.Clear();
-
+        //Опасный код, не проверяется выходной ли
         public void MonthlyUpdate()
         {
-            Person lastPerson = AssignedPeople.First(p => p.DutyDates.Last() == Workdates.Last());
+            Person lastPerson = AssignedPeople.First(p => p.DutyDates.Last() == DateTime.Now.AddMonths(-1).LastDayOfMonth());
             int lastIndex = _people.IndexOf(lastPerson);
             ClearAllAssignments();
             AssignEveryone(lastIndex + 1);

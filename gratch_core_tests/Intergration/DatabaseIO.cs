@@ -1,8 +1,6 @@
-﻿using gratch_core;
-using gratch_core.Models;
-
+﻿using gratch_core.Models;
+using gratch_core;
 using NUnit.Framework;
-
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +9,7 @@ namespace gratch_core_tests.Integration
     [TestFixture]
     public class DatabaseIO
     {
-        
+
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(40)]
@@ -26,12 +24,13 @@ namespace gratch_core_tests.Integration
             Assert.IsTrue(expected?.DutyDates?.Count == actual?.ToPerson()?.DutyDates?.Count);
             for (int i = 0; i < expected?.DutyDates?.Count; i++)
             {
-                Assert.AreEqual(expected?.DutyDates?[i], actual?.ToPerson()?.DutyDates?[i]);
+                Assert.AreEqual(expected?.DutyDates?[i],
+                                actual?.ToPerson()?.DutyDates?[i]);
             }
 
             //DataFiller.ReturnTable();
         }
-        
+
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(30)]
@@ -40,10 +39,6 @@ namespace gratch_core_tests.Integration
             var group = DataFiller.GetGroup(pCount);
 
             List<IGroup> groups = new();
-
-            /*Group.subscriber.Dispose();
-            foreach (var grp in IGroup.AllInstances) grp.Clear();
-            Group.subscriber = SQLiteSubscriber.GetSubscriber();*/
 
             groups = DataFiller.Repository.LoadAllGroups();
 
@@ -57,7 +52,7 @@ namespace gratch_core_tests.Integration
                 }
             });
         }
-        
+
         [TestCase(1, 0)]
         [TestCase(1, 1)]
         [TestCase(1, 40)]
