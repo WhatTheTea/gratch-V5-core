@@ -71,7 +71,7 @@ namespace gratch_core
             DateTime now = DateTime.Now;
             int pCount = _people.Count;
             int dinm = now.DaysInMonth();
-
+            Group.subscriber?.Dispose();
             if (pCount > 0)
             {
                 if (_people[startIndex].DutyDates.Any()) ClearAllAssignments();
@@ -79,11 +79,7 @@ namespace gratch_core
                 {
                     if (!IsHoliday(day)) // if day is holiday - skip;
                     {
-                        if (pCount > 1 && day != dinm)
-                        {
-                            Person.SupressInvocation = true;
-                        }
-                        else Person.SupressInvocation = false;
+                        if (day == dinm) Group.subscriber = SQLiteSubscriber.GetSubscriber();
 
                         if (pIndex >= pCount) pIndex = 0;
                         var dutyDate = new DateTime(now.Year, now.Month, day);

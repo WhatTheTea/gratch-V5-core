@@ -168,19 +168,23 @@ namespace gratch_core
         public bool Contains(Person person) => _people.Contains(person);
 
         public bool Contains(string name) => (from p in _people where p.Name == name select p.Name).Any();
-
-        public void Add(Person person) // not safe for dutydates
+        /// <summary>
+        /// It is better to use <see cref="Add(string)"/>, this method is not safe for dutydates
+        /// </summary>
+        internal void Add(Person person) // not safe for dutydates
         {
-            //var newperson = person.Clone() as Person;
             _people.Add(person);
 
             if (Count == 1)
             {
-                //IGroup.instances.Add(this);
                 GroupAdded?.Invoke(this);
             }
             PersonAdded?.Invoke(this, person);
         }
+        /// <summary>
+        /// Not supported, use <see cref="Group.Add(string)"/>
+        /// </summary>
+        void ICollection<Person>.Add(Person person) { throw new NotSupportedException(); }
 
         public void Clear()
         {
